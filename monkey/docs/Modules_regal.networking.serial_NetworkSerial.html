@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.serial.html'>regal.networking.serial</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  NetworkSerial </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">NetworkSerial</span></h1>
+
+
+	<p>This is an internal base-class for <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, that provides useful I/O routines.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+		<tr>
+			<td class="span1 name">Extended&nbsp;by:</td>
+			<td>
+				<ul class="unstyled">
+					<li><a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a></li>
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constants:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li>INITIAL_MEGA_PACKET_ID : PacketID</li>
+					
+						<li>INITIAL_PACKET_ID : PacketID</li>
+					
+						<li>INTERNAL_MSG_CONNECT : MessageType</li>
+					
+						<li>INTERNAL_MSG_DISCONNECT : MessageType</li>
+					
+						<li>INTERNAL_MSG_MEGA_PACKET_ACTION : MessageType</li>
+					
+						<li>INTERNAL_MSG_MEGA_PACKET_RESPONSE : MessageType</li>
+					
+						<li>INTERNAL_MSG_PACKET_CONFIRM : MessageType</li>
+					
+						<li>INTERNAL_MSG_PING : MessageType</li>
+					
+						<li>INTERNAL_MSG_PONG : MessageType</li>
+					
+						<li>INTERNAL_MSG_REQUEST_DISCONNECTION : MessageType</li>
+					
+						<li>INTERNAL_MSG_REQUEST_MEGA_PACKET : MessageType</li>
+					
+						<li>INTERNAL_MSG_WARNING : MessageType</li>
+					
+						<li>MEGA_PACKET_ACTION_CHUNK_RESIZE : PacketExtAction</li>
+					
+						<li>MEGA_PACKET_ACTION_REQUEST_CHUNK : PacketExtAction</li>
+					
+						<li>MEGA_PACKET_ACTION_REQUEST_CHUNK_LOAD : PacketExtAction</li>
+					
+						<li>MEGA_PACKET_RESPONSE_ABORT : PacketExtResponse</li>
+					
+						<li>MEGA_PACKET_RESPONSE_ACCEPT : PacketExtResponse</li>
+					
+						<li>MEGA_PACKET_RESPONSE_CLOSE : PacketExtResponse</li>
+					
+						<li>MEGA_PACKET_RESPONSE_TIMEOUT : PacketExtResponse</li>
+					
+						<li>MEGA_PACKET_RESPONSE_TOO_MANY_CHUNKS : PacketExtResponse</li>
+					
+						<li>MSG_TYPE_CUSTOM : MessageType</li>
+					
+						<li>MSG_TYPE_ERROR : MessageType</li>
+					
+						<li>MSG_TYPE_INTERNAL : MessageType</li>
+					
+						<li>PACKET_HEADER_MARGIN : Int</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.serial_NetworkSerial.html#ReadInternalMessageHeader'>ReadInternalMessageHeader</a> : MessageType ( P:Stream )</li>
+					
+						<li><a href='Modules_regal.networking.serial_NetworkSerial.html#WriteInternalMessageHeader'>WriteInternalMessageHeader</a> : Void ( P:Stream, InternalType:MessageType )</li>
+					
+						<li><a href='Modules_regal.networking.serial_NetworkSerial.html#Write_MegaPacket_Action'>Write_MegaPacket_Action</a> : Void ( P:Stream, MP:MegaPacket, Action:PacketExtAction, IsTheirPacket:Bool )</li>
+					
+						<li><a href='Modules_regal.networking.serial_NetworkSerial.html#Write_MegaPacket_Response'>Write_MegaPacket_Response</a> : Void ( P:Stream, ID:PacketID, Reason:PacketExtResponse, IsTheirPacket:Bool )</li>
+					
+						<li><a href='Modules_regal.networking.serial_NetworkSerial.html#Write_MegaPacket_Response(2)'>Write_MegaPacket_Response</a> : Void ( P:Stream, MP:MegaPacket, Reason:PacketExtResponse, IsTheirPacket:Bool )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+									
+		<tr>
+			<td class="span1 name">Functions:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#ReadBool'>ReadBool</a> : Bool ( S:Stream )</li>
+					
+						<li><a href='#ReadMessageType'>ReadMessageType</a> : MessageType ( S:Stream )</li>
+					
+						<li><a href='#ReadNetSize'>ReadNetSize</a> : Int ( S:Stream )</li>
+					
+						<li><a href='#ReadPacketExtAction'>ReadPacketExtAction</a> : PacketExtAction ( S:Stream )</li>
+					
+						<li><a href='#ReadPacketExtResponse'>ReadPacketExtResponse</a> : PacketExtResponse ( S:Stream )</li>
+					
+						<li><a href='#ReadPacketID'>ReadPacketID</a> : PacketID ( S:Stream )</li>
+					
+						<li><a href='#WriteBool'>WriteBool</a> : Void ( S:Stream, Value:Bool )</li>
+					
+						<li><a href='#WriteMessageType'>WriteMessageType</a> : Void ( S:Stream, InternalType:MessageType )</li>
+					
+						<li><a href='#WriteNetSize'>WriteNetSize</a> : Void ( S:Stream, Size:Int )</li>
+					
+						<li><a href='#WritePacketExtAction'>WritePacketExtAction</a> : Void ( S:Stream, Action:PacketExtAction )</li>
+					
+						<li><a href='#WritePacketExtResponse'>WritePacketExtResponse</a> : Void ( S:Stream, Response:PacketExtResponse )</li>
+					
+						<li><a href='#WritePacketID'>WritePacketID</a> : Void ( S:Stream, ID:PacketID )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	This is an internal base-class for <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, that provides useful I/O routines. (Abstract)
+	
+	
+	<hr>
+
+
+
+
+
+
+
+
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='ReadInternalMessageHeader'></a>
+				<div class="well well-small name"><b>Method ReadInternalMessageHeader : <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> ( P:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads the header of an internal message from <b>P</b>, returning its internal type.
+
+This method is protected.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WriteInternalMessageHeader'></a>
+				<div class="well well-small name"><b>Method WriteInternalMessageHeader : Void ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, InternalType:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> )</b></div>
+				<div class="description">
+					<p>This writes the header of an internal message of type <b>InternalType</b> to <b>P</b>.
+
+This method is protected.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Write_MegaPacket_Action'></a>
+				<div class="well well-small name"><b>Method Write_MegaPacket_Action : Void ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, MP:<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, Action:<a href="Modules_regal.networking.serial_PacketExtAction.html">PacketExtAction</a>, IsTheirPacket:Bool )</b></div>
+				<div class="description">
+					<p>This writes the main segment of a mega-packet action message to <b>P</b>.
+This operation includes the internal-message header.
+
+This method is protected.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Write_MegaPacket_Response'></a>
+				<div class="well well-small name"><b>Method Write_MegaPacket_Response : Void ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>, Reason:<a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a>, IsTheirPacket:Bool )</b></div>
+				<div class="description">
+					<p>This writes the main segment of a mega-packet response message to <b>P</b>.
+This operation includes the internal-message header.
+
+This method is protected.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Write_MegaPacket_Response(2)'></a>
+				<div class="well well-small name"><b>Method Write_MegaPacket_Response : Void ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, MP:<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, Reason:<a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a>, IsTheirPacket:Bool )</b></div>
+				<div class="description">
+					<p>This uses <b>MP</b> to satisfy the 'ID' argument of the <a href="Modules_regal.networking.serial_NetworkSerial.html#Write_MegaPacket_Response">main overload</a>.
+
+This method is protected.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Function Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='ReadBool'></a>
+				<div class="well well-small name"><b>Function ReadBool : Bool ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads a <a href="Programming_Keywords_Bool.html">boolean</a> from <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WriteBool">WriteBool</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReadMessageType'></a>
+				<div class="well well-small name"><b>Function ReadMessageType : <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads a <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> from <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WriteMessageType">WriteMessageType</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReadNetSize'></a>
+				<div class="well well-small name"><b>Function ReadNetSize : Int ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads an integer from <b>S</b> of an internally defined size, and returns it.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WriteNetSize">WriteNetSize</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReadPacketExtAction'></a>
+				<div class="well well-small name"><b>Function ReadPacketExtAction : <a href="Modules_regal.networking.serial_PacketExtAction.html">PacketExtAction</a> ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads a <a href="Modules_regal.networking.serial_PacketExtAction.html">PacketExtAction</a> from <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WritePacketExtAction">WritePacketExtAction</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReadPacketExtResponse'></a>
+				<div class="well well-small name"><b>Function ReadPacketExtResponse : <a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a> ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads a <a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a> from <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WritePacketExtResponse">WritePacketExtResponse</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReadPacketID'></a>
+				<div class="well well-small name"><b>Function ReadPacketID : <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> ( S:<a href="Modules_brl.stream_Stream.html">Stream</a> )</b></div>
+				<div class="description">
+					<p>This reads a <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> from <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#WritePacketID">WritePacketID</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WriteBool'></a>
+				<div class="well well-small name"><b>Function WriteBool : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, Value:Bool )</b></div>
+				<div class="description">
+					<p>This writes <b>Value</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadBool">ReadBool</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WriteMessageType'></a>
+				<div class="well well-small name"><b>Function WriteMessageType : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, InternalType:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> )</b></div>
+				<div class="description">
+					<p>This writes <b>InternalType</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadMessageType">ReadMessageType</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WriteNetSize'></a>
+				<div class="well well-small name"><b>Function WriteNetSize : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, Size:Int )</b></div>
+				<div class="description">
+					<p>This writes <b>Size</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadNetSize">ReadNetSize</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WritePacketExtAction'></a>
+				<div class="well well-small name"><b>Function WritePacketExtAction : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, Action:<a href="Modules_regal.networking.serial_PacketExtAction.html">PacketExtAction</a> )</b></div>
+				<div class="description">
+					<p>This writes <b>Action</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadPacketExtAction">ReadPacketExtAction</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WritePacketExtResponse'></a>
+				<div class="well well-small name"><b>Function WritePacketExtResponse : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, Response:<a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a> )</b></div>
+				<div class="description">
+					<p>This writes <b>Response</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadPacketExtResponse">ReadPacketExtResponse</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WritePacketID'></a>
+				<div class="well well-small name"><b>Function WritePacketID : Void ( S:<a href="Modules_brl.stream_Stream.html">Stream</a>, ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p>This writes <b>ID</b> to <b>S</b>.
+
+See also: <a href="Modules_regal.networking.serial_NetworkSerial.html#ReadPacketID">ReadPacketID</a></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

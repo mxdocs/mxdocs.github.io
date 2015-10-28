@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.engine.html'>regal.networking.engine</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  CoreNetworkListener </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Interface <span class="name">CoreNetworkListener</span></h1>
+
+
+	<p><p>This provides lower level notifications, such as bind results, and completion of (Any) send operation(s).</p>
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.engine_CoreNetworkListener.html#OnNetworkBind'>OnNetworkBind</a> : Void ( Network:NetworkEngine, Successful:Bool )</li>
+					
+						<li><a href='Modules_regal.networking.engine_CoreNetworkListener.html#OnSendComplete'>OnSendComplete</a> : Void ( Network:NetworkEngine, P:Packet, Address:NetworkAddress, BytesSent:Int )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<p>This provides lower level notifications, such as bind results, and completion of (Any) send operation(s).</p>
+
+See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SetCoreCallback">SetCoreCallback</a>
+	
+	
+	<hr>
+
+
+
+
+
+
+
+
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='OnNetworkBind'></a>
+				<div class="well well-small name"><b>Method OnNetworkBind : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, Successful:Bool )</b></div>
+				<div class="description">
+					<p>This is called when a network bind-operation completes.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='OnSendComplete'></a>
+				<div class="well well-small name"><b>Method OnSendComplete : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:NetworkAddress, BytesSent:Int )</b></div>
+				<div class="description">
+					<p>The <b>P</b> object represents the "real" <a href="Modules_regal.networking.packet_Packet.html">Packet</a> that was sent. (Unlike <a href="Modules_regal.networking.engine_MetaNetworkListener.html#OnReceiveMessage">OnReceiveMessage</a>)</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

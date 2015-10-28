@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.engine.html'>regal.networking.engine</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  MetaNetworkListener </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Interface <span class="name">MetaNetworkListener</span></h1>
+
+
+	<p><p>This is used for "meta" notifications, like user-level messages, or network-disconnection.</p>
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.engine_MetaNetworkListener.html#OnDisconnected'>OnDisconnected</a> : Void ( Network:NetworkEngine )</li>
+					
+						<li><a href='Modules_regal.networking.engine_MetaNetworkListener.html#OnReceiveMessage'>OnReceiveMessage</a> : Void ( Network:NetworkEngine, C:Client, Type:MessageType, Message:Stream, MessageSize:Int )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<p>This is used for "meta" notifications, like user-level messages, or network-disconnection.</p>
+
+See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SetMetaCallback">SetMetaCallback</a>
+	
+	
+	<hr>
+
+
+
+
+
+
+
+
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='OnDisconnected'></a>
+				<div class="well well-small name"><b>Method OnDisconnected : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p>This is called when <b>Network</b> has disconnected.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='OnReceiveMessage'></a>
+				<div class="well well-small name"><b>Method OnReceiveMessage : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, Message:<a href="Modules_brl.stream_Stream.html">Stream</a>, MessageSize:Int )</b></div>
+				<div class="description">
+					<p>The <b>Message</b> object will be automatically released, and should not be closed.
+The <b>MessageSize</b> argument specifies how many bytes are in the data-segment of <b>Message</b>.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.client.html'>regal.networking.client</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  Client </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">Client</span></h1>
+
+
+	<p><a href="Modules_regal.networking.client_Client.html">Client</a> objects are "descriptors", specifying how a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> can reach an identified node in a network.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+								
+		<tr>
+			<td class="span1 name">Fields:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#ConfirmedPackets'>ConfirmedPackets</a> : Deque&lt;PacketID&gt;</li>
+					
+						<li><a href='#PacketReleaseTimer'>PacketReleaseTimer</a> : TimePoint</li>
+					
+						<li><a href='#WaitingMegaPackets'>WaitingMegaPackets</a> : Stack&lt;MegaPacket&gt;</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constructors:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#New'>New</a> ( Address:NetworkAddress, Connection:Socket=null, PacketConfirmation:Bool=true )</li>
+					
+						<li><a href='#New(2)'>New</a> ( Connection:Socket, PacketConfirmation:Bool=false )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#Address'>Address</a> : NetworkAddress ()</li>
+					
+						<li><a href='#Closed'>Closed</a> : Bool ()</li>
+					
+						<li><a href='#Closing'>Closing</a> : Bool ()</li>
+					
+						<li><a href='#Closing(2)'>Closing</a> : Void ( Input:Bool )</li>
+					
+						<li><a href='#Connection'>Connection</a> : Socket ()</li>
+					
+						<li><a href='#ManagesPackets'>ManagesPackets</a> : Bool ()</li>
+					
+						<li><a href='#Ping'>Ping</a> : NetworkPing ()</li>
+					
+						<li><a href='#PingTimer'>PingTimer</a> : TimePoint ()</li>
+					
+						<li><a href='#Pinging'>Pinging</a> : Bool ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.client_Client.html#AddWaitingMegaPacket'>AddWaitingMegaPacket</a> : Void ( MP:MegaPacket )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#CalculatePing'>CalculatePing</a> : Void ( Network:NetworkEngine, StopPinging:Bool=true )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#Close'>Close</a> : Void ( Network:NetworkEngine, ReleaseInternalData:Bool=false )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ConfirmPacket'>ConfirmPacket</a> : Bool ( ID:PacketID )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#Construct_Client'>Construct_Client</a> : Client ( PacketConfirmation:Bool )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ContainsPacket'>ContainsPacket</a> : Bool ( ID:PacketID )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#GetWaitingMegaPacket'>GetWaitingMegaPacket</a> : MegaPacket ( ID:PacketID )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#HasWaitingMegaPacket'>HasWaitingMegaPacket</a> : Bool ( ID:PacketID )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ProjectedPing'>ProjectedPing</a> : NetworkPing ( Network:NetworkEngine )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ReleaseNextPacketID'>ReleaseNextPacketID</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket'>RemoveWaitingMegaPacket</a> : Void ( MP:MegaPacket )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket(2)'>RemoveWaitingMegaPacket</a> : Void ( ID:PacketID )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ResetPacketTimer'>ResetPacketTimer</a> : TimePoint ()</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#ResetPingTimer'>ResetPingTimer</a> : TimePoint ()</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#Update'>Update</a> : Void ( Network:NetworkEngine )</li>
+					
+						<li><a href='Modules_regal.networking.client_Client.html#UpdateWaitingMegaPackets'>UpdateWaitingMegaPackets</a> : Void ( Network:NetworkEngine )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<a href="Modules_regal.networking.client_Client.html">Client</a> objects are "descriptors", specifying how a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> can reach an identified node in a network.
+<a href="Modules_regal.networking.client_Client.html">Client</a> objects are generated, stored, and disclosed by networks (<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>). References to <a href="Modules_regal.networking.client_Client.html">Client</a> objects are only valid until a network specifies that they are no longer connected/available. These notifications can be interpreted using a <a href="Modules_regal.networking.engine_ClientNetworkListener.html">ClientNetworkListener</a> (Callback), as specified in the 'networking.engine' module.
+	
+	
+	<hr>
+
+
+
+	<h2>Field Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='ConfirmedPackets'></a>
+				<div class="well well-small name"><b>Field ConfirmedPackets : <a href="Modules_monkey.deque_Deque.html">Deque</a>&lt;<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>&gt;</b></div>
+				<div class="description">
+					<p><p>This is a <i>double-ended</i> <u>queue</u> of confirmed <a href="Modules_regal.networking.serial_PacketID.html">PacketIDs</a>, representing received <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePackets</a>.</p>
+<p>This field is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='PacketReleaseTimer'></a>
+				<div class="well well-small name"><b>Field PacketReleaseTimer : TimePoint</b></div>
+				<div class="description">
+					<p><p>This is a "timer" (Point in time) used to calculate the amount of time between <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> releases from <a href="Modules_regal.networking.client_Client.html#ConfirmedPackets">ConfirmedPackets</a>.</p>
+<p>This field is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='WaitingMegaPackets'></a>
+				<div class="well well-small name"><b>Field WaitingMegaPackets : <a href="Modules_monkey.stack_Stack.html">Stack</a>&lt;<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>&gt;</b></div>
+				<div class="description">
+					<p><p>This is a collection of "waiting" (Remotely created) <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects.</p>
+<p>This field is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+						
+	<h2>Constructor Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='New'></a>
+				<div class="well well-small name"><b>Method New ( Address:NetworkAddress, Connection:<a href="Modules_brl.socket_Socket.html">Socket</a>=null, PacketConfirmation:Bool=true )</b></div>
+				<div class="description">
+					<p>Constructors for <a href="Modules_regal.networking.client_Client.html">Client</a> objects are handled internally, and should only be used when extending this framework.
+
+This overload is used for protocols that are address-based, rather than socket-based. (UDP)
+That being said, this is also used internally by client <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects, for <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a> (Only <a href="Modules_regal.networking.client_Client.html">Client</a> instance).
+
+<ul><li>The <b>Address</b> argument specifies the remote address of the client.</li>
+<li>The <b>Connection</b> argument is mainly available for debugging purposes / internal use.</li>
+<li>The <b>PacketConfirmation</b> argument is described in <a href="Modules_regal.networking.client_Client.html#Construct_Client">Construct_Client</a>.</li></ul></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='New(2)'></a>
+				<div class="well well-small name"><b>Method New ( Connection:<a href="Modules_brl.socket_Socket.html">Socket</a>, PacketConfirmation:Bool=false )</b></div>
+				<div class="description">
+					<p>Constructors for <a href="Modules_regal.networking.client_Client.html">Client</a> objects are handled internally, and should only be used when extending this framework.
+
+This overload is used for protocols that are socket-based, rather than address-based. (TCP)
+
+<ul><li>The <b>Connection</b> argument is used to describe the <a href="Modules_brl.socket_Socket.html">Socket</a> associated with this client.</li>
+<li>The <b>PacketConfirmation</b> argument is described in <a href="Modules_regal.networking.client_Client.html#Construct_Client">Construct_Client</a>.</li></ul></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Property Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='Address'></a>
+				<div class="well well-small name"><b>Method Address : NetworkAddress () Property</b></div>
+				<div class="description">
+					<p>The address associated with this client; may be <a href="Programming_Keywords_Null.html">Null</a> depending on the underlying transport protocol. (Available for UDP)
+
+See also: <a href="Modules_regal.networking.client_Client.html#New">New</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Closed'></a>
+				<div class="well well-small name"><b>Method Closed : Bool () Property</b></div>
+				<div class="description">
+					<p>This specifies if this client handle has been closed by a network and/or user.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Closing'></a>
+				<div class="well well-small name"><b>Method Closing : Bool () Property</b></div>
+				<div class="description">
+					<p>This specifies if this client is in the process of disconnecting/closing. (Ignored for formal messages; only internal messages will be accepted)</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Closing(2)'></a>
+				<div class="well well-small name"><b>Method Closing : Void ( Input:Bool ) Property</b></div>
+				<div class="description">
+					<p>Use caution when setting this property-overload. (Handled internally, use at your own risk)</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Connection'></a>
+				<div class="well well-small name"><b>Method Connection : <a href="Modules_brl.socket_Socket.html">Socket</a> () Property</b></div>
+				<div class="description">
+					<p>The <a href="Modules_brl.socket_Socket.html">Socket</a> associated with this client; may be <a href="Programming_Keywords_Null.html">Null</a> depending on the underlying transport protocol. (Available for TCP)</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ManagesPackets'></a>
+				<div class="well well-small name"><b>Method ManagesPackets : Bool () Property</b></div>
+				<div class="description">
+					<p>This corresponds to the constructor argument of the same name.
+
+See also:
+
+<a href="Modules_regal.networking.client_Client.html#New">New</a>, <a href="Modules_regal.networking.client_Client.html#Construct_Client">Construct_Client</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Ping'></a>
+				<div class="well well-small name"><b>Method Ping : <a href="Modules_regal.networking.serial_NetworkPing.html">NetworkPing</a> () Property</b></div>
+				<div class="description">
+					<p>This specifies the last known ping of this client. This does not change while calculating a new ping.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='PingTimer'></a>
+				<div class="well well-small name"><b>Method PingTimer : TimePoint () Property</b></div>
+				<div class="description">
+					<p>The last point in time used when pinging began.
+
+This property has protected assignment-access.
+
+See also: <a href="Modules_regal.networking.client_Client.html#Pinging">Pinging</a>, <a href="Modules_regal.networking.client_Client.html#Ping">Ping</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Pinging'></a>
+				<div class="well well-small name"><b>Method Pinging : Bool () Property</b></div>
+				<div class="description">
+					<p>This specifies if this client is currently calculating a ping. The <a href="Modules_regal.networking.client_Client.html#Ping">Ping</a> property is still valid while this is <a href="Programming_Keywords_True.html">True</a>.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='AddWaitingMegaPacket'></a>
+				<div class="well well-small name"><b>Method AddWaitingMegaPacket : Void ( MP:<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> )</b></div>
+				<div class="description">
+					<p><p>This adds <b>MP</b> to an internal container for "waiting" (Remote) <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='CalculatePing'></a>
+				<div class="well well-small name"><b>Method CalculatePing : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, StopPinging:Bool=true )</b></div>
+				<div class="description">
+					<p><p>This assigns this client's ping using <a href="Modules_regal.networking.client_Client.html#ProjectedPing">ProjectedPing</a>, resets the internal <a href="Modules_regal.networking.client_Client.html#PingTimer">"ping timer"</a>, then resets the <a href="Modules_regal.networking.client_Client.html#Pinging">Pinging</a> flag.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Close'></a>
+				<div class="well well-small name"><b>Method Close : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, ReleaseInternalData:Bool=false )</b></div>
+				<div class="description">
+					<p>This destructor is used internally. Please disconnect clients through their parent <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects.
+
+This will close a <a href="Modules_brl.socket_Socket.html">Socket</a> if held by this object, invalidate the <a href="Modules_regal.networking.client_Client.html#Address">Address</a> property, release any associated packet identifiers, release held <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handles, and set relevant closure-flags.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ConfirmPacket'></a>
+				<div class="well well-small name"><b>Method ConfirmPacket : Bool ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p>This will confirm packets with <b>ID</b> as their identifier, but only if it hasn't already been identified.
+The return-value indicates if the operation failed.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Construct_Client'></a>
+				<div class="well well-small name"><b>Method Construct_Client : <a href="Modules_regal.networking.client_Client.html">Client</a> ( PacketConfirmation:Bool )</b></div>
+				<div class="description">
+					<p>This is an internal constructor used when constructing <a href="Modules_regal.networking.client_Client.html">Client</a> objects.
+
+<ul><li>The <b>PacketConfirmation</b> argument specifies if this <a href="Modules_regal.networking.client_Client.html">Client</a> will be keeping track of packet identifiers. (Non-reliable protocols)</li>
+</ul>
+This routine is protected, but documented for extension purposes.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ContainsPacket'></a>
+				<div class="well well-small name"><b>Method ContainsPacket : Bool ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p>This returns <a href="Programming_Keywords_True.html">True</a> if <b>ID</b> has already been confirmed.
+
+See also:
+
+<a href="Modules_regal.networking.client_Client.html#ConfirmPacket">ConfirmPacket</a>, <a href="Modules_regal.networking.client_Client.html#Update">Update</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='GetWaitingMegaPacket'></a>
+				<div class="well well-small name"><b>Method GetWaitingMegaPacket : <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p><p>This retrieves a "waiting" <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object with <b>ID</b>.</p>
+<p>For details, view the <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a> method's documentation.</p>
+
+<p>This method is protected, but is documented for extension purposes.</p>
+
+See also: <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='HasWaitingMegaPacket'></a>
+				<div class="well well-small name"><b>Method HasWaitingMegaPacket : Bool ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p><p>This states if a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object with <b>ID</b> is inside this object's <a href="Modules_regal.networking.client_Client.html#WaitingMegaPackets">"waiting mega-packets" container</a>.</p>
+<p>This method is protected, but is documented for extension purposes.</p>
+
+See also: <a href="Modules_regal.networking.client_Client.html#GetWaitingMegaPacket">GetWaitingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ProjectedPing'></a>
+				<div class="well well-small name"><b>Method ProjectedPing : <a href="Modules_regal.networking.serial_NetworkPing.html">NetworkPing</a> ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p>This returns the "projected ping" of this client, based on the criteria specified in <b>Network</b>.
+"Projected pings" are approximate pings describing how long a client has been pinging. This number is not accurate unless the <a href="Modules_regal.networking.client_Client.html#Pinging">Pinging</a> property reports <a href="Programming_Keywords_True.html">True</a>.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ReleaseNextPacketID'></a>
+				<div class="well well-small name"><b>Method ReleaseNextPacketID : Void ()</b></div>
+				<div class="description">
+					<p><p>This is an internal method that will automatically release the next packet identifier in the queue.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='RemoveWaitingMegaPacket'></a>
+				<div class="well well-small name"><b>Method RemoveWaitingMegaPacket : Void ( MP:<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> )</b></div>
+				<div class="description">
+					<p><p>This is used to remote <b>MP</b> from an internal container of "waiting" (Client-created) <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>.</p>
+<p>This method is protected, but is documented for extension purposes.</p>
+
+See also: <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateRemoteMegaPacket">AllocateRemoteMegaPacket</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='RemoveWaitingMegaPacket(2)'></a>
+				<div class="well well-small name"><b>Method RemoveWaitingMegaPacket : Void ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
+				<div class="description">
+					<p><p>This removes a "waiting" <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> with <b>ID</b>; calls the <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">main implementation</a>.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ResetPacketTimer'></a>
+				<div class="well well-small name"><b>Method ResetPacketTimer : TimePoint ()</b></div>
+				<div class="description">
+					<p><p>This resets the internal <a href="Modules_regal.networking.client_Client.html#PacketReleaseTimer">"packet timer"</a>, used for releasing reliable-packet identifiers.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ResetPingTimer'></a>
+				<div class="well well-small name"><b>Method ResetPingTimer : TimePoint ()</b></div>
+				<div class="description">
+					<p><p>This resets an internal timer used for <a href="Modules_regal.networking.client_Client.html#ProjectedPing">ping calculation</a>.</p>
+<p>This method is protected, but is documented for extension purposes.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Update'></a>
+				<div class="well well-small name"><b>Method Update : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p><p>This is used to update a <a href="Modules_regal.networking.client_Client.html">Client</a> object. The main purpose of this is to handle reliable packet identifiers.</p>
+<p>But this also handles ping calculation and <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handles.</p>
+
+See also: <a href="Modules_regal.networking.client_Client.html#UpdateWaitingMegaPackets">UpdateWaitingMegaPackets</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='UpdateWaitingMegaPackets'></a>
+				<div class="well well-small name"><b>Method UpdateWaitingMegaPackets : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p><p>This updates any waiting <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handles; handles timeout semantics.</p>
+<p>This is called internally by <a href="Modules_regal.networking.client_Client.html#Update">Update</a>.</p>
+
+See also: <a href="Modules_regal.networking.client_Client.html#Update">Update</a></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

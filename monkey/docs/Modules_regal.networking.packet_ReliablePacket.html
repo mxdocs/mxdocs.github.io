@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.packet.html'>regal.networking.packet</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  ReliablePacket </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">ReliablePacket</span></h1>
+
+
+	<p>Reliable packets hold raw packet data, which is sent using <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">Resend</a> to a <a href="Modules_regal.networking.client_Client.html">Client</a> via <a href="Modules_regal.networking.packet_ReliablePacket.html#Destination">Destination</a>.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+		<tr>
+			<td class="span1 name">Extends:</td>
+			<td>
+				<ul class="unstyled">
+					<li><a href="Modules_regal.networking.packet_Packet.html">Packet</a></li>
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constructors:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#New'>New</a> ( Size:Int, FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#Destination'>Destination</a> : Client ()</li>
+					
+						<li><a href='#ID'>ID</a> : PacketID ()</li>
+					
+						<li><a href='#IsReliable'>IsReliable</a> : Bool ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.packet_ReliablePacket.html#ForceReset'>ForceReset</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_ReliablePacket.html#Resend'>Resend</a> : Void ( Network:NetworkEngine )</li>
+					
+						<li><a href='Modules_regal.networking.packet_ReliablePacket.html#Update'>Update</a> : Void ( Network:NetworkEngine )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+								
+		<tr>
+			<td class="span1 name">Inherited Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#AutoClose'>AutoClose</a> : Bool ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Released'>Released</a> : Bool ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Inherited Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Obtain'>Obtain</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Release'>Release</a> : Bool ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Reset'>Reset</a> : Void ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+									
+		<tr>
+			<td class="span1 name">Inherited Functions:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#SizeOfString'>SizeOfString</a> : Int ( S:String )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	Reliable packets hold raw packet data, which is sent using <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">Resend</a> to a <a href="Modules_regal.networking.client_Client.html">Client</a> via <a href="Modules_regal.networking.packet_ReliablePacket.html#Destination">Destination</a>. These are used internally by <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects, where management of <a href="Modules_regal.networking.packet_ReliablePacket.html#Destination">Destination</a> is done. It is not recommended to create instances of this class, unless you intend to right your own reliable/raw packet system. This class may not be extended.
+
+This is documented for the sake of understanding and/or extending the framework.
+	
+	
+	<hr>
+
+
+
+
+
+
+						
+	<h2>Constructor Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='New'></a>
+				<div class="well well-small name"><b>Method New ( Size:Int, FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</b></div>
+				<div class="description">
+					<p><ul><li>The <b>Size</b> argument specifies the maximum size of the packet.</li>
+<li>The <b>FixByteOrder</b> argument toggles network byte-order.</li>
+<li>The <b>AutoClose</b> argument specifies if a call to <a href="Modules_regal.networking.packet_Packet.html#Release">Release</a> is allowed to close this packet-stream.</li></ul></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Property Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='Destination'></a>
+				<div class="well well-small name"><b>Method Destination : <a href="Modules_regal.networking.client_Client.html">Client</a> () Property</b></div>
+				<div class="description">
+					<p>This represents a <a href="Modules_regal.networking.client_Client.html">Client</a> object supplied by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>. This is supplied through the assignment-overload.
+This property has protected assignment-access. Assignment is considered unsafe if this <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> is already being managed by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>; use at your own risk.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ID'></a>
+				<div class="well well-small name"><b>Method ID : <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> () Property</b></div>
+				<div class="description">
+					<p>This specifies the identifier attached to this reliable packet. This is assigned by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, and is unique to this packet / its contents.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='IsReliable'></a>
+				<div class="well well-small name"><b>Method IsReliable : Bool () Property</b></div>
+				<div class="description">
+					<p>This will always return <a href="Programming_Keywords_True.html">True</a>.
+
+See also:
+
+The <a href="Modules_regal.networking.packet_Packet.html">Packet</a> class's <a href="Modules_regal.networking.packet_Packet.html#IsReliable">IsReliable</a> implementation.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='ForceReset'></a>
+				<div class="well well-small name"><b>Method ForceReset : Void ()</b></div>
+				<div class="description">
+					<p>For details, see the <a href="Modules_regal.networking.packet_Packet.html">Packet</a> class's implementation: <a href="Modules_regal.networking.packet_Packet.html#ForceReset">ForceReset</a>.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Resend'></a>
+				<div class="well well-small name"><b>Method Resend : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p>This resends the (Raw) contents of this packet to <a href="Modules_regal.networking.packet_ReliablePacket.html#Destination">Destination</a>, using <b>Network</b>.
+
+This will reset the internal resend-timer.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Update'></a>
+				<div class="well well-small name"><b>Method Update : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> )</b></div>
+				<div class="description">
+					<p>This is called by <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects (Usually passing themselves as <b>Network</b>) to automate things like calling <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">Resend</a>. Internally, <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> objects hold resend-timers, this routine manages this timer, and calls <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">Resend</a> accordingly.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

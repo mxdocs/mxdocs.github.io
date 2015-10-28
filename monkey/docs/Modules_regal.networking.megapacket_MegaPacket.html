@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.megapacket.html'>regal.networking.megapacket</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  MegaPacket </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">MegaPacket</span></h1>
+
+
+	<p>A <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> is a "chain stream" of <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+		<tr>
+			<td class="span1 name">Extends:</td>
+			<td>
+				<ul class="unstyled">
+					<li>SpecializedChainStream&lt;<a href="Modules_regal.networking.packet_Packet.html">Packet</a>&gt;</li>
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constructors:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#New'>New</a> ( Network:NetworkEngine, ID:PacketID, Destination:Client=null, ReleaseRights:Bool=true )</li>
+					
+						<li><a href='#New(2)'>New</a> ( Network:NetworkEngine, ReleaseRights:Bool=true )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#CanTimeout'>CanTimeout</a> : Bool ()</li>
+					
+						<li><a href='#Destination'>Destination</a> : Client ()</li>
+					
+						<li><a href='#ID'>ID</a> : PacketID ()</li>
+					
+						<li><a href='#IsRemoteHandle'>IsRemoteHandle</a> : Bool ()</li>
+					
+						<li><a href='#Network'>Network</a> : NetworkEngine ()</li>
+					
+						<li><a href='#PacketsStaged'>PacketsStaged</a> : Int ()</li>
+					
+						<li><a href='#TimeSinceLastUpdate'>TimeSinceLastUpdate</a> : Duration ()</li>
+					
+						<li><a href='#Type'>Type</a> : MessageType ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#AutoUpdateTimeoutStatus'>AutoUpdateTimeoutStatus</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Close'>Close</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Construct'>Construct</a> : Void ( Network:NetworkEngine, ID:PacketID, Destination:Client=null )</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Construct(2)'>Construct</a> : Void ( Network:NetworkEngine, Internal:Bool=false )</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Extend'>Extend</a> : Packet ()</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#ExtendAndMark'>ExtendAndMark</a> : Bool ( MoveLink:Bool=true )</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#ForceClose'>ForceClose</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#MarkCurrentPacket'>MarkCurrentPacket</a> : Void ( LinkNumber:Int, TotalLinks:Int )</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#MarkPackets'>MarkPackets</a> : Void ( Offset:Int=0 )</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Reset'>Reset</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.megapacket_MegaPacket.html#Write'>Write</a> : Int ( Buffer:DataBuffer, Offset:Int, Count:Int )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	A <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> is a "chain stream" of <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects. Basically, this means it can stitch together several <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects, and use them as makeshift buffers. As you write to a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, it will automatically allocate <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects from its parent <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>. As it allocates, each <a href="Modules_regal.networking.packet_Packet.html">Packet</a> will receive a header, detailing its section meta-data. Once this is done, any data you write, or data that couldn't originally be written to the last <a href="Modules_regal.networking.packet_Packet.html">Packet</a>, will then be written to the newly aquired <a href="Modules_regal.networking.packet_Packet.html">Packet</a> object. The new packet then becomes the current <a href="Modules_brl.stream_Stream.html">Stream</a>, and all operations will affect that packet. When you're finished writing to the <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, you can call <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a> with a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> object, which will automatically handle the semantics of streaming to your destination. The <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> you sent will then be handled internally, until it is finally relinquished when the operation completes. <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects are usually sent in blocks, as described by the receiving end, meaning the <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects on the other end are queued up until all pieces are present. This message-staging is done using a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object on the other end, managed by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>. When the message is finalized, the <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> will be used as a <a href="Modules_brl.stream_Stream.html">Stream</a>, and presented as the message-type used when it was sent from the original node.
+	
+	
+	<hr>
+
+
+
+
+
+
+						
+	<h2>Constructor Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='New'></a>
+				<div class="well well-small name"><b>Method New ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>, Destination:<a href="Modules_regal.networking.client_Client.html">Client</a>=null, ReleaseRights:Bool=true )</b></div>
+				<div class="description">
+					<p><p>This constructs a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> for retrieval purposes. This does not start with a default <a href="Modules_regal.networking.packet_Packet.html">Packet</a>.</p>
+<p>When using this constructor/purpose, please keep the <b>ReleaseRights</b> argument in mind when handling <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects.</p>
+<p><a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a> allocated with this constructor must be "given up" (Ignored) upon integration with a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>.</p>
+
+<p>
+<ul><li>The <b>Network</b> argument will act as the parent to this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, and will be queried for <a href="Modules_regal.networking.packet_Packet.html">Packet</a> handles.</li>
+</ul>
+<ul><li>The <b>ID</b> argument specifies the packet identifier associated with this exact <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>. (Not to be confused with the IDs used by normal <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects)</li>
+</ul>
+<ul><li>The <b>Destination</b> argument specifies the sending node's <a href="Modules_regal.networking.client_Client.html">Client</a> handle.</li>
+</ul>
+<ul><li>The <b>ReleaseRights</b> argument specifies if this object has the right to call <a href="Modules_regal.networking.packet_Packet.html#Release">Release</a> on the packets it allocates and/or holds.</li>
+</ul></p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='New(2)'></a>
+				<div class="well well-small name"><b>Method New ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, ReleaseRights:Bool=true )</b></div>
+				<div class="description">
+					<p>This constructs a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> for deployment purposes.
+This will generate a default packet, and mark it appropriately.
+
+<ul><li>The <b>Network</b> argument will act as the parent to this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, and will be queried for <a href="Modules_regal.networking.packet_Packet.html">Packet</a> handles.</li>
+</ul>Like the retrieval overload, the <b>ReleaseRights</b> argument is used to control releasing the packets this governs.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Property Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='CanTimeout'></a>
+				<div class="well well-small name"><b>Method CanTimeout : Bool () Property</b></div>
+				<div class="description">
+					<p><p>This reports <a href="Programming_Keywords_True.html">True</a> if this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> is capable of timing-out. (<a href="Modules_regal.networking.megapacket_MegaPacket.html#IsRemoteHandle">IsRemoteHandle</a>)</p>
+<p>This property may not be overridden.</p>
+
+See also: <a href="Modules_regal.networking.megapacket_MegaPacket.html#TimeSinceLastUpdate">TimeSinceLastUpdate</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#AutoUpdateTimeoutStatus">AutoUpdateTimeoutStatus</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#IsRemoteHandle">IsRemoteHandle</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Destination'></a>
+				<div class="well well-small name"><b>Method Destination : <a href="Modules_regal.networking.client_Client.html">Client</a> () Property</b></div>
+				<div class="description">
+					<p>This is the destination associated with this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>
+This is assigned internally by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> when sending.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ID'></a>
+				<div class="well well-small name"><b>Method ID : <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> () Property</b></div>
+				<div class="description">
+					<p>This acts as the unique identifier applied to this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>.
+Whenever this "packet" needs to be referenced over the network, this is used to do it.
+This is assigned internally by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> when sending.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='IsRemoteHandle'></a>
+				<div class="well well-small name"><b>Method IsRemoteHandle : Bool () Property</b></div>
+				<div class="description">
+					<p><p>If this object was created for retrieval purposes, this will return <a href="Programming_Keywords_True.html">True</a>.</p>
+<p>This property may not be overridden.</p>
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Network'></a>
+				<div class="well well-small name"><b>Method Network : <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> () Property</b></div>
+				<div class="description">
+					<p>This corresponds to the parent specified when creating this object.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='PacketsStaged'></a>
+				<div class="well well-small name"><b>Method PacketsStaged : Int () Property</b></div>
+				<div class="description">
+					<p>This describes the number of packet chunks/pieces we've asked for.
+This is assigned internally by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> when requesting chunks.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='TimeSinceLastUpdate'></a>
+				<div class="well well-small name"><b>Method TimeSinceLastUpdate : Duration () Property</b></div>
+				<div class="description">
+					<p><p>If this object can <a href="Modules_regal.networking.megapacket_MegaPacket.html#CanTimeout">time-out</a>, then this will return the amount of time passed since the last call to <a href="Modules_regal.networking.megapacket_MegaPacket.html#AutoUpdateTimeoutStatus">AutoUpdateTimeoutStatus</a> (Or similar).</p>
+<p>This property may not be overridden.</p>
+
+See also: <a href="Modules_regal.networking.megapacket_MegaPacket.html#AutoUpdateTimeoutStatus">AutoUpdateTimeoutStatus</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Type'></a>
+				<div class="well well-small name"><b>Method Type : <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> () Property</b></div>
+				<div class="description">
+					<p>This describes the type used to send this <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>.
+This is assigned internally by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> when sending.
+
+This property has protected assignment-access.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='AutoUpdateTimeoutStatus'></a>
+				<div class="well well-small name"><b>Method AutoUpdateTimeoutStatus : Void ()</b></div>
+				<div class="description">
+					<p><p>This is used internally, and by <a href="Modules_regal.networking.client_Client.html">Client</a> objects when dealing with remote handles.</p>
+<p>Basically, this updates an internal "time-point" used as a timer via <a href="Modules_regal.networking.megapacket_MegaPacket.html#TimeSinceLastUpdate">TimeSinceLastUpdate</a>.</p>
+<p>If a remote handle idles for too long, it'll remove it, and abort the operation.</p>
+<p>Only call this if you're sure what you're doing; framework extension.</p>
+<p>This does not update the internal timer <a href="Modules_regal.networking.megapacket_MegaPacket.html#IsRemoteHandle">if this is not a "remote handle"</a>.</p>
+
+See also: <a href="Modules_regal.networking.megapacket_MegaPacket.html#IsRemoteHandle">IsRemoteHandle</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#CanTimeout">CanTimeout</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#TimeSinceLastUpdate">TimeSinceLastUpdate</a>, <a href="Modules_regal.networking.client_Client.html#UpdateWaitingMegaPackets">UpdateWaitingMegaPackets</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Close'></a>
+				<div class="well well-small name"><b>Method Close : Void ()</b></div>
+				<div class="description">
+					<p><p>This overrides the super-class's 'Close' implementation.</p>
+<p>This is akin to the <a href="Modules_brl.stream_Stream.html">Stream</a> class's <a href="Modules_brl.stream_Stream.html#Close">Close</a> method.</p>
+
+<p>This will release all internal packet handles if given closure rights.</p>
+
+See also: <a href="Modules_regal.networking.megapacket_MegaPacket.html#ForceClose">ForceClose</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#Reset">Reset</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Construct'></a>
+				<div class="well well-small name"><b>Method Construct : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>, Destination:<a href="Modules_regal.networking.client_Client.html">Client</a>=null )</b></div>
+				<div class="description">
+					<p><p>This is used internally to construct a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>; used directly by systems like <a href="Modules_regal.networking.megapacketpool_MegaPacketPool.html">MegaPacketPools</a>.</p>
+<p>This is represented externally by the <a href="Modules_regal.networking.megapacket_MegaPacket.html#New">standard constructors</a>.</p>
+
+<p><b>This constructor is protected.</b></p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Construct(2)'></a>
+				<div class="well well-small name"><b>Method Construct : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, Internal:Bool=false )</b></div>
+				<div class="description">
+					<p><p>This is used internally to construct a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>; used directly by systems like <a href="Modules_regal.networking.megapacketpool_MegaPacketPool.html">MegaPacketPools</a>.</p>
+<p><b>This constructor is protected.</b></p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Extend'></a>
+				<div class="well well-small name"><b>Method Extend : <a href="Modules_regal.networking.packet_Packet.html">Packet</a> ()</b></div>
+				<div class="description">
+					<p>This is a (Mostly) internal routine, usage is not recommended unless you know what you're doing.
+
+This allocates a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> using <a href="Modules_regal.networking.megapacket_MegaPacket.html#Network">Network</a>, then adds it internally.
+Please mark the beginning of the <a href="Modules_regal.networking.packet_Packet.html">Packet</a> this generates. (Unless handled through retrieval)
+
+This should be marked from this class, not the <a href="Modules_regal.networking.packet_Packet.html">Packet</a> returned.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ExtendAndMark'></a>
+				<div class="well well-small name"><b>Method ExtendAndMark : Bool ( MoveLink:Bool=true )</b></div>
+				<div class="description">
+					<p>When calling this method, please be aware that the current position is used to mark the stream.
+This means you should only call this when at the end of a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> thus, starting a new one with the proper markings.
+
+It's best to let this class handle this for you.
+
+<ul><li>The <b>MoveLink</b> argument is considered "unsafe", and should only be used externally for debugging purposes.</li></ul></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ForceClose'></a>
+				<div class="well well-small name"><b>Method ForceClose : Void ()</b></div>
+				<div class="description">
+					<p><p>This will only force-close the chain if CanCloseStreams is enabled. (Privided by the parent class; basically "ReleaseRights")</p>
+<p>Obviously, this will not re-use the packet-streams like <a href="Modules_regal.networking.megapacket_MegaPacket.html#Close">Close</a> would. In addition, this will not use the 100% proper control-path for packet-release.</p>
+
+See also: <a href="Modules_regal.networking.megapacket_MegaPacket.html#Close">Close</a>, <a href="Modules_regal.networking.megapacket_MegaPacket.html#Reset">Reset</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='MarkCurrentPacket'></a>
+				<div class="well well-small name"><b>Method MarkCurrentPacket : Void ( LinkNumber:Int, TotalLinks:Int )</b></div>
+				<div class="description">
+					<p>This will write packet meta-data based on the input.
+
+See <a href="Modules_regal.networking.megapacket_MegaPacket.html#ExtendAndMark">ExtendAndMark</a> for details.
+
+Method MarkCurrentPacket:Void()
+
+This will use the current Link and LinkCount as inputs for the <a href="Modules_regal.networking.megapacket_MegaPacket.html#MarkCurrentPacket">main implementation</a>.
+
+See <a href="Modules_regal.networking.megapacket_MegaPacket.html#ExtendAndMark">ExtendAndMark</a> for details.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='MarkPackets'></a>
+				<div class="well well-small name"><b>Method MarkPackets : Void ( Offset:Int=0 )</b></div>
+				<div class="description">
+					<p>This marks every internal packet appropriately. (Called internally after writing has finished)</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Reset'></a>
+				<div class="well well-small name"><b>Method Reset : Void ()</b></div>
+				<div class="description">
+					<p>This is just a wrapper for <a href="Modules_regal.networking.megapacket_MegaPacket.html#Close">Close</a> at the moment.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Write'></a>
+				<div class="well well-small name"><b>Method Write : Int ( Buffer:<a href="Modules_brl.databuffer_DataBuffer.html">DataBuffer</a>, Offset:Int, Count:Int )</b></div>
+				<div class="description">
+					<p>This overrides the super-class's implementation. Basically, this handles over-stepping and of course, data transfer.
+This follows the <a href="Modules_brl.stream_Stream.html">Stream</a> class's abstract <a href="Modules_brl.stream_Stream.html#Write">Write</a> method's documented behavior.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

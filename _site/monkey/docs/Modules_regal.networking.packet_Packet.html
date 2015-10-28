@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.packet.html'>regal.networking.packet</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  Packet </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">Packet</span></h1>
+
+
+	<p><a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects act as standard <a href="Modules_brl.stream_Stream.html">Stream</a> objects, providing structured memory manipulation.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+		<tr>
+			<td class="span1 name">Extends:</td>
+			<td>
+				<ul class="unstyled">
+					<li>PublicDataStream</li>
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+		<tr>
+			<td class="span1 name">Extended&nbsp;by:</td>
+			<td>
+				<ul class="unstyled">
+					<li><a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a></li>
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constants:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li>Default_BigEndianStorage : Bool</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constructors:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#New'>New</a> ( Size:Int, FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</li>
+					
+						<li><a href='#New(2)'>New</a> ( Message:String, Encoding:String="utf8", FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#AutoClose'>AutoClose</a> : Bool ()</li>
+					
+						<li><a href='#IsReliable'>IsReliable</a> : Bool ()</li>
+					
+						<li><a href='#Released'>Released</a> : Bool ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#ForceReset'>ForceReset</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Obtain'>Obtain</a> : Void ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Release'>Release</a> : Bool ()</li>
+					
+						<li><a href='Modules_regal.networking.packet_Packet.html#Reset'>Reset</a> : Void ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+									
+		<tr>
+			<td class="span1 name">Functions:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#SizeOfString'>SizeOfString</a> : Int ( S:String )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects act as standard <a href="Modules_brl.stream_Stream.html">Stream</a> objects, providing structured memory manipulation. They are seekable, and used both internally and externally. Closing a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> allocated by a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> is considered bad practice, and will result in unstable behavior if released formally.
+	
+	
+	<hr>
+
+
+
+
+
+
+						
+	<h2>Constructor Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='New'></a>
+				<div class="well well-small name"><b>Method New ( Size:Int, FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</b></div>
+				<div class="description">
+					<p><ul><li>The <b>Size</b> argument specifies the maximum size of this <a href="Modules_regal.networking.packet_Packet.html">Packet</a>.</li>
+<li>The <b>FixByteOrder</b> argument determines if byte-swapping will be used.</li>
+<li>The <b>AutoClose</b> argument specifies if a call to <a href="Modules_regal.networking.packet_Packet.html#Release">Release</a> is allowed to close this packet-stream.</li></ul></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='New(2)'></a>
+				<div class="well well-small name"><b>Method New ( Message:String, Encoding:String="utf8", FixByteOrder:Bool=default_bigendianstorage, AutoClose:Bool=true )</b></div>
+				<div class="description">
+					<p><ul><li>The <b>Message</b> argument specifies the message-data initially provided to this <a href="Modules_regal.networking.packet_Packet.html">Packet</a>. <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects are not currently resizable, so this will represent the entire message.</li>
+</ul>
+<ul><li>The <b>Encoding</b> argument specifies the standard encoding mode; see <a href="Modules_brl.databuffer_DataBuffer.html#PokeString">PokeString</a> for details.</li>
+</ul>
+<ul><li>The <b>FixByteOrder</b> argument determines if byte-swapping will be used.</li>
+</ul>
+Like the other overload(s), the <b>AutoClose</b> argument specifies if <a href="Modules_regal.networking.packet_Packet.html#Release">Release</a> is allowed to close this packet-stream.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Property Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='AutoClose'></a>
+				<div class="well well-small name"><b>Method AutoClose : Bool () Property</b></div>
+				<div class="description">
+					<p>This corresponds to the 'AutoClose' argument in the constructor(s).
+
+See also:
+
+<a href="Modules_regal.networking.packet_Packet.html#New">New</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='IsReliable'></a>
+				<div class="well well-small name"><b>Method IsReliable : Bool () Property</b></div>
+				<div class="description">
+					<p>This specifies if this is a reliable packet. (Used internally; always <a href="Programming_Keywords_False.html">False</a> for normal <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects)</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Released'></a>
+				<div class="well well-small name"><b>Method Released : Bool () Property</b></div>
+				<div class="description">
+					<p>This specifies if the internal reference-counter is zero.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='ForceReset'></a>
+				<div class="well well-small name"><b>Method ForceReset : Void ()</b></div>
+				<div class="description">
+					<p>This is used internally, and is used to force a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> to reset its meta-data.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Obtain'></a>
+				<div class="well well-small name"><b>Method Obtain : Void ()</b></div>
+				<div class="description">
+					<p>This is used to "obtain a reference" (Increment a reference counter) to this <a href="Modules_regal.networking.packet_Packet.html">Packet</a>. When finished using a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> after calling this, please call <a href="Modules_regal.networking.packet_Packet.html#Reset">Reset</a>. Do not call this unless you intend to keep a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> alive. Calling <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a> before calling <a href="Modules_regal.networking.packet_Packet.html#Reset">Reset</a> is considered bad practice.
+
+See also:
+
+<a href="Modules_regal.networking.packet_Packet.html#Reset">Reset</a>, <a href="Modules_regal.networking.packet_Packet.html#ForceReset">ForceReset</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Release'></a>
+				<div class="well well-small name"><b>Method Release : Bool ()</b></div>
+				<div class="description">
+					<p>Unlike a pool, this does not handle re-use. This will decrement the internal reference-counter.
+If that counter hits zero, this will perform a <a href="Modules_brl.stream_Stream.html#Close">Close</a> operation. Because of this, calling <a href="Modules_regal.networking.packet_Packet.html#Release">Release</a> is considered unsafe, and should be avoided unless you intend to manage packets yourself.
+
+The return-value of this method specifies if this packet is no longer referenced.
+
+See also:
+
+<a href="Modules_regal.networking.packet_Packet.html#Obtain">Obtain</a>, <a href="Modules_regal.networking.packet_Packet.html#Reset">Reset</a>, <a href="Modules_regal.networking.packet_Packet.html#ForceReset">ForceReset</a></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Reset'></a>
+				<div class="well well-small name"><b>Method Reset : Void ()</b></div>
+				<div class="description">
+					<p>This is used to decrement the internal reference-counter. When all references are relinquished, this will call <a href="Modules_regal.networking.packet_Packet.html#ForceReset">ForceReset</a>. This is mostly an internal routine; use at your own risk. If you intend to manage <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects yourself, this can be useful. But, if you're using pre-generated <a href="Modules_regal.networking.packet_Packet.html">Packet</a>s from a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, use <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a> (Or similar) instead.
+
+See also:
+
+<a href="Modules_regal.networking.packet_Packet.html#Obtain">Obtain</a>, <a href="Modules_regal.networking.packet_Packet.html#ForceReset">ForceReset</a></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Function Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='SizeOfString'></a>
+				<div class="well well-small name"><b>Function SizeOfString : Int ( S:String )</b></div>
+				<div class="description">
+					<p>An internal function used to retrieve the projected (Serialized) size of <b>S</b>.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

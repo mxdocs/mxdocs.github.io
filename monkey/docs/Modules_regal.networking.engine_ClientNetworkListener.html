@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.engine.html'>regal.networking.engine</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  ClientNetworkListener </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Interface <span class="name">ClientNetworkListener</span></h1>
+
+
+	<p><p>This is used to receive notifications of, and to moderate the behaviors of <a href="Modules_regal.networking.client_Client.html">Client</a> objects.</p>
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+								
+		<tr>
+			<td class="span1 name">Methods:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.engine_ClientNetworkListener.html#OnClientAccepted'>OnClientAccepted</a> : Void ( Network:NetworkEngine, C:Client )</li>
+					
+						<li><a href='Modules_regal.networking.engine_ClientNetworkListener.html#OnClientConnect'>OnClientConnect</a> : Bool ( Network:NetworkEngine, Address:NetworkAddress )</li>
+					
+						<li><a href='Modules_regal.networking.engine_ClientNetworkListener.html#OnClientDisconnected'>OnClientDisconnected</a> : Void ( Network:NetworkEngine, C:Client )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<p>This is used to receive notifications of, and to moderate the behaviors of <a href="Modules_regal.networking.client_Client.html">Client</a> objects.</p>
+
+See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SetClientCallback">SetClientCallback</a>
+	
+	
+	<hr>
+
+
+
+
+
+
+
+
+
+
+						
+	<h2>Method Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='OnClientAccepted'></a>
+				<div class="well well-small name"><b>Method OnClientAccepted : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a> )</b></div>
+				<div class="description">
+					<p>Assuming <b>C</b> was accepted in a previous call to <a href="Modules_regal.networking.engine_ClientNetworkListener.html#OnClientConnect">OnClientConnect</a>, this will be called.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='OnClientConnect'></a>
+				<div class="well well-small name"><b>Method OnClientConnect : Bool ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, Address:NetworkAddress )</b></div>
+				<div class="description">
+					<p>This is called when a client attempts to connect.
+The return-value of this command dictates if the client at <b>Address</b> should be accepted.</p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='OnClientDisconnected'></a>
+				<div class="well well-small name"><b>Method OnClientDisconnected : Void ( Network:<a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a> )</b></div>
+				<div class="description">
+					<p>This is called when a <a href="Modules_regal.networking.client_Client.html">Client</a> disconnects.
+This will not be called for client-networks, only hosts.</p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>
