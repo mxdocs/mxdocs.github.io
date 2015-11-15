@@ -6,29 +6,9 @@
 </description>
     <link>http://Regal-Internet-Brothers.github.io/</link>
     <atom:link href="http://Regal-Internet-Brothers.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 31 Oct 2015 05:13:37 -0600</pubDate>
-    <lastBuildDate>Sat, 31 Oct 2015 05:13:37 -0600</lastBuildDate>
+    <pubDate>Sat, 14 Nov 2015 17:31:50 -0700</pubDate>
+    <lastBuildDate>Sat, 14 Nov 2015 17:31:50 -0700</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
-    
-      <item>
-        <title>Welcome to a test website generated with Jekyll</title>
-        <description>&lt;p&gt;There’s nothing here at the moment, move along.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-monkey&quot; data-lang=&quot;monkey&quot;&gt;Function Main:Int()
-	Print(&quot;Hello world.&quot;)
-
-	Return 0
-End&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Wed, 28 Oct 2015 05:30:14 -0600</pubDate>
-        <link>http://Regal-Internet-Brothers.github.io/meta/2015/10/28/test.html</link>
-        <guid isPermaLink="true">http://Regal-Internet-Brothers.github.io/meta/2015/10/28/test.html</guid>
-        
-        
-        <category>meta</category>
-        
-      </item>
     
       <item>
         <title>regal: Halloween Update 2015 (October updates)</title>
@@ -42,14 +22,34 @@ End&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
   &lt;li&gt;Added Base64 support to ‘&lt;a href=&quot;https://github.com/Regal-Internet-Brothers/hash&quot;&gt;hash&lt;/a&gt;’ (Based loosely on &lt;a href=&quot;https://github.com/swoolcock/diddy/blob/master/src/diddy/base64.monkey&quot;&gt;Diddy’s implementation&lt;/a&gt;; uses ‘Streams’, doesn’t use a table to map values, etc).&lt;/li&gt;
   &lt;li&gt;Small fixes to ‘&lt;a href=&quot;https://github.com/Regal-Internet-Brothers/mojoinmojo2&quot;&gt;mojoinmojo2&lt;/a&gt;’, and (Threaded) asynchronous image loading was added. As usual, use at your own risk.&lt;/li&gt;
   &lt;li&gt;It hasn’t gone anywhere yet, but I’ve done some tests with ‘&lt;a href=&quot;https://github.com/Regal-Internet-Brothers/networking&quot;&gt;networking&lt;/a&gt;’, and I was able to make a connection with WebSockets to a host ‘NetworkEngine’. Ideally, WebSocket support on the HTML5 side will be added, and support for the protocol and handshake will be an option for ‘NetworkEngines’. This is still a little while away, but it’s definitely on the road-map.&lt;/li&gt;
-  &lt;li&gt;As stated last week, full documentation is available for ‘&lt;a href=&quot;https://github.com/Regal-Internet-Brothers/networking&quot;&gt;networking&lt;/a&gt;’. Build it yourself, or &lt;a href=&quot;http://regal-internet-brothers.github.io/networking&quot;&gt;view it online here&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;As stated last week, full documentation is available for ‘&lt;a href=&quot;https://github.com/Regal-Internet-Brothers/networking&quot;&gt;networking&lt;/a&gt;’. Build it yourself, or &lt;a href=&quot;https://regal-internet-brothers.github.io/monkey/docs/Modules_regal.networking&quot;&gt;view it online here&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Other than that, there have been a number of bug fixes. To update everything, &lt;a href=&quot;https://github.com/Regal-Internet-Brothers/regal-modules/blob/master/Update_Submodules_Pull.bat&quot;&gt;“Update_Submodules_Pull.bat”&lt;/a&gt; should work.&lt;/p&gt;
 </description>
+        <pubDate>Sat, 31 Oct 2015 05:30:14 -0600</pubDate>
+        <link>http://Regal-Internet-Brothers.github.io/meta/2015/10/31/october-updates.html</link>
+        <guid isPermaLink="true">http://Regal-Internet-Brothers.github.io/meta/2015/10/31/october-updates.html</guid>
+        
+        
+        <category>meta</category>
+        
+      </item>
+    
+      <item>
+        <title>This is a test website generated with Jekyll</title>
+        <description>&lt;p&gt;There’s nothing here at the moment, move along.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-monkey&quot; data-lang=&quot;monkey&quot;&gt;Function Main:Int()
+	Print(&quot;Hello world.&quot;)
+
+	Return 0
+End&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
         <pubDate>Wed, 28 Oct 2015 05:30:14 -0600</pubDate>
-        <link>http://Regal-Internet-Brothers.github.io/meta/2015/10/28/october-updates.html</link>
-        <guid isPermaLink="true">http://Regal-Internet-Brothers.github.io/meta/2015/10/28/october-updates.html</guid>
+        <link>http://Regal-Internet-Brothers.github.io/meta/2015/10/28/test.html</link>
+        <guid isPermaLink="true">http://Regal-Internet-Brothers.github.io/meta/2015/10/28/test.html</guid>
         
         
         <category>meta</category>

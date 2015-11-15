@@ -11,7 +11,7 @@
 }
 
 .site-title {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 300;
     line-height: 56px;
     letter-spacing: -1px;
@@ -204,16 +204,19 @@
 }
 
 .post-title {
-    font-size: 42px;
+    font-size: 30px;
     letter-spacing: -1px;
     line-height: 1;
 
     @include media-query($on-laptop) {
-        font-size: 36px;
+        font-size: 28px;
     }
 }
 
 .post-content {
+	border: 2px $grey-color-light;
+	border-style: hidden solid;
+	padding: 16px;
     margin-bottom: $spacing-unit;
 
     h2 {

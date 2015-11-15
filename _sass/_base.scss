@@ -96,11 +96,14 @@ a {
 
     &:visited {
         color: darken($brand-color, 15%);
+		
+		&:hover {
+			color: #0088ca;
+		}
     }
 
     &:hover {
-        color: $text-color;
-        text-decoration: underline;
+        color: rgb(230, 40, 20);
     }
 }
 
@@ -132,7 +135,7 @@ code {
     font-size: 15px;
     border: 1px solid $grey-color-light;
     border-radius: 3px;
-    background-color: #eef;
+    background-color: #272822;
 }
 
 code {
