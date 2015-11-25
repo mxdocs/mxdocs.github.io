@@ -173,8 +173,6 @@ A <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>
 					
 						<li><a href='#PingFrequency'>PingFrequency</a> : Duration</li>
 					
-						<li><a href='#ReliablePacketGenerator'>ReliablePacketGenerator</a> : ReliablePacketPool</li>
-					
 						<li><a href='#ReliablePackets'>ReliablePackets</a> : Stack&lt;ReliablePacket&gt;</li>
 					
 						<li><a href='#SystemPackets'>SystemPackets</a> : Stack&lt;Packet&gt;</li>
@@ -587,7 +585,7 @@ A <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>
 
 <p>
 Though undocumented, most <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">BRL Socket</a> asynchronous callbacks are implemented, and can be extended when extending this framework.
-That being said, this framework reserves the right to resolve @'Socket' as any type it sees fit. The documentation currently only reflects the <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">BRL implementation</a>.
+That being said, this framework reserves the right to resolve "Socket" as any type it sees fit. The documentation currently only reflects the <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">BRL implementation</a>.
 </p>
 	
 	
@@ -756,19 +754,6 @@ Chunk sizes depend on 'PacketSize' on the other end.
 			</div>
 		
 			<div class="item">
-				<a name='ReliablePacketGenerator'></a>
-				<div class="well well-small name"><b>Field ReliablePacketGenerator : <a href="Modules_regal.networking.packetpool_ReliablePacketPool.html">ReliablePacketPool</a></b></div>
-				<div class="description">
-					<p>A pool of <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePackets</a>, used for reliable packet management.
-This is only available when using UDP (Or similar) as the underlying transport protocol.
-
-<p><b>This field is protected.</b></p></p>
-					
-					
-				</div>
-			</div>
-		
-			<div class="item">
 				<a name='ReliablePackets'></a>
 				<div class="well well-small name"><b>Field ReliablePackets : <a href="Modules_monkey.stack_Stack.html">Stack</a>&lt;<a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>&gt;</b></div>
 				<div class="description">
@@ -840,7 +825,7 @@ For more information on "system packets", see <a href="Modules_regal.networking.
 				<a name='BigEndian'></a>
 				<div class="well well-small name"><b>Method BigEndian : Bool () Property</b></div>
 				<div class="description">
-					<p><p>This is a proxy to PacketGenerator's <a href="Modules_regal.networking.packetpool_PacketPool.html#FixByteOrder">FixByteOrder</a> property, which corresponds to the 'FixByteOrder' constructor argument.</p></p>
+					<p><p>This is a proxy to an internal <a href="Modules_regal.networking.packetpool_BasicPacketPool.html">BasicPacketPool</a> object's <a href="Modules_regal.networking.packetpool_PacketPool.html#FixByteOrder">FixByteOrder</a> property. This corresponds to the 'FixByteOrder' constructor argument.</p></p>
 					
 					
 				</div>
@@ -1001,7 +986,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Cl
 				<a name='PacketSize'></a>
 				<div class="well well-small name"><b>Method PacketSize : Int () Property</b></div>
 				<div class="description">
-					<p><p>This is a proxy to PacketGenerator's <a href="Modules_regal.networking.packetpool_PacketPool.html#PacketSize">PacketSize</a> property, which corresponds to the constructor argument of the same name.</p></p>
+					<p><p>This is a proxy to an internal <a href="Modules_regal.networking.packetpool_BasicPacketPool.html">BasicPacketPool</a> object's <a href="Modules_regal.networking.packetpool_PacketPool.html#PacketSize">PacketSize</a> property. This corresponds to the constructor argument of the same name.</p></p>
 					
 					
 				</div>
@@ -1038,8 +1023,8 @@ For hosts, this always reports <a href="Programming_Keywords_Null.html">Null</a>
 				<div class="description">
 					<p><p>
 This is used to delegate the <a href="Modules_regal.networking.engine_NetworkEngine.html#Connection">Connection</a> field.
-When writing code for inside the engine, do not use this property.
-Everywhere else (External systems), use this.
+When writing code to extend an engine, don't use this property.
+Everywhere else (External systems / public extension), use this.
 </p>
 
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connection">Connection</a></p>
@@ -1287,6 +1272,7 @@ allocate a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> obje
 </p>
 
 <p><i>Assume <b>Force</b> as an unsafe argument; used internally.</i></p>
+<p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -1481,15 +1467,15 @@ This routine is only valid when using unreliable transport protocols, like UDP.
 		
 			<div class="item">
 				<a name='Connect'></a>
-				<div class="well well-small name"><b>Method Connect : Bool ( Address:NetworkAddress, Async:Bool=false, Protocol:<a href="Modules_regal.networking.engine_ProtocolType.html">ProtocolType</a>=socket_type_udp )</b></div>
+				<div class="well well-small name"><b>Method Connect : Bool ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Async:Bool=false, Protocol:<a href="Modules_regal.networking.engine_ProtocolType.html">ProtocolType</a>=socket_type_udp )</b></div>
 				<div class="description">
-					<p>This is used to create a client network on <b>Port</b> using <b>Protocol</b>.
+					<p>This is used to create a client network using <b>Address</b> with <b>Protocol</b>.
 Once a connection has been established, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Update">Update</a> regularly.
 When you intend to end the network-session, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a> or <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a>.
 
 <ul><li>The <b>Address</b> argument is used to connect to a remote <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>.</li>
 <li>The <b>Async</b> argument specifies if connection should be done asynchronously. (May be required on some targets)</li>
-<li>The <b>Protocol</b> argument describes the desired transport protocol.</li>
+<li>The @<a href="Modules_regal.networking.engine_NetworkEngine.html#SocketType">Protocol</a> argument describes the desired transport protocol.</li>
 </ul>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
@@ -1501,7 +1487,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host
 				<a name='Connect(2)'></a>
 				<div class="well well-small name"><b>Method Connect : Bool ( Host:String, Port:Int, Async:Bool=false, Protocol:<a href="Modules_regal.networking.engine_ProtocolType.html">ProtocolType</a>=socket_type_udp )</b></div>
 				<div class="description">
-					<p>This generates a NetworkAddress object from <b>Host</b> and <b>Port</b>, then calls the <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">main implementation</a> using the arguments specified.
+					<p>This generates a <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> object from <b>Host</b> and <b>Port</b>, then calls the <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">main implementation</a> using the arguments specified.
 
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
@@ -1524,7 +1510,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient"
 		
 			<div class="item">
 				<a name='Connected(2)'></a>
-				<div class="well well-small name"><b>Method Connected : Bool ( Address:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Method Connected : Bool ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>This returns <a href="Programming_Keywords_True.html">True</a> if a <a href="Modules_regal.networking.client_Client.html">Client</a> with <b>Address</b> as its <a href="Modules_regal.networking.client_Client.html#Address">Address</a> was found.</p>
 
@@ -1653,7 +1639,7 @@ This constructor is protected.</p>
 		
 			<div class="item">
 				<a name='GetClient'></a>
-				<div class="well well-small name"><b>Method GetClient : <a href="Modules_regal.networking.client_Client.html">Client</a> ( Address:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Method GetClient : <a href="Modules_regal.networking.client_Client.html">Client</a> ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p>This is used to retrieve a <a href="Modules_regal.networking.client_Client.html">Client</a> object using its address.
 
@@ -1671,7 +1657,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ObjectEnum
 				<div class="description">
 					<p><p>
 Generally speaking, this should only be called when using TCP; for a general
-purpose routine, please use the <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient">overload</a> accepting a NetworkAddress.
+purpose routine, please use the <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient">overload</a> accepting a <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>.
 </p>
 
 <p>This retrieves a <a href="Modules_regal.networking.client_Client.html">Client</a> object using its socket. (Not recommended)</p>
@@ -1844,6 +1830,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeinitReli
 				<div class="description">
 					<p><p>This performs a raw receive operation using <b>S</b>. Where <b>S</b> is <a href="Modules_regal.networking.engine_NetworkEngine.html#RawConnect">"connected"</a> to another end exclusively.</p>
 <p><b>This is a specialized version of <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, please use that instead.</b></p>
+<p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p>
 
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceiveFrom">LaunchAsyncReceiveFrom</a></p>
@@ -1854,12 +1841,13 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunch
 		
 			<div class="item">
 				<a name='LaunchAsyncReceiveFrom'></a>
-				<div class="well well-small name"><b>Method LaunchAsyncReceiveFrom : Void ( S:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Method LaunchAsyncReceiveFrom : Void ( S:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>Like <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, this will initialize a raw receive operation.</p>
 <p>This one in particular is for UDP sockets, mainly, and is address-based, using <b>Address</b> as an output object for whoever sends a message.</p>
-<p></p>
-
+<br>
+<p>This routine does not work with WebSockets.</p>
+<br>
 <p><b>This is a specialized version of <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, please use that instead.</b></p>
 <p><b>This method is protected.</b></p>
 
@@ -1874,10 +1862,11 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunch
 				<div class="well well-small name"><b>Method LaunchAsyncReceiveFrom : Void ( S:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a> )</b></div>
 				<div class="description">
 					<p><p>
-This will generate a new NetworkAddress, then call the <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceiveFrom">main implementation</a>.
+This will generate a new <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, then call the <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceiveFrom">main implementation</a>.
 For details, please view that overload's documentation.
 </p>
 
+<p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p>
 
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceive">LaunchAsyncReceive</a></p>
@@ -1953,7 +1942,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRa
 		
 			<div class="item">
 				<a name='RawSend(2)'></a>
-				<div class="well well-small name"><b>Method RawSend : Void ( Connection:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:NetworkAddress, Async:Bool=true )</b></div>
+				<div class="well well-small name"><b>Method RawSend : Void ( Connection:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Async:Bool=true )</b></div>
 				<div class="description">
 					<p><p>
 This sends a <i>completely raw</i> packet (<b>RawPacket</b>) to <b>Address</b>, assuming the underlying transport method supports this.
@@ -2010,7 +1999,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessag
 		
 			<div class="item">
 				<a name='ReadMessage'></a>
-				<div class="well well-small name"><b>Method ReadMessage : <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> ( P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:NetworkAddress, Source:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a> )</b></div>
+				<div class="well well-small name"><b>Method ReadMessage : <a href="Modules_regal.networking.serial_MessageType.html">MessageType</a> ( P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Source:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a> )</b></div>
 				<div class="description">
 					<p><p>This is called whenever a raw packet is received from a remote node.</p>
 <p>This routine handles most of the input portion of the network's protocol.</p>
@@ -2037,7 +2026,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessag
 		
 			<div class="item">
 				<a name='ReadMessageBody'></a>
-				<div class="well well-small name"><b>Method ReadMessageBody : Bool ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, DataSize:Int, Address:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Method ReadMessageBody : Bool ( P:<a href="Modules_brl.stream_Stream.html">Stream</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, DataSize:Int, Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>This routine handles safety and callbacks for packet data-segments.</p>
 <p>
@@ -2477,7 +2466,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisco
 		
 			<div class="item">
 				<a name='SendForceDisconnect(3)'></a>
-				<div class="well well-small name"><b>Method SendForceDisconnect : Void ( Address:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Method SendForceDisconnect : Void ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>ATTENTION: This overload is UDP-only; use at your own risk.</p>
 
@@ -2767,7 +2756,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 		
 			<div class="item">
 				<a name='SendTitleMessage(3)'></a>
-				<div class="well well-small name"><b>Method SendTitleMessage : Void ( InternalType:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, Address:NetworkAddress, Async:Bool=true )</b></div>
+				<div class="well well-small name"><b>Method SendTitleMessage : Void ( InternalType:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Async:Bool=true )</b></div>
 				<div class="description">
 					<p><p>This sends a "title message" to <b>Address</b>. This only really works for UDP hosts (Or similar).</p>
 <p>For details on "title messages", view the <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">main overload's documentation</a>.</p>
@@ -2959,7 +2948,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutpu
 		
 			<div class="item">
 				<a name='AddressesEqual'></a>
-				<div class="well well-small name"><b>Function AddressesEqual : Bool ( X:NetworkAddress, Y:NetworkAddress )</b></div>
+				<div class="well well-small name"><b>Function AddressesEqual : Bool ( X:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Y:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p>This compares <b>X</b> and <b>Y</b>, and returns <a href="Programming_Keywords_True.html">True</a> if they are equal. (Deep compare)</p>
 					

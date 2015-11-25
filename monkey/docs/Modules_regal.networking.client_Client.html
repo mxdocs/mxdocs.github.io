@@ -254,7 +254,7 @@
 		
 			<div class="item">
 				<a name='New'></a>
-				<div class="well well-small name"><b>Method New ( Address:NetworkAddress, Connection:<a href="Modules_brl.socket_Socket.html">Socket</a>=null, PacketConfirmation:Bool=true )</b></div>
+				<div class="well well-small name"><b>Method New ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, Connection:<a href="Modules_regal.networking.socket_Socket.html">Socket</a>=null, PacketConfirmation:Bool=true )</b></div>
 				<div class="description">
 					<p>Constructors for <a href="Modules_regal.networking.client_Client.html">Client</a> objects are handled internally, and should only be used when extending this framework.
 
@@ -271,13 +271,13 @@ That being said, this is also used internally by client <a href="Modules_regal.n
 		
 			<div class="item">
 				<a name='New(2)'></a>
-				<div class="well well-small name"><b>Method New ( Connection:<a href="Modules_brl.socket_Socket.html">Socket</a>, PacketConfirmation:Bool=false )</b></div>
+				<div class="well well-small name"><b>Method New ( Connection:<a href="Modules_regal.networking.socket_Socket.html">Socket</a>, PacketConfirmation:Bool=false )</b></div>
 				<div class="description">
 					<p>Constructors for <a href="Modules_regal.networking.client_Client.html">Client</a> objects are handled internally, and should only be used when extending this framework.
 
 This overload is used for protocols that are socket-based, rather than address-based. (TCP)
 
-<ul><li>The <b>Connection</b> argument is used to describe the <a href="Modules_brl.socket_Socket.html">Socket</a> associated with this client.</li>
+<ul><li>The <b>Connection</b> argument is used to describe the <a href="Modules_regal.networking.socket_Socket.html">Socket</a> associated with this client.</li>
 <li>The <b>PacketConfirmation</b> argument is described in <a href="Modules_regal.networking.client_Client.html#Construct_Client">Construct_Client</a>.</li></ul></p>
 					
 					
@@ -294,7 +294,7 @@ This overload is used for protocols that are socket-based, rather than address-b
 		
 			<div class="item">
 				<a name='Address'></a>
-				<div class="well well-small name"><b>Method Address : NetworkAddress () Property</b></div>
+				<div class="well well-small name"><b>Method Address : <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> () Property</b></div>
 				<div class="description">
 					<p>The address associated with this client; may be <a href="Programming_Keywords_Null.html">Null</a> depending on the underlying transport protocol. (Available for UDP)
 
@@ -336,9 +336,9 @@ See also: <a href="Modules_regal.networking.client_Client.html#New">New</a></p>
 		
 			<div class="item">
 				<a name='Connection'></a>
-				<div class="well well-small name"><b>Method Connection : <a href="Modules_brl.socket_Socket.html">Socket</a> () Property</b></div>
+				<div class="well well-small name"><b>Method Connection : <a href="Modules_regal.networking.socket_Socket.html">Socket</a> () Property</b></div>
 				<div class="description">
-					<p>The <a href="Modules_brl.socket_Socket.html">Socket</a> associated with this client; may be <a href="Programming_Keywords_Null.html">Null</a> depending on the underlying transport protocol. (Available for TCP)</p>
+					<p>The <a href="Modules_regal.networking.socket_Socket.html">Socket</a> associated with this client; may be <a href="Programming_Keywords_Null.html">Null</a> depending on the underlying transport protocol. (Available for TCP)</p>
 					
 					
 				</div>
@@ -430,7 +430,7 @@ This property has protected assignment-access.</p>
 				<div class="description">
 					<p>This destructor is used internally. Please disconnect clients through their parent <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects.
 
-This will close a <a href="Modules_brl.socket_Socket.html">Socket</a> if held by this object, invalidate the <a href="Modules_regal.networking.client_Client.html#Address">Address</a> property, release any associated packet identifiers, release held <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handles, and set relevant closure-flags.</p>
+This will close a <a href="Modules_regal.networking.socket_Socket.html">Socket</a> if held by this object, invalidate the <a href="Modules_regal.networking.client_Client.html#Address">Address</a> property, release any associated packet identifiers, release held <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handles, and set relevant closure-flags.</p>
 					
 					
 				</div>
@@ -529,7 +529,7 @@ See also: <a href="Modules_regal.networking.client_Client.html#GetWaitingMegaPac
 				<a name='RemoveWaitingMegaPacket'></a>
 				<div class="well well-small name"><b>Method RemoveWaitingMegaPacket : Void ( MP:<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> )</b></div>
 				<div class="description">
-					<p><p>This is used to remote <b>MP</b> from an internal container of "waiting" (Client-created) <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>.</p>
+					<p><p>This is used to remove <b>MP</b> from an internal container of "waiting" (Client-created) <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>.</p>
 <p>This method is protected, but is documented for extension purposes.</p>
 
 See also: <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateRemoteMegaPacket">AllocateRemoteMegaPacket</a></p>
