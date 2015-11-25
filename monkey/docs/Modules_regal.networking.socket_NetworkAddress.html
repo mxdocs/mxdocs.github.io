@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li ><a href='Modules_regal.networking.socket.html'>regal.networking.socket</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  NetworkAddress </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Class <span class="name">NetworkAddress</span></h1>
+
+
+	<p><p>
+This API describes an address as a cohesive component, delegating a discrete set of portable features.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+								
+		<tr>
+			<td class="span1 name">Constructors:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#New'>New</a> ()</li>
+					
+						<li><a href='#New(2)'>New</a> ( Host:String, Port:Int )</li>
+					
+						<li><a href='#New(3)'>New</a> ( Addr:NetworkAddress )</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+								
+		<tr>
+			<td class="span1 name">Properties:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='#Host'>Host</a> : String ()</li>
+					
+						<li><a href='#Port'>Port</a> : Int ()</li>
+					
+						<li><a href='#ToString'>ToString</a> : String ()</li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<p>
+This API describes an address as a cohesive component, delegating a discrete set of portable features. The best parallel to this currently is the <a href="Modules_brl.socket_SocketAddress.html">SocketAddress</a> type. This type should never be <i>assumed</i> to be compatible with that type, nor should you use that type with <a href="Modules_regal.networking.html">this module</a>'s API.
+</p>
+	
+	
+	<hr>
+
+
+
+
+
+
+						
+	<h2>Constructor Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='New'></a>
+				<div class="well well-small name"><b>Method New ()</b></div>
+				<div class="description">
+					<p><p>This is used internally to create an "empty address".</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='New(2)'></a>
+				<div class="well well-small name"><b>Method New ( Host:String, Port:Int )</b></div>
+				<div class="description">
+					<p><p>This creates an address representative using <b>Host</b> and <b>Port</b>.</p>
+<p>This object may store <b>Host</b>, or any native representation of it.</p>
+<p>However, the output from the <a href="Modules_regal.networking.socket_NetworkAddress.html#Host">Host</a> property must be the same as this argument.</p>
+<p>The <b>Host</b> argument may contain platform-specific symbols if necessary.</p>
+<p>These limits do not apply to <b>Port</b>, which will retain its numeric value <a href="Modules_regal.networking.socket_NetworkAddress.html#Port">internally</a>. (Encoding aside)</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='New(3)'></a>
+				<div class="well well-small name"><b>Method New ( Addr:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
+				<div class="description">
+					<p><p>This creates an exact replica of <b>Addr</b> with separate storage semantics.</p>
+<p>The <a href="Modules_regal.networking.socket_NetworkAddress.html#Host">Host</a> and <a href="Modules_regal.networking.socket_NetworkAddress.html#Port">Port</a> properties will behave the same.</p></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+						
+	<h2>Property Documentation</h2>
+	<div class="scope-members-list">
+		
+			<div class="item">
+				<a name='Host'></a>
+				<div class="well well-small name"><b>Method Host : String () Property</b></div>
+				<div class="description">
+					<p><p>This returns the original hostname provided when this object was created.</p>
+<p>Following standard construction rules, this does not represent its resolved form.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='Port'></a>
+				<div class="well well-small name"><b>Method Port : Int () Property</b></div>
+				<div class="description">
+					<p><p>This represents the original port provided when this object was created.</p>
+<p>Following standard construction rules, this must represent the original numeric value provided.</p></p>
+					
+					
+				</div>
+			</div>
+		
+			<div class="item">
+				<a name='ToString'></a>
+				<div class="well well-small name"><b>Method ToString : String () Property</b></div>
+				<div class="description">
+					<p><p>This provides a string representation of this address.</p>
+<p>This will be an implementation-specific hostname, a protocol/implementation dependent separator, and a system-native representation of a port.</p>
+<p>Behavior is not guaranteed to be consistent. Consequently, beware of implicit string-conversion.</p>
+<p>This type reserves the right to pre-compute the result of this property.</p></p>
+					
+					
+				</div>
+			</div>
+		
+	</div>
+	<hr>
+
+
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

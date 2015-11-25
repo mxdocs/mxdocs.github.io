@@ -1,7 +1,8 @@
+/* rgb(240, 255, 255) */
 /* #111; */
 /* #001a00; */
-/* #fdfdfd; */
-/* #2a7ae2; */
+/* #131720; */
+/* rgb(255, 151, 180); */
 /**
  * Reset some basic elements
  */
@@ -16,8 +17,8 @@ dl, dd, ol, ul, figure {
  */
 body {
   font: 400 16px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: azure;
-  background-color: #131720;
+  color: #131720;
+  background-color: #fdfdfd;
   -webkit-text-size-adjust: 100%;
   -webkit-font-feature-settings: "kern" 1;
   -moz-font-feature-settings: "kern" 1;
@@ -70,10 +71,10 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-  color: #ff97b4;
+  color: #2a7ae2;
   text-decoration: none; }
   a:visited {
-    color: #ff4b7d; }
+    color: #1756a9; }
     a:visited:hover {
       color: #0088ca; }
   a:hover {
@@ -176,7 +177,7 @@ pre {
   .site-nav .menu-icon {
     display: none; }
   .site-nav .page-link {
-    color: azure;
+    color: #131720;
     line-height: 1.5; }
     .site-nav .page-link:not(:last-child) {
       margin-right: 20px; }
@@ -185,7 +186,7 @@ pre {
       position: absolute;
       top: 9px;
       right: 16px;
-      background-color: #131720;
+      background-color: #fdfdfd;
       border: 1px solid #9c9c9c;
       border-radius: 5px;
       text-align: right; }

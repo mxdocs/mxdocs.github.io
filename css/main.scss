@@ -14,9 +14,9 @@ $base-line-height: 1.5;
 
 $spacing-unit:     32px;
 
-$text-color:       rgb(240, 255, 255); /* #111; */ /* #001a00; */
-$background-color: #131720; /* #fdfdfd; */
-$brand-color: rgb(255, 151, 180); /* #2a7ae2; */
+$text-color:       #131720; /* rgb(240, 255, 255) */ /* #111; */ /* #001a00; */
+$background-color: #fdfdfd; /* #131720; */
+$brand-color: #2a7ae2; /* rgb(255, 151, 180); */
 
 $grey-color:       #828282;
 $grey-color-light: lighten($grey-color, 10%);
