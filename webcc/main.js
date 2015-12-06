@@ -14042,14 +14042,14 @@ c_DataStream.m_new3=function(){
 	c_Stream.m_new.call(this);
 	return this;
 }
+c_DataStream.prototype.p_Seek=function(t_position){
+	this.m__position=bb_math_Clamp(t_position,0,this.m__length-1);
+	return this.m__position;
+}
 c_DataStream.prototype.p_Length=function(){
 	return this.m__length;
 }
 c_DataStream.prototype.p_Position=function(){
-	return this.m__position;
-}
-c_DataStream.prototype.p_Seek=function(t_position){
-	this.m__position=bb_math_Clamp(t_position,0,this.m__length-1);
 	return this.m__position;
 }
 c_DataStream.prototype.p_Eof=function(){
@@ -14083,7 +14083,9 @@ function bb_jshtml5_OpenInputStream(t_path){
 	var t_rawData=LoadString(t_path);
 	var t_buffer=c_DataBuffer.m_new.call(new c_DataBuffer,t_rawData.length,false);
 	t_buffer.p_PokeString(0,t_rawData,"utf8");
-	return (c_DataStream.m_new.call(new c_DataStream,t_buffer,0));
+	var t_S=c_DataStream.m_new.call(new c_DataStream,t_buffer,0);
+	t_S.p_Seek(2);
+	return (t_S);
 }
 function bb_jshtml5_GetInfo_PNG(t_path){
 	var t_f=bb_jshtml5_OpenInputStream(t_path);
