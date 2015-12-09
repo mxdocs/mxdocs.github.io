@@ -109,7 +109,7 @@
 			var currentPath = here.substring(0, here.lastIndexOf("/"));
 
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", (currentPath + "/data/LICENSE.txt"));
+			xhr.open("GET", (currentPath + "/data/LICENSE.TXT"));
 
 			xhr.onreadystatechange = function()
 			{
@@ -130,12 +130,17 @@
 			// Prepare the file:
 			var input = document.getElementById("__monkey_main");
 			var cc_opts = document.getElementById("__monkey_cc_opts");
-			
-			var location = "data/user.monkey";
+			var args = cc_opts.value.split(" ");
 
-			//var args = cc_opts.value.split(" ").concat(['"' + location + '"']);
-			var args = ['-target=Html5_Game', '-config=Release', '-run', '"'+location+'"'];
-			input.value = LoadString("data/hello.monkey"); // LoadString("data/bananas/Richard_Betson/TileImage/TileImage.monkey"); // LoadString("data/bananas/mak/joytest/joytest.monkey"); // LoadString("data/bananas/difference/champagne/champagne.monkey"); // LoadString("data/champagne.monkey"); // "data/test.monkey"
+			/*
+				var args = ['-target=Html5_Game', '-config=Release', '-run', '"'+location+'"'];
+				input.value = LoadString("data/hello.monkey"); // LoadString("data/bananas/Richard_Betson/TileImage/TileImage.monkey"); // LoadString("data/bananas/mak/joytest/joytest.monkey"); // LoadString("data/bananas/difference/champagne/champagne.monkey"); // LoadString("data/champagne.monkey"); // "data/test.monkey"
+			*/
+
+			var rawFileLocation = args[args.length-1];
+			var firstQuote = rawFileLocation.indexOf('"');
+			var finalQuote = rawFileLocation.lastIndexOf('"');
+			var location = rawFileLocation.substring(firstQuote+1, finalQuote);
 
 			// Create/update our file entry.
 			__os_createFileEntry(RealPath(location), input.value);
