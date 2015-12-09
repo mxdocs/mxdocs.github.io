@@ -135,11 +135,15 @@ BBHtml5Game.prototype.GetMetaData=function( path,key ){
 }
 
 BBHtml5Game.prototype.PathToUrl=function( path ){
-	if( path.indexOf( "monkey:" )!=0 ){
+	if (path.indexOf("monkey:") !=0)
+	{
 		return path;
-	}else if( path.indexOf( "monkey://data/" )==0 ) {
-		return "data/"+path.slice( 14 );
 	}
+	else if (path.indexOf("monkey://data/") == 0)
+	{
+		return RealPath(path.slice( 9 )); // 14
+	}
+
 	return "";
 }
 

@@ -62,12 +62,18 @@ gxtkGraphics.prototype.LoadSurface=function( path ){
 	game.IncLoading();
 
 	var image=new Image();
-	image.onload=function(){ game.DecLoading(); }
-	image.onerror=function(){ game.DecLoading(); }
-	image.meta_width=parseInt( game.GetMetaData( path,"width" ) );
-	image.meta_height=parseInt( game.GetMetaData( path,"height" ) );
-	image.src=game.PathToUrl( path );
+	
+	image.onerror = function() { game.DecLoading(); };
+	image.onload = function() { game.DecLoading(); };
 
+	var width = parseInt( game.GetMetaData( path,"width" ) );
+	var height = parseInt( game.GetMetaData( path,"height" ) );
+
+	image.meta_width = width;
+	image.meta_height = height;
+
+	image.src = __os_allocateResource(game.PathToUrl(path));
+	
 	return new gxtkSurface( image,this );
 }
 
@@ -386,33 +392,37 @@ var gxtkSample=function(){
 	this.state=0;
 }
 
-gxtkSample.prototype.Load=function( path ){
+gxtkSample.prototype.Load=function( path )
+{
 	if( this.state ) return false;
 
-	var req=new XMLHttpRequest();
+	var nativeData = __os_storageLookup(BBGame.Game().PathToUrl(path));
+	var data = __os_Native_To_ArrayBuffer(nativeData);
+	var abuf = this;
 	
-	req.open( "get",BBGame.Game().PathToUrl( path ),true );
-	req.responseType="arraybuffer";
+	abuf.state = 2;
+
+	wa.decodeAudioData
+	(
+		data,
+		
+		function(buffer)
+		{
+			// Success!
+			abuf.waBuffer = buffer;
+			abuf.state = 1;
+		},
+		
+		function()
+		{
+			abuf.state = -1;
+		}
+	);
 	
-	var abuf=this;
-	
-	req.onload=function(){
-		wa.decodeAudioData( req.response,function( buffer ){
-			//success!
-			abuf.waBuffer=buffer;
-			abuf.state=1;
-		},function(){
-			abuf.state=-1;
-		} );
-	}
-	
-	req.onerror=function(){
+	req.onerror = function()
+	{
 		abuf.state=-1;
 	}
-	
-	req.send();
-	
-	this.state=2;
 			
 	return true;
 }

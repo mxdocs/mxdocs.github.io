@@ -14,7 +14,12 @@ function boot(build_dir, filename)
 
 	var frame = document.createElement("iframe");
 
-	//frame.setAttribute("align", "middle");
+	/*
+		frame.setAttribute("width", "80%");
+		frame.setAttribute("height", "80%");
+	*/
+
+	frame.style.resize = "both";
 
 	content.appendChild(frame);
 
@@ -23,10 +28,37 @@ function boot(build_dir, filename)
 	var script = frame.contentWindow.document.createElement("script");
 
 	script.type = "text/javascript";
-	script.text = data;
+
+	// Set the script's content to our file-data. (With a debug "header")
+	script.text = "//@ sourceURL=user.monkey.js\n" + data;
 
 	frame.contentWindow.document.body.appendChild(script);
 
+	// Prepare the frame for execution:
+	if (typeof frame.contentWindow.__os_inheritParent == 'function') // CFG_VIRTUALOS_IMPLEMENTED
+	{
+		frame.contentWindow.__os_inheritParent();
+
+		/*
+			var globalPos = build_dir.indexOf(__os_globalDir());
+			var localDir;
+
+			if (globalPos == 0)
+			{
+				localDir = build_dir.substring(globalPos+1);
+				var firstSlash = localDir.indexOf("/")+1;
+
+				localDir = localDir.substring(firstSlash);
+			}
+			else
+			{
+				localDir = build_dir;
+			}
+
+			frame.contentWindow.ChangeDir(frame.contentWindow.CurrentDir() + "/" + localDir);
+		*/
+	}
+	
 	// Start the program.
 	frame.contentWindow.beginFrame();
 }
