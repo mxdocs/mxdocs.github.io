@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	<title>Monkey Documentation</title>
+	<link rel="stylesheet" type="text/css" href="pagestyle.css" />
+</head>
+<body>
+	<div class="sheet container">
+		<header class="main">
+
+			<div class="title">
+
+				<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2"><tbody>
+
+				    <tr>
+				    
+				      <td><a href="Home.html"><img src="data/monkey.png"/></a>Monkey Documentation</td>
+				      
+				      
+				    </tr>
+				
+				</table>
+
+			</div>
+			
+			<ul class="breadcrumb">
+				<li><a href='Home.html'>Home</a> <span class="divider">/</span></li>
+				
+				
+					
+						<li ><a href='Modules.html'>Modules</a> <span class="divider">/</span> </li>
+					
+						<li  class="active" >  regal.networking.socket </li>
+					
+				
+			</ul>
+		</header>
+
+		<nav class="main">
+			<ul class="nav nav-pills">
+				<li><a href="API Reference.html">APIs</a></li>
+				<li><a href="Modules.html">Modules</a></li>
+				<li><a href="Classes.html">Classes</a></li>
+				<li><a href="Interfaces.html">Interfaces</a></li>
+				<li><a href="Functions.html">Functions</a></li>
+				<li><a href="Programming_Language reference.html">Language</a></li>
+				<li><a href="Index.html">Index</a></li>
+			</ul>
+		</nav>
+
+		<div class="row content">
+			<div class="span12">
+			
+				
+<h1>Module <span class="name">regal.networking.socket</span></h1>
+
+
+	<p><p>
+This module is used internally to provide several lower-level components, namely, an underlying <a href="Modules_regal.networking.socket_Socket.html">Socket</a> implementation.
+	<a href="#description"> More...</a></p>
+
+
+<hr>
+
+<table class="table scope-contents">
+	
+	
+	
+	
+	
+
+								
+		<tr>
+			<td class="span1 name">Imports:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_brl.asyncevent.html'>brl.asyncevent</a></li>
+					
+						<li><a href='Modules_brl.socket.html'>brl.socket</a></li>
+					
+						<li><a href=''>dom.websocket</a></li>
+					
+						<li><a href='Modules_regal.networking.engine.html'>regal.networking.engine</a></li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+
+								
+		<tr>
+			<td class="span1 name">Classes:</td>
+			<td>
+				<ul class="unstyled">
+					
+						<li><a href='Modules_regal.networking.socket_NetworkAddress.html'>NetworkAddress</a></li>
+					
+						<li><a href='Modules_regal.networking.socket_Socket.html'>Socket</a></li>
+					
+				</ul>
+			</td>
+		</tr>
+	
+	
+	
+	
+	
+
+	
+
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+</table>
+
+
+	<a name="description"></a>
+	<h2>Detailed Discussion</h2>
+	<p>
+This module is used internally to provide several lower-level components, namely, an underlying <a href="Modules_regal.networking.socket_Socket.html">Socket</a> implementation. The <a href="Modules_regal.networking.socket_Socket.html">Socket</a> type, as described throughout lower-level parts of the documentation, can be any type delegated here. This is symbolic, so it's meant as an unrelated handle. For details, read on.
+</p>
+<br>
+<p>
+This <b>does not</b> cover a cohesive API across backends, the main purpose of this module is to provide native behavior and "type-consistency" (Names, relations, etc).
+</p>
+<p>
+Types provided here are symbolic, and should only be used as this document describes. Not following these documents is considered "unsafe", and may result in undefined behavior under some environments. That's not to say there's anything wrong with using technology specific features, but they aren't covered by this ecosystem.
+</p>
+<p>
+The only exception being types that describe traits that will be the same across environments. For example, <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> explicitly describes an API usable across internal boundries, and maintains at least a subset of its provided features.
+</p>
+<p>
+<b>Please take note</b> that normal APIs expecting natively or "portably" (Symbolic) described objects are portable unless stated otherwise.
+For example, <a href="Modules_regal.networking.engine_NetworkEngine.html#AddressesEqual">AddressesEqual</a> is a portable component of the API.
+This means the type, no matter the origin, will be supported. Once again, exact rules and behaviors may need further description.
+</p>
+	
+	
+	<hr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

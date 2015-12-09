@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<style type="text/css">
+		body
+		{
+			background-color: black;
+			
+			display: block;
+			margin: auto;
+
+			width: 80%;
+    		height: auto;
+		}
+
+		#meta
+		{
+			padding-bottom: 4px;
+			color: darkgray;
+		}
+
+		#content
+		{
+			margin: auto;
+			max-width: 700px;
+			width: 80%;
+
+			font-family: arial,sans-serif;
+			font-size: 13px;
+			color: white;
+
+    		border: 4px dashed #f0f5f5; /* #73AD21 */
+    		padding: 8px;
+		}
+
+		#footer
+		{
+			margin: auto;
+			max-width: 848px;
+
+			font-family: consolas,sans-serif;
+			font-size: 13px;
+			color: rgb(105, 155, 100);
+    		padding: 4px;
+		}
+
+		#__monkey_cc_opts
+		{
+			margin: auto;
+			width: 60%;
+		}
+
+		iframe
+		{
+			max-width: 100%;
+			max-height: 100%;
+
+			min-width: 20%;
+			min-height: 20%;
+
+			width: 100%;
+			height: 300px;
+
+			box-sizing: border-box;
+		}
+
+		textarea
+		{
+			margin: auto;
+		    resize: both; /* resize: vertical; */
+		    max-width: 100%;
+			max-height: 100%;
+
+			color: black;
+		    background-color: white;
+
+			width: 100%;
+			height: 200px;
+
+			box-sizing: border-box;
+		}
+
+		textarea.debug
+		{
+			height: 150px;
+		}
+
+		textarea.small
+		{
+			width: 80%;
+			height: 200px;
+		}
+
+		div.splitter
+		{
+			margin: 8px;
+		    background-color: black;
+		    border: 4px dashed #990000; /* #73AD21 */
+			height: 0px;
+		}
+	</style>
+
+	<script type="text/javascript">
+		window.onload=function( e )
+		{
+			var here = window.location.pathname;
+			var currentPath = here.substring(0, here.lastIndexOf("/"));
+
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", (currentPath + "/data/LICENSE.TXT"));
+
+			xhr.onreadystatechange = function()
+			{
+				var data = xhr.responseText;
+				var license = document.getElementById("__monkey_license");
+
+				license.value = data;
+			}
+
+			xhr.send();
+
+			// JS Tool:
+			__monkey_jstool_exec();
+		}
+
+		function runCompiler()
+		{
+			// Prepare the file:
+			var input = document.getElementById("__monkey_main");
+			var cc_opts = document.getElementById("__monkey_cc_opts");
+			var args = cc_opts.value.split(" ");
+
+			/*
+				var args = ['-target=Html5_Game', '-config=Release', '-run', '"'+location+'"'];
+				input.value = LoadString("data/hello.monkey"); // LoadString("data/bananas/Richard_Betson/TileImage/TileImage.monkey"); // LoadString("data/bananas/mak/joytest/joytest.monkey"); // LoadString("data/bananas/difference/champagne/champagne.monkey"); // LoadString("data/champagne.monkey"); // "data/test.monkey"
+			*/
+
+			var rawFileLocation = args[args.length-1];
+			var firstQuote = rawFileLocation.indexOf('"');
+			var finalQuote = rawFileLocation.lastIndexOf('"');
+			var location = rawFileLocation.substring(firstQuote+1, finalQuote);
+
+			// Create/update our file entry.
+			__os_createFileEntry(RealPath(location), input.value);
+
+			// Build the code.
+			executeMonkey(args);  // [] // Html5_Game
+		}
+	</script>
+</head>
+
+<body>
+
+<div id="content">
+
+<div id="header">
+	<p>
+		<h2 title="Ported by Anthony Diamond">Browser-Based Monkey Compiler; WebCC</h2>
+	</p>
+</div>
+
+<div id="meta">
+	<button onclick="runCompiler();" style="position: relative;" title="Execute">Build and Run</button>
+	<input id="__monkey_cc_opts" value='-target=Html5_Game -config=Release -run "data/user.monkey"' title='For a standalone application, try "JavaScript_Tool".'></input>
+	<br>
+	<input type="checkbox" id="__monkey_releaseFrames" title="Run multiple applications.">Multiple Instances.</input>
+ </label>
+</div>
+
+<center>
+<textarea id="__monkey_main">
+Function Main:Int()
+	Print("Hello world.")
+
+	Return 0
+End
+</textarea>
+	<p>
+		<h3 title="Built applications.">
+			{ Compiled Source }
+		</h3>
+	</p>
+</center>
+
+<center>
+<div id="compiled"></div>
+</center>
+
+<br>
+
+<div>
+	<center>
+		<p>
+			<h2 title="WebCC output.">
+				<< Compiler Output >>
+			</h2>
+		</p>
+
+		<textarea id="GameConsole" class="debug" readonly></textarea>
+	</center>
+</div>
+
+</div>
+
+<div id="footer">
+	<center>
+		<b><h4>MONKEY LICENSE</h4></b>
+		<textarea id="__monkey_license" class="small" readonly>Unable to load official Monkey license.</textarea>
+	</center>
+</div>
+
+<script language="javascript" src="main.js">Javascript is disabled or unsupported by your browser.</script>
+<script language="javascript" src="load.js"></script>
+
+</body>
+
+</html>
