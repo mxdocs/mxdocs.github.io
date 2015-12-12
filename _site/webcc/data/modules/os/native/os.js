@@ -54,6 +54,12 @@ var __os_storage_all_sources = __os_storage_is_known_source; // true;
 // This holds this document's loaded URIs. For details, see: '__os_allocateResource'.
 var __os_resources = {};
 
+// If enabled, this will keep track of invalid remote paths.
+var __os_log_failed_remote_paths = true;
+
+// This stores failed paths if '__os_log_failed_remote_paths' is enabled.
+var __os_failed_remote_paths = [];
+
 // This is used to force re-downloads of remote files. (Unfinished behavior)
 var __os_badcache = false;
 
@@ -119,6 +125,31 @@ function __os_getFileSystemEncoding()
 function __os_setFileSystemEncoding(type)
 {
 	__os_storage[__os_filesystem_type_symbol] = type;
+}
+
+function __os_enableResponseLogging(clear)
+{
+	__os_log_failed_remote_paths = true;
+	
+	if (clear)
+	{
+		__os_clearLoggedResponses();
+	}
+}
+
+function __os_disableResponseLogging(clear)
+{
+	__os_log_failed_remote_paths = false;
+	
+	if (clear)
+	{
+		__os_clearLoggedResponses();
+	}
+}
+
+function __os_clearLoggedResponses()
+{
+	__os_failed_remote_paths = [];
 }
 
 // Implementation-level:
@@ -340,6 +371,13 @@ function __os_inheritParent()
 	__os_currentdir = parent.__os_currentdir;
 	__os_storage = parent.__os_storage;
 	
+	__os_storage_is_known_source = parent.__os_storage_is_known_source;
+	__os_storage_all_sources = parent.__os_storage_all_sources;
+	
+	__os_log_failed_remote_paths = parent.__os_log_failed_remote_paths;
+	__os_failed_remote_paths = parent.__os_failed_remote_paths;
+	
+	//__os_resource_generator = parent.__os_resource_generator;
 	//__os_badcache = parent.__os_badcache;
 }
 
@@ -411,6 +449,23 @@ function __os_download_as_string(url)
 
 function __os_download_raw(url)
 {
+	if (__os_log_failed_remote_paths)
+	{
+		var urlPos = __os_failed_remote_paths.indexOf(url);
+		
+		if (urlPos != -1)
+		{
+			if (__os_badcache)
+			{
+				__os_failed_remote_paths.splice(urlPos, 1);
+			}
+			else
+			{
+				return null;
+			}
+		}
+	}
+	
 	var xhr = new XMLHttpRequest();
 	
 	try
@@ -443,6 +498,11 @@ function __os_download_raw(url)
 	catch (ex)
 	{
 		// Nothing so far.
+	}
+	
+	if (!__os_badcache && __os_log_failed_remote_paths)
+	{
+		__os_failed_remote_paths.push(url);
 	}
 }
 
@@ -864,30 +924,48 @@ function __os_allocateResource(realPath, fallback)
 
 // This command is considered unsafe, and should only be used under controlled environments.
 // The behavior of the symbolized resource is undefined after calling this.
-function __os_deallocateResource(realPath)
+// The 'keepEntry' argument should only be 'true' when destructing all of '__os_resources'.
+function __os_deallocateResource(realPath, keepEntry) // keepEntry=false
 {
 	var uri = __os_resources[realPath];
 	__os_revokeResource(uri);
 	
-	delete __os_resources[realPath];
+	if (!keepEntry)
+	{
+		delete __os_resources[realPath];
+	}
 	
 	return true;
 }
 
 // These two commands obtain and revoke/release system-resources:
 
-// Calling this is considered unsafe, and therefore should not be used in conjunction with automatic resource management.
+// Calling this is considered unsafe, and therefore should not be
+// used in conjunction with automatic resource management.
 // For that, you should use '__os_allocateResource', instead.
 function __os_obtainResource(blob)
 {
 	return __os_resource_generator.createObjectURL(blob);
 }
 
-// Calling this is considered unsafe, and therefore should not be used in conjunction with automatic resource management.
+// Calling this is considered unsafe, and therefore should not be
+// used in conjunction with automatic resource management.
 // For that, you should use '__os_deallocateResource', instead.
 function __os_revokeResource(uri)
 {
 	__os_resource_generator.revokeObjectURL(uri);
+}
+
+// This is considered highly unsafe, and should only
+// be used when completely sure of the consequences.
+function __os_destroyResources()
+{
+	for (var resource in __os_resources)
+	{
+		__os_deallocateResource(resource, true);
+	}
+	
+	__os_resources = {};
 }
 
 // API:
@@ -1165,8 +1243,10 @@ function Execute(cmd)
 {
 	if (typeof __exec == 'function')
 	{
-		__exec(cmd);
+		return __exec(cmd);
 	}
+	
+	return 1; // -1;
 }
 
 function ExitApp(retCode)
