@@ -1,103 +1,22 @@
 
 //${CONFIG_BEGIN}
-CFG_AUTOSTREAM_IMPLEMENTED="1";
-CFG_AUTOSTREAM_USE_BUFFERS_DIRECTLY="1";
-CFG_BINARY_FILES="*.bin|*.dat";
-CFG_BOXUTIL_IMPLEMENTED="1";
-CFG_BOXUTIL_SHARED_CONVERSION="1";
-CFG_BOXUTIL_STANDARD_UNBOXING="0";
+CFG_BINARY_FILES="*.bin|*.dat|*.ico";
 CFG_BRL_DATABUFFER_IMPLEMENTED="1";
 CFG_BRL_OS_IMPLEMENTED="1";
 CFG_BRL_STREAM_IMPLEMENTED="1";
 CFG_BRL_THREAD_IMPLEMENTED="1";
-CFG_BYTEORDER_CACHE="1";
-CFG_BYTEORDER_FLOATING_POINT="1";
 CFG_CD="";
 CFG_CONFIG="release";
-CFG_DEBUG_PRINT="0";
-CFG_DEBUG_PRINT_ON_ERROR="1";
-CFG_DEBUG_PRINT_QUOTES="0";
-CFG_FLAG_CLEAR_LISTS="1";
-CFG_FLAG_CONSOLE="0";
-CFG_FLAG_CONSOLEMODE="0";
-CFG_FLAG_DESKTOP="0";
-CFG_FLAG_FULLSCREEN_AUTO="0";
-CFG_FLAG_MOBILE="0";
-CFG_FLAG_MULTIPLAYER="0";
-CFG_GOODLOOKINGUY_IMPLEMENTED="1";
 CFG_HOST="winnt";
 CFG_IMAGE_FILES="*.png|*.jpg";
-CFG_IOELEMENT_IMPLEMENTED="1";
 CFG_JSTOOL_STANDALONE="1";
 CFG_LANG="js";
-CFG_LOAD_IMG_DIMENSIONS="1";
-CFG_LOAD_IMG_DIMENSIONS_CHECKEXT="0";
-CFG_LOAD_IMG_DIMENSIONS_PATHS="1";
 CFG_MODPATH="";
-CFG_MOJO_EMULATOR_APP_IMPLEMENTED="1";
-CFG_MOJO_EMULATOR_ASYNCLOADERS_IMPLEMENTED="1";
-CFG_MOJO_EMULATOR_AUTOEXIT="1";
-CFG_MOJO_EMULATOR_CPP_GC_MODE_CALLBACKS="1";
-CFG_MOJO_EMULATOR_FORCE_ALTERNATIVE="0";
-CFG_MOJO_EMULATOR_FORCE_MOJO="0";
-CFG_MOJO_EMULATOR_IMPLEMENTED="1";
-CFG_MOJO_EMULATOR_STANDARD_UPDATE_RATE="1";
-CFG_MONKEYLANG_EXTENSION_UNSIGNED_TYPES="0";
-CFG_MONKEYLANG_EXTENSION_WIDECHARACTERS="1";
 CFG_MUSIC_FILES="*.wav|*.ogg|*.mp3|*.m4a";
-CFG_RETROSTRINGSEXTENSION_DECBE="1";
-CFG_RETROSTRINGSEXTENSION_DECLE="1";
-CFG_RETROSTRINGSEXTENSION_HEXBE="1";
-CFG_RETROSTRINGSEXTENSION_HEXLE="1";
-CFG_RETROSTRINGS_AUTHENTIC="0";
-CFG_RETROSTRINGS_EXTENSION_IMPLEMENTED="1";
-CFG_RETROSTRINGS_IMPLEMENTED="1";
-CFG_RETROSTRINGS_REPORT_ERRORS="1";
-CFG_RETROSTRINGS_SAFE="1";
-CFG_RETROSTRINGS_STRICT="1";
 CFG_SAFEMODE="0";
-CFG_SIZEOF_DATABUFFER="1";
-CFG_SIZEOF_IMPLEMENTED="1";
 CFG_SOUND_FILES="*.wav|*.ogg|*.mp3|*.m4a";
-CFG_STRINGUTIL_ALTERNATE_FLOAT_SHORTEN="0";
-CFG_STRINGUTIL_IMPLEMENTED="1";
-CFG_STRINGUTIL_IMPORT_RETROSTRINGS="1";
-CFG_STRINGUTIL_MAXIMIZE_COMPATIBILITY="1";
-CFG_STRINGUTIL_PREFER_ENUMERATORS="1";
-CFG_STRINGUTIL_SAFE="1";
-CFG_STRING_UTIL_IMPLEMENTED="1";
 CFG_TARGET="html5";
-CFG_TEXT_FILES="*.monkey|*.MONKEY|*.TXT|*.js|*.dir|*.html|*.ico;*.txt|*.xml|*.json";
-CFG_TIME_MOJO_IMPLEMENTED="0";
-CFG_TIME_WRAP_MOJO="1";
-CFG_TYPETOOL_IMPLEMENTED="1";
-CFG_TYPETOOL_IMPORT_UTIL="1";
-CFG_TYPETOOL_SIMULATE_PROPER_BOUNDS="1";
-CFG_TYPETOOL_SIMULATE_PROPER_BOUNDS_ROLLOVER="1";
-CFG_TYPETOOL_SIMULATE_SIGNED_TYPES="1";
-CFG_TYPETOOL_SIMULATE_SIGNED_TYPES_AS_UNSIGNED="0";
-CFG_UTIL_IMPLEMENTED="1";
-CFG_UTIL_SUPPORT_IOELEMENTS="1";
-CFG_UTIL_TEMP_BUFFERS="1";
-CFG_UTIL_WRAP_BOTH_WAYS="1";
-CFG_VECTOR_ALLOW_EXACT_GROWTH="1";
-CFG_VECTOR_ALLOW_SERIALIZATION="1";
-CFG_VECTOR_ALTERNATE_DIVISION="1";
-CFG_VECTOR_ALTERNATE_NEGATE="0";
-CFG_VECTOR_CONSTANT_NAME_STRINGS="1";
-CFG_VECTOR_GROW_ON_ACCESS="1";
-CFG_VECTOR_IMPLEMENTED="1";
-CFG_VECTOR_LEGACY_NAME_STRINGS="0";
-CFG_VECTOR_NUMBER_SAFETY="0";
-CFG_VECTOR_SAFETY="1";
-CFG_VECTOR_SHARE_OPTIMIZATIONS="1";
-CFG_VECTOR_SMART_GROW="1";
-CFG_VECTOR_SUPPORTLAYER_TYPEFIXES="0";
-CFG_VECTOR_SUPPORT_IOELEMENT="1";
-CFG_VECTOR_SUPPORT_SIZEOF="1";
-CFG_VECTOR_TOSTRING_USE_GENERIC_UTIL="0";
-CFG_VECTOR_TYPEFIXES="0";
-CFG_VECTOR_ZERO_WITH_NIL="1";
+CFG_TEXT_FILES="*.txt|*.xml|*.json|*.monkey|*.js|*.dir|*.html|*.MONKEY|*.TXT";
 CFG_VIRTUALOS_EXTENSION_DL="1";
 CFG_VIRTUALOS_EXTENSION_NATIVE_RECURSION="1";
 CFG_VIRTUALOS_EXTENSION_REMOTEPATH="1";
@@ -1875,7 +1794,7 @@ function ExitApp(retCode)
 	throw null;
 }
 
-function c_TransCC(){
+function c_WebCC(){
 	Object.call(this);
 	this.m_args=[];
 	this.m_monkeydir="";
@@ -1906,19 +1825,19 @@ function c_TransCC(){
 	this.m__targets=c_StringMap7.m_new.call(new c_StringMap7);
 	this.m_target=null;
 }
-c_TransCC.m_new=function(){
+c_WebCC.m_new=function(){
 	return this;
 }
-c_TransCC.prototype.p_ParseArgs=function(){
+c_WebCC.prototype.p_ParseArgs=function(){
 	if(this.m_args.length>1){
-		this.m_opt_srcpath=bb_transcc_StripQuotes(string_trim(this.m_args[this.m_args.length-1]));
+		this.m_opt_srcpath=bb_webcc_StripQuotes(string_trim(this.m_args[this.m_args.length-1]));
 	}
 	for(var t_i=1;t_i<this.m_args.length-1;t_i=t_i+1){
 		var t_arg=string_trim(this.m_args[t_i]);
 		var t_rhs="";
 		var t_j=t_arg.indexOf("=",0);
 		if(t_j!=-1){
-			t_rhs=bb_transcc_StripQuotes(t_arg.slice(t_j+1));
+			t_rhs=bb_webcc_StripQuotes(t_arg.slice(t_j+1));
 			t_arg=t_arg.slice(0,t_j);
 		}
 		if(t_j==-1){
@@ -1947,7 +1866,7 @@ c_TransCC.prototype.p_ParseArgs=function(){
 									this.m_opt_build=true;
 									this.m_opt_run=true;
 								}else{
-									bb_transcc_Die("Unrecognized command line option: "+t_arg);
+									bb_webcc_Die("Unrecognized command line option: "+t_arg,-1);
 								}
 							}
 						}
@@ -1975,7 +1894,7 @@ c_TransCC.prototype.p_ParseArgs=function(){
 									if(t_2=="-builddir"){
 										this.m_opt_builddir=t_rhs;
 									}else{
-										bb_transcc_Die("Unrecognized command line option: "+t_arg);
+										bb_webcc_Die("Unrecognized command line option: "+t_arg,-1);
 									}
 								}
 							}
@@ -1986,13 +1905,13 @@ c_TransCC.prototype.p_ParseArgs=function(){
 				if(string_startswith(t_arg,"+")){
 					bb_config_SetConfigVar2(t_arg.slice(1),t_rhs);
 				}else{
-					bb_transcc_Die("Command line arg error: "+t_arg);
+					bb_webcc_Die("Command line arg error: "+t_arg,-1);
 				}
 			}
 		}
 	}
 }
-c_TransCC.prototype.p_LoadConfig=function(){
+c_WebCC.prototype.p_LoadConfig=function(){
 	var t_cfgpath=this.m_monkeydir+"/bin/";
 	if((this.m_opt_cfgfile).length!=0){
 		t_cfgpath=t_cfgpath+this.m_opt_cfgfile;
@@ -2000,7 +1919,7 @@ c_TransCC.prototype.p_LoadConfig=function(){
 		t_cfgpath=t_cfgpath+("config."+HostOS()+".txt");
 	}
 	if(FileType(t_cfgpath)!=1){
-		bb_transcc_Die("Failed to open config file");
+		bb_webcc_Die("Failed to open config file",-1);
 	}
 	var t_cfg=LoadString(t_cfgpath);
 	var t_=t_cfg.split("\n");
@@ -2014,12 +1933,12 @@ c_TransCC.prototype.p_LoadConfig=function(){
 		}
 		var t_i=t_line.indexOf("=",0);
 		if(t_i==-1){
-			bb_transcc_Die("Error in config file, line="+t_line);
+			bb_webcc_Die("Error in config file, line="+t_line,-1);
 		}
 		var t_lhs=string_trim(t_line.slice(0,t_i));
 		var t_rhs=string_trim(t_line.slice(t_i+1));
-		t_rhs=bb_transcc_ReplaceEnv(t_rhs);
-		var t_path=bb_transcc_StripQuotes(t_rhs);
+		t_rhs=bb_webcc_ReplaceEnv(t_rhs);
+		var t_path=bb_webcc_StripQuotes(t_rhs);
 		while(string_endswith(t_path,"/") || string_endswith(t_path,"\\")){
 			t_path=t_path.slice(0,-1);
 		}
@@ -2146,7 +2065,7 @@ c_TransCC.prototype.p_LoadConfig=function(){
 		}
 	}
 }
-c_TransCC.prototype.p_EnumBuilders=function(){
+c_WebCC.prototype.p_EnumBuilders=function(){
 	var t_=bb_builders_Builders(this).p_ObjectEnumerator();
 	while(t_.p_HasNext()){
 		var t_it=t_.p_NextObject();
@@ -2155,7 +2074,7 @@ c_TransCC.prototype.p_EnumBuilders=function(){
 		}
 	}
 }
-c_TransCC.prototype.p_EnumTargets=function(t_dir){
+c_WebCC.prototype.p_EnumTargets=function(t_dir){
 	var t_p=this.m_monkeydir+"/"+t_dir;
 	var t_=LoadDir(t_p);
 	var t_2=0;
@@ -2184,7 +2103,7 @@ c_TransCC.prototype.p_EnumTargets=function(t_dir){
 		bb_config_PopConfigScope();
 	}
 }
-c_TransCC.prototype.p_GetReleaseVersion=function(){
+c_WebCC.prototype.p_GetReleaseVersion=function(){
 	var t_f=LoadString(this.m_monkeydir+"/VERSIONS.TXT");
 	var t_=t_f.split("\n");
 	var t_2=0;
@@ -2198,7 +2117,7 @@ c_TransCC.prototype.p_GetReleaseVersion=function(){
 	}
 	return "";
 }
-c_TransCC.prototype.p_Run=function(t_args){
+c_WebCC.prototype.p_Run=function(t_args){
 	this.m_args=t_args;
 	print("TRANS monkey compiler V1.86");
 	var t_APath=AppPath();
@@ -2217,28 +2136,28 @@ c_TransCC.prototype.p_Run=function(t_args){
 			var t_it=t_.p_NextObject();
 			t_valid=t_valid+(" "+string_replace(t_it.p_Key()," ","_"));
 		}
-		print("TRANS Usage: transcc [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_monkey_source_file>");
+		print("TRANS Usage: WebCC [-update] [-build] [-run] [-clean] [-config=...] [-target=...] [-cfgfile=...] [-modpath=...] <main_monkey_source_file>");
 		print("Valid targets:"+t_valid);
 		print("Valid configs: debug release");
 		ExitApp(0);
 	}
 	this.m_target=this.m__targets.p_Get2(string_replace(this.m_opt_target,"_"," "));
 	if(!((this.m_target)!=null)){
-		bb_transcc_Die("Invalid target");
+		bb_webcc_Die("Invalid target",-1);
 	}
 	this.m_target.m_builder.p_Make();
 }
-c_TransCC.prototype.p_Execute=function(t_cmd,t_failHard){
+c_WebCC.prototype.p_Execute=function(t_cmd,t_failHard){
 	var t_r=Execute(t_cmd);
 	if(!((t_r)!=0)){
 		return true;
 	}
 	if(t_failHard){
-		bb_transcc_Die("Error executing '"+t_cmd+"', return code="+String(t_r));
+		bb_webcc_Die("Error executing '"+t_cmd+"', return code="+String(t_r),-1);
 	}
 	return false;
 }
-var bb_transcc___Monkey_DirectoryLoaded=false;
+var bb_webcc___Monkey_DirectoryLoaded=false;
 function c_DataBuffer(){
 	BBDataBuffer.call(this);
 }
@@ -3394,16 +3313,16 @@ function bb_virtualos_SetEnv(t_Name,t_Value){
 	bb_virtualos___OS_Env.p_Set2(t_Name,t_Value);
 	return;
 }
-function bb_transcc_StripQuotes(t_str){
-	if(t_str.length>=2 && string_startswith(t_str,"\"") && string_endswith(t_str,"\"")){
-		return t_str.slice(1,-1);
+function bb_webcc_StripQuotes(t_Str){
+	if(t_Str.length>=2 && string_startswith(t_Str,"\"") && string_endswith(t_Str,"\"")){
+		return t_Str.slice(1,-1);
 	}
-	return t_str;
+	return t_Str;
 }
-function bb_transcc_Die(t_msg){
-	print("TRANS FAILED: "+t_msg);
-	ExitApp(-1);
-	return 0;
+function bb_webcc_Die(t_Message,t_ExitCode){
+	print("TRANS FAILED: "+t_Message);
+	ExitApp(t_ExitCode);
+	return t_ExitCode;
 }
 function c_Type(){
 	Object.call(this);
@@ -4386,40 +4305,40 @@ function bb_config_GetConfigVar(t_key){
 function bb_virtualos_GetEnv(t_Name){
 	return bb_virtualos___OS_Env.p_Get2(t_Name);
 }
-function bb_transcc_ReplaceEnv(t_str){
-	var t_bits=c_StringStack.m_new2.call(new c_StringStack);
+function bb_webcc_ReplaceEnv(t_Str){
+	var t_Bits=c_StringStack.m_new2.call(new c_StringStack);
 	do{
-		var t_i=t_str.indexOf("${",0);
+		var t_i=t_Str.indexOf("${",0);
 		if(t_i==-1){
 			break;
 		}
-		var t_e=t_str.indexOf("}",t_i+2);
+		var t_e=t_Str.indexOf("}",t_i+2);
 		if(t_e==-1){
 			break;
 		}
-		if(t_i>=2 && t_str.slice(t_i-2,t_i)=="//"){
-			t_bits.p_Push(t_str.slice(0,t_e+1));
-			t_str=t_str.slice(t_e+1);
+		if(t_i>=2 && t_Str.slice(t_i-2,t_i)=="//"){
+			t_Bits.p_Push(t_Str.slice(0,t_e+1));
+			t_Str=t_Str.slice(t_e+1);
 			continue;
 		}
-		var t_t=t_str.slice(t_i+2,t_e);
+		var t_t=t_Str.slice(t_i+2,t_e);
 		var t_v=bb_config_GetConfigVar(t_t);
 		if(!((t_v).length!=0)){
 			t_v=bb_virtualos_GetEnv(t_t);
 		}
-		t_bits.p_Push(t_str.slice(0,t_i));
-		t_bits.p_Push(t_v);
-		t_str=t_str.slice(t_e+1);
+		t_Bits.p_Push(t_Str.slice(0,t_i));
+		t_Bits.p_Push(t_v);
+		t_Str=t_Str.slice(t_e+1);
 	}while(!(false));
-	if(t_bits.p_IsEmpty()){
-		return t_str;
+	if(t_Bits.p_IsEmpty()){
+		return t_Str;
 	}
-	t_bits.p_Push(t_str);
-	return t_bits.p_Join("");
+	t_Bits.p_Push(t_Str);
+	return t_Bits.p_Join("");
 }
 function c_Builder(){
 	Object.call(this);
-	this.m_tcc=null;
+	this.m_WCC=null;
 	this.m_casedConfig="";
 	this.m_app=null;
 	this.m_transCode="";
@@ -4432,8 +4351,8 @@ function c_Builder(){
 	this.m_syncData=false;
 	this.m_dataFiles=c_StringMap2.m_new.call(new c_StringMap2);
 }
-c_Builder.m_new=function(t_tcc){
-	this.m_tcc=t_tcc;
+c_Builder.m_new=function(t_WCC){
+	this.m_WCC=t_WCC;
 	return this;
 }
 c_Builder.m_new2=function(){
@@ -4446,37 +4365,37 @@ c_Builder.prototype.p_Begin=function(){
 c_Builder.prototype.p_MakeTarget=function(){
 }
 c_Builder.prototype.p_Make=function(){
-	var t_1=this.m_tcc.m_opt_config;
+	var t_1=this.m_WCC.m_opt_config;
 	if(t_1=="" || t_1=="debug"){
-		this.m_tcc.m_opt_config="debug";
+		this.m_WCC.m_opt_config="debug";
 		this.m_casedConfig="Debug";
 	}else{
 		if(t_1=="release"){
 			this.m_casedConfig="Release";
 		}else{
-			bb_transcc_Die("Invalid config");
+			bb_webcc_Die("Invalid config",-1);
 		}
 	}
-	if(FileType(this.m_tcc.m_opt_srcpath)!=1){
-		bb_transcc_Die("Invalid source file");
+	if(FileType(this.m_WCC.m_opt_srcpath)!=1){
+		bb_webcc_Die("Invalid source file",-1);
 	}
-	this.m_tcc.m_opt_srcpath=RealPath(this.m_tcc.m_opt_srcpath);
-	if(!((this.m_tcc.m_opt_modpath).length!=0)){
-		this.m_tcc.m_opt_modpath=this.m_tcc.m_monkeydir+"/modules";
+	this.m_WCC.m_opt_srcpath=RealPath(this.m_WCC.m_opt_srcpath);
+	if(!((this.m_WCC.m_opt_modpath).length!=0)){
+		this.m_WCC.m_opt_modpath=this.m_WCC.m_monkeydir+"/modules";
 	}
-	this.m_tcc.m_opt_modpath=".;"+bb_virtualos_ExtractDir(this.m_tcc.m_opt_srcpath)+";"+this.m_tcc.m_opt_modpath+";"+this.m_tcc.m_monkeydir+"/targets/"+this.m_tcc.m_target.m_dir+"/modules";
-	if(!this.m_tcc.m_opt_check){
-		this.m_tcc.m_opt_check=true;
-		this.m_tcc.m_opt_update=true;
-		this.m_tcc.m_opt_build=true;
+	this.m_WCC.m_opt_modpath=".;"+bb_virtualos_ExtractDir(this.m_WCC.m_opt_srcpath)+";"+this.m_WCC.m_opt_modpath+";"+this.m_WCC.m_monkeydir+"/targets/"+this.m_WCC.m_target.m_dir+"/modules";
+	if(!this.m_WCC.m_opt_check){
+		this.m_WCC.m_opt_check=true;
+		this.m_WCC.m_opt_update=true;
+		this.m_WCC.m_opt_build=true;
 	}
 	bb_config_ENV_HOST=HostOS();
-	bb_config_ENV_CONFIG=this.m_tcc.m_opt_config;
-	bb_config_ENV_SAFEMODE=((this.m_tcc.m_opt_safe)?1:0);
-	bb_config_ENV_MODPATH=this.m_tcc.m_opt_modpath;
-	bb_config_ENV_TARGET=this.m_tcc.m_target.m_system;
+	bb_config_ENV_CONFIG=this.m_WCC.m_opt_config;
+	bb_config_ENV_SAFEMODE=((this.m_WCC.m_opt_safe)?1:0);
+	bb_config_ENV_MODPATH=this.m_WCC.m_opt_modpath;
+	bb_config_ENV_TARGET=this.m_WCC.m_target.m_system;
 	this.p_Begin();
-	if(!this.m_tcc.m_opt_check){
+	if(!this.m_WCC.m_opt_check){
 		return;
 	}
 	print("Parsing...");
@@ -4485,7 +4404,7 @@ c_Builder.prototype.p_Make=function(){
 	bb_config_SetConfigVar2("TARGET",bb_config_ENV_TARGET);
 	bb_config_SetConfigVar2("CONFIG",bb_config_ENV_CONFIG);
 	bb_config_SetConfigVar2("SAFEMODE",String(bb_config_ENV_SAFEMODE));
-	this.m_app=bb_parser_ParseApp(this.m_tcc.m_opt_srcpath);
+	this.m_app=bb_parser_ParseApp(this.m_WCC.m_opt_srcpath);
 	print("Semanting...");
 	if((bb_config_GetConfigVar("REFLECTION_FILTER")).length!=0){
 		var t_r=c_Reflector.m_new.call(new c_Reflector);
@@ -4504,22 +4423,22 @@ c_Builder.prototype.p_Make=function(){
 		}
 	}
 	t_transbuf.p_Push(bb_translator__trans.p_TransApp(this.m_app));
-	if(!this.m_tcc.m_opt_update){
+	if(!this.m_WCC.m_opt_update){
 		return;
 	}
 	print("Building...");
 	this.m_transCode=t_transbuf.p_Join("");
 	var t_buildPath="";
-	if((this.m_tcc.m_opt_builddir).length!=0){
-		t_buildPath=bb_virtualos_ExtractDir(this.m_tcc.m_opt_srcpath)+"/"+this.m_tcc.m_opt_builddir;
+	if((this.m_WCC.m_opt_builddir).length!=0){
+		t_buildPath=bb_virtualos_ExtractDir(this.m_WCC.m_opt_srcpath)+"/"+this.m_WCC.m_opt_builddir;
 	}else{
-		t_buildPath=bb_virtualos_StripExt(this.m_tcc.m_opt_srcpath)+".build"+this.m_tcc.p_GetReleaseVersion();
+		t_buildPath=bb_virtualos_StripExt(this.m_WCC.m_opt_srcpath)+".build"+this.m_WCC.p_GetReleaseVersion();
 	}
-	var t_targetPath=t_buildPath+"/"+this.m_tcc.m_target.m_dir;
-	if(this.m_tcc.m_opt_clean){
+	var t_targetPath=t_buildPath+"/"+this.m_WCC.m_target.m_dir;
+	if(this.m_WCC.m_opt_clean){
 		DeleteDir(t_targetPath,true);
 		if(FileType(t_targetPath)!=0){
-			bb_transcc_Die("Failed to clean target dir");
+			bb_webcc_Die("Failed to clean target dir",-1);
 		}
 	}
 	if(FileType(t_targetPath)==0){
@@ -4527,16 +4446,14 @@ c_Builder.prototype.p_Make=function(){
 			CreateDir(t_buildPath);
 		}
 		if(FileType(t_buildPath)!=2){
-			bb_transcc_Die("Failed to create build dir: "+t_buildPath);
+			bb_webcc_Die("Failed to create build dir: "+t_buildPath,-1);
 		}
-		print("A: "+this.m_tcc.m_monkeydir+"/targets/"+this.m_tcc.m_target.m_dir+"/template");
-		print("B: "+t_targetPath);
-		if(!bb_virtualos_CopyDir(this.m_tcc.m_monkeydir+"/targets/"+this.m_tcc.m_target.m_dir+"/template",t_targetPath,true,false)){
-			bb_transcc_Die("Failed to copy target dir");
+		if(!bb_virtualos_CopyDir(this.m_WCC.m_monkeydir+"/targets/"+this.m_WCC.m_target.m_dir+"/template",t_targetPath,true,false)){
+			bb_webcc_Die("Failed to copy target dir",-1);
 		}
 	}
 	if(FileType(t_targetPath)!=2){
-		bb_transcc_Die("Failed to create target dir: "+t_targetPath);
+		bb_webcc_Die("Failed to create target dir: "+t_targetPath,-1);
 	}
 	var t_cfgPath=t_targetPath+"/CONFIG.MONKEY";
 	if(FileType(t_cfgPath)==1){
@@ -4580,9 +4497,9 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 	}
 	CreateDir(t_dir);
 	if(FileType(t_dir)!=2){
-		bb_transcc_Die("Failed to create target project data dir: "+t_dir);
+		bb_webcc_Die("Failed to create target project data dir: "+t_dir,-1);
 	}
-	var t_dataPath=bb_virtualos_StripExt(this.m_tcc.m_opt_srcpath)+".data";
+	var t_dataPath=bb_virtualos_StripExt(this.m_WCC.m_opt_srcpath)+".data";
 	if(FileType(t_dataPath)!=2){
 		t_dataPath="";
 	}
@@ -4605,7 +4522,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 				var t_t=t_dir+"/"+t_r;
 				var t_22=FileType(t_p);
 				if(t_22==1){
-					if(bb_transcc_MatchPath(t_r,this.m_DATA_FILES)){
+					if(bb_webcc_MatchPath(t_r,this.m_DATA_FILES)){
 						this.p_CCopyFile(t_p,t_t);
 						t_udata.p_Insert(t_t);
 						this.m_dataFiles.p_Set2(t_p,t_r);
@@ -4624,7 +4541,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 		var t_p2=t_3.p_NextObject();
 		var t_r2=bb_virtualos_StripDir(t_p2);
 		var t_t2=t_dir+"/"+t_r2;
-		if(bb_transcc_MatchPath(t_r2,this.m_DATA_FILES)){
+		if(bb_webcc_MatchPath(t_r2,this.m_DATA_FILES)){
 			this.p_CCopyFile(t_p2,t_t2);
 			t_udata.p_Insert(t_t2);
 			this.m_dataFiles.p_Set2(t_p2,t_r2);
@@ -4665,7 +4582,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 	}
 }
 c_Builder.prototype.p_Execute=function(t_cmd,t_failHard){
-	return this.m_tcc.p_Execute(t_cmd,t_failHard);
+	return this.m_WCC.p_Execute(t_cmd,t_failHard);
 }
 function c_Map4(){
 	Object.call(this);
@@ -4837,8 +4754,8 @@ function c_Html5Builder(){
 	c_Builder.call(this);
 }
 c_Html5Builder.prototype=extend_class(c_Builder);
-c_Html5Builder.m_new=function(t_tcc){
-	c_Builder.m_new.call(this,t_tcc);
+c_Html5Builder.m_new=function(t_WCC){
+	c_Builder.m_new.call(this,t_WCC);
 	return this;
 }
 c_Html5Builder.m_new2=function(){
@@ -4876,7 +4793,7 @@ c_Html5Builder.prototype.p_MetaData=function(){
 				}
 			}
 			if(bb_jshtml5_Info_Width==0 || bb_jshtml5_Info_Height==0){
-				bb_transcc_Die("Unable to load image file '"+t_src+"'.");
+				bb_webcc_Die("Unable to load image file '"+t_src+"'.",-1);
 			}
 			t_meta.p_Push("["+t_kv.p_Value()+"];type=image/"+t_ext+";");
 			t_meta.p_Push("width="+String(bb_jshtml5_Info_Width)+";");
@@ -4899,13 +4816,13 @@ c_Html5Builder.prototype.p_MakeTarget=function(){
 	this.p_CreateDataDir("data");
 	var t_meta="var META_DATA=\""+this.p_MetaData()+"\";\n";
 	var t_main=LoadString("main.js");
-	t_main=bb_transcc_ReplaceBlock(t_main,"TRANSCODE",this.m_transCode,"\n//");
-	t_main=bb_transcc_ReplaceBlock(t_main,"METADATA",t_meta,"\n//");
-	t_main=bb_transcc_ReplaceBlock(t_main,"CONFIG",this.p_Config(),"\n//");
+	t_main=bb_webcc_ReplaceBlock(t_main,"TRANSCODE",this.m_transCode,"\n//");
+	t_main=bb_webcc_ReplaceBlock(t_main,"METADATA",t_meta,"\n//");
+	t_main=bb_webcc_ReplaceBlock(t_main,"CONFIG",this.p_Config(),"\n//");
 	SaveString(t_main,"main.js");
-	if(this.m_tcc.m_opt_run){
+	if(this.m_WCC.m_opt_run){
 		var t_p=RealPath("MonkeyGame.html");
-		var t_t=this.m_tcc.m_HTML_PLAYER+" \""+t_p+"\"";
+		var t_t=this.m_WCC.m_HTML_PLAYER+" \""+t_p+"\"";
 		this.p_Execute(t_t,false);
 	}
 }
@@ -4951,10 +4868,10 @@ c_Node4.prototype.p_Value=function(){
 c_Node4.prototype.p_Key=function(){
 	return this.m_key;
 }
-function bb_builders_Builders(t_tcc){
-	var t_builders=c_StringMap4.m_new.call(new c_StringMap4);
-	t_builders.p_Set4("html5",(c_Html5Builder.m_new.call(new c_Html5Builder,t_tcc)));
-	return t_builders;
+function bb_builders_Builders(t_WCC){
+	var t_BuildMap=c_StringMap4.m_new.call(new c_StringMap4);
+	t_BuildMap.p_Set4("html5",(c_Html5Builder.m_new.call(new c_Html5Builder,t_WCC)));
+	return t_BuildMap;
 }
 function c_NodeEnumerator(){
 	Object.call(this);
@@ -12940,14 +12857,12 @@ function bb_virtualos_CopyDir(t_SourcePath,t_DestinationPath,t_Recursive,t_Hidde
 	return true;
 }
 function bbMain(){
-	var t_tcc=c_TransCC.m_new.call(new c_TransCC);
-	if(!bb_transcc___Monkey_DirectoryLoaded){
-		var t_Real=RealPath("data/transcc_here.txt");
-		var t_Remote=__os_toRemotePath(t_Real);
-		bb_virtualos___OS_AddFileSystem(t_Remote);
-		bb_transcc___Monkey_DirectoryLoaded=true;
+	var t_CC=c_WebCC.m_new.call(new c_WebCC);
+	if(!bb_webcc___Monkey_DirectoryLoaded){
+		bb_virtualos___OS_AddFileSystem(__os_toRemotePath(RealPath("data/webcc_filesystem.txt")));
+		bb_webcc___Monkey_DirectoryLoaded=true;
 	}
-	t_tcc.p_Run(AppArgs());
+	t_CC.p_Run(AppArgs());
 	return 0;
 }
 function bb_math_Clamp(t_n,t_min,t_max){
@@ -14244,27 +14159,27 @@ c_JsTranslator.prototype.p_TransIntrinsicExpr=function(t_decl,t_expr,t_args){
 	bb_config_InternalErr("Internal error");
 	return "";
 }
-function bb_transcc_MatchPathAlt(t_text,t_alt){
+function bb_webcc_MatchPathAlt(t_text,t_alt){
 	if(!(t_alt.indexOf("*")!=-1)){
 		return t_alt==t_text;
 	}
-	var t_bits=t_alt.split("*");
-	if(!string_startswith(t_text,t_bits[0])){
+	var t_Bits=t_alt.split("*");
+	if(!string_startswith(t_text,t_Bits[0])){
 		return false;
 	}
-	var t_n=t_bits.length-1;
-	var t_i=t_bits[0].length;
+	var t_n=t_Bits.length-1;
+	var t_i=t_Bits[0].length;
 	for(var t_j=1;t_j<t_n;t_j=t_j+1){
-		var t_bit=t_bits[t_j];
+		var t_bit=t_Bits[t_j];
 		t_i=t_text.indexOf(t_bit,t_i);
 		if(t_i==-1){
 			return false;
 		}
 		t_i+=t_bit.length;
 	}
-	return string_endswith(t_text.slice(t_i),t_bits[t_n]);
+	return string_endswith(t_text.slice(t_i),t_Bits[t_n]);
 }
-function bb_transcc_MatchPath(t_text,t_pattern){
+function bb_webcc_MatchPath(t_text,t_pattern){
 	t_text="/"+t_text;
 	var t_alts=t_pattern.split("|");
 	var t_match=false;
@@ -14277,11 +14192,11 @@ function bb_transcc_MatchPath(t_text,t_pattern){
 			continue;
 		}
 		if(string_startswith(t_alt,"!")){
-			if(bb_transcc_MatchPathAlt(t_text,t_alt.slice(1))){
+			if(bb_webcc_MatchPathAlt(t_text,t_alt.slice(1))){
 				return false;
 			}
 		}else{
-			if(bb_transcc_MatchPathAlt(t_text,t_alt)){
+			if(bb_webcc_MatchPathAlt(t_text,t_alt)){
 				t_match=true;
 			}
 		}
@@ -14400,11 +14315,11 @@ function bb_jshtml5_GetInfo_GIF(t_path){
 	}
 	return -1;
 }
-function bb_transcc_ReplaceBlock(t_text,t_tag,t_repText,t_mark){
+function bb_webcc_ReplaceBlock(t_text,t_tag,t_repText,t_mark){
 	var t_beginTag=t_mark+"${"+t_tag+"_BEGIN}";
 	var t_i=t_text.indexOf(t_beginTag,0);
 	if(t_i==-1){
-		bb_transcc_Die("Error updating target project - can't find block begin tag '"+t_tag+"'. You may need to delete target .build directory.");
+		bb_webcc_Die("Error updating target project - can't find block begin tag '"+t_tag+"'. You may need to delete target .build directory.",-1);
 	}
 	t_i+=t_beginTag.length;
 	while(t_i<t_text.length && t_text.charCodeAt(t_i-1)!=10){
@@ -14413,7 +14328,7 @@ function bb_transcc_ReplaceBlock(t_text,t_tag,t_repText,t_mark){
 	var t_endTag=t_mark+"${"+t_tag+"_END}";
 	var t_i2=t_text.indexOf(t_endTag,t_i-1);
 	if(t_i2==-1){
-		bb_transcc_Die("Error updating target project - can't find block end tag '"+t_tag+"'.");
+		bb_webcc_Die("Error updating target project - can't find block end tag '"+t_tag+"'.",-1);
 	}
 	if(!((t_repText).length!=0) || t_repText.charCodeAt(t_repText.length-1)==10){
 		t_i2+=1;
@@ -15265,7 +15180,7 @@ c_Enumerator8.prototype.p_NextObject=function(){
 	return t_data;
 }
 function bbInit(){
-	bb_transcc___Monkey_DirectoryLoaded=false;
+	bb_webcc___Monkey_DirectoryLoaded=false;
 	c_Stack2.m_NIL=null;
 	c_Stack.m_NIL="";
 	c_Stream.m__tmp=c_DataBuffer.m_new.call(new c_DataBuffer,4096,false);

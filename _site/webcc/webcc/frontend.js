@@ -34,7 +34,18 @@ function simulateEvent(element, var_args)
 function stripQuotes(path)
 {
 	var firstQuote = path.indexOf('"');
+
+	if (firstQuote == -1)
+	{
+		return path;
+	}
+
 	var finalQuote = path.lastIndexOf('"');
+	
+	if (firstQuote == finalQuote)
+	{
+		return path.substring(firstQuote+1); // ..
+	}
 
 	return path.substring(firstQuote+1, finalQuote);
 }
@@ -42,28 +53,33 @@ function stripQuotes(path)
 // I/O:
 
 // This requests a file from the host using the current directory.
-function requestFileFromHost(path, type, callback)
+function requestRemoteFile(url, type, callback)
 {
-	var here = window.location.pathname;
-	var currentPath = here.substring(0, here.lastIndexOf("/"));
-
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET", (currentPath + "/" + path));
-
+	
+	xhr.open("GET", url);
 	xhr.responseType = type;
 
 	xhr.onreadystatechange = function ()
 	{
-		callback(xhr.response);
+		callback(xhr.response, xhr);
 	}
 
 	xhr.send();
 }
 
+function requestFileFromHost(path, type, callback)
+{
+	var here = window.location.pathname;
+	var currentPath = here.substring(0, here.lastIndexOf("/"));
+
+	requestRemoteFile(currentPath + "/" + path, type, callback);
+}
+
 // This requests Monkey's license from the host, and supplies it to 'callback' as a string.
 function requestLicense(callback)
 {
-	requestFileFromHost("data/LICENSE.TXT", "text", callback);
+	requestFileFromHost("MONKEY_LICENSE.TXT", "text", callback);
 }
 
 // File-system related:

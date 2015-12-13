@@ -11,6 +11,20 @@
 	font-size: 13px;
 }
 
+div.compiled, iframe
+{
+	width: 40%;
+	height: 300px;
+	max-width: 100%;
+	
+	margin: auto;
+	display: block;
+	resize: both;
+	overflow: auto;
+	
+	box-sizing: border-box;
+}
+
 table
 {
 	color: black;
@@ -45,17 +59,6 @@ th
 {
 	background-color: #4CAF50;
 	color: white;
-}
-
-iframe
-{
-	max-width: 100%;
-	max-height: 100%;
-
-	width: 100%;
-	height: 300px;
-
-	box-sizing: border-box;
 }
 
 textarea

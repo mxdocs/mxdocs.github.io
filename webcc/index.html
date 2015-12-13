@@ -36,7 +36,7 @@
 		<th><i class="info" title='Add source or asset files with the button on the top-left. (Types limited by configuration)'>?</i></th>
 	</div>
 
-	<div id="content">
+	<div class="content">
 		<div id="header">
 			<p>
 				<h2 title="Ported by Anthony Diamond">
@@ -66,12 +66,11 @@ End
 					{ Compiled Source }
 				</h3>
 			</p>
-
-			<div id="compiled"></div>
 		</center>
-
-		<br>
-
+	</div>
+	<div id="compiled"></div>
+	<br>
+	<div class="content">
 		<div>
 			<center>
 				<p>
@@ -136,7 +135,7 @@ End
 		// Execute the standard "begin" routine for 'jstool' (Initialization):
 		__monkey_jstool_exec();
 	}
-
+	
 	function runCompiler(fileContentId, optsId)
 	{
 		// Obtain handles to the elements specified:
