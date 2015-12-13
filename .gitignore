@@ -1,5 +1,6 @@
 .sass-cache
+_site
+webcc/*_rc*
 __temp*
 *_stable*
-webcc/*_rc*
 *_backup*
