@@ -14,6 +14,7 @@
 <div class="wrapper">
 	<div id="resources">
 		<h2>File System</h2>
+		
 		<table id="__monkey_resource_table">
 			<tr>
 				<th>
@@ -32,7 +33,15 @@
 				<td><center><img class="mouseClick" style="-webkit-filter: contrast(0.8); filter: contrast(0.8);" src="style/images/add_file.png" alt="%r" onclick="simulateEvent(document.getElementById('__monkey_run_cc'), 'click', true, true);"></center></id>
 			</tr>
 		</table>
-
+		<center>
+			<table>
+				<tr>
+					<th style="color: red; -webkit-text-stroke: 1px black; cursor: pointer;" onclick="clearUserFiles();"><b>X</b></th>
+					<th><input id="__monkey_localFiles_toggle" type="checkbox" onclick="localStorage[__monkey_releaseDataDir_symbol] = Number(!this.checked);"></input> Multiple Sessions</td>
+				</tr>
+			</table>
+		</center>
+		<br>
 		<th><i class="info" title='Add source or asset files with the button on the top-left. (Types limited by configuration)'>?</i></th>
 	</div>
 
@@ -105,11 +114,11 @@ End
 			This is currently hard-coded for this portion of the frontend, unlike "frontend.js".
 			Since this is a frontend detail, this isn't an issue for the backend/compiler.
 	*/
-
+	
 	window.onload = function (e)
 	{
-		// Initialize the file-system:
-		__os_setFileSystemEncoding(FILESYSTEM_ENCODING_STRING);
+		// Initialize the file-system.
+		initializeFileSystem();
 
 		// Request Monkey's license from the host.
 		requestLicense
@@ -125,15 +134,43 @@ End
 			}
 		);
 
-		// Create the initial file-structure:
-		CreateDir(__monkey_user_content_dir); // "data/dev"
-		CreateDir(__monkey_user_content_dir + "/" + __monkey_user_main_dir); // "data/dev/user.data"
-
 		// Initialize hooks:
 		initUserFileHook("__monkey_dataFiles", "__monkey_resource_table");
-
+		
 		// Execute the standard "begin" routine for 'jstool' (Initialization):
 		__monkey_jstool_exec();
+	}
+	
+	window.onclose = deinitializeFileSystem;
+	window.onbeforeunload = deinitializeFileSystem;
+	window.onunload = deinitializeFileSystem;
+	
+	function clearUserFiles()
+	{
+		var element = document.getElementById("__monkey_resource_table");
+		
+		if (element)
+		{
+			if ((element.rows.length-1) > __monkey_resource_table_reserved_entries)
+			{
+				if (confirm("Are you sure you want to remove all files?"))
+				{
+					releaseUserFileDisplayById("__monkey_resource_table");
+					
+					return true;
+				}
+				
+				return false;
+			}
+			
+			alert("Reserved files can not be removed.");
+			
+			return;
+		}
+		
+		alert("Unable to locate resource-table.");
+		
+		return false;
 	}
 	
 	function runCompiler(fileContentId, optsId)
