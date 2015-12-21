@@ -1,7 +1,7 @@
 # Site settings:
 title: The Regal Internet Brothers
 description: >
-  This is a test website, nothing to see here.
+  This is a blog created by The Regal Internet Brothers, used to document projects, and post related news.
 baseurl: "" # Sub-path.
 url: "http://Regal-Internet-Brothers.github.io" # Hostname + Protocol
 twitter_username: ImmutableOctet

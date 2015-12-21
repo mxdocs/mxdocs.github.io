@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>The Regal Internet Brothers</title>
-    <description>This is a test website, nothing to see here.
+    <description>This is a blog created by The Regal Internet Brothers, used to document projects, and post related news.
 </description>
     <link>http://Regal-Internet-Brothers.github.io/</link>
     <atom:link href="http://Regal-Internet-Brothers.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 21 Dec 2015 15:53:59 -0700</pubDate>
-    <lastBuildDate>Mon, 21 Dec 2015 15:53:59 -0700</lastBuildDate>
+    <pubDate>Mon, 21 Dec 2015 16:30:32 -0700</pubDate>
+    <lastBuildDate>Mon, 21 Dec 2015 16:30:32 -0700</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
