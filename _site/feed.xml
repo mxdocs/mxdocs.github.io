@@ -6,8 +6,8 @@
 </description>
     <link>http://Regal-Internet-Brothers.github.io/</link>
     <atom:link href="http://Regal-Internet-Brothers.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 21 Dec 2015 15:36:04 -0700</pubDate>
-    <lastBuildDate>Mon, 21 Dec 2015 15:36:04 -0700</lastBuildDate>
+    <pubDate>Mon, 21 Dec 2015 15:53:59 -0700</pubDate>
+    <lastBuildDate>Mon, 21 Dec 2015 15:53:59 -0700</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -21,6 +21,8 @@
 &lt;p&gt;Those who aren’t familiar with Blitz Research Ltd, and their open-source &lt;em&gt;language&lt;/em&gt;, &lt;strong&gt;Monkey&lt;/strong&gt;, can &lt;a href=&quot;http://en.wikipedia.org/w/index.php?title=Monkey_X&quot;&gt;get more information here&lt;/a&gt;. Additionally, Monkey X’s official website can be &lt;a href=&quot;http://www.monkey-x.com&quot;&gt;found here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;This article is an overview of how the WebCC project functions, and what went into making it. This isn’t a complete guide, but it does detail certain key parts of the porting process.&lt;/p&gt;
+
+&lt;p&gt;Discussion of this article can be done on &lt;a href=&quot;http://www.monkey-x.com/Community/posts.php?topic=10294&quot;&gt;Monkey’s official forums&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h1 id=&quot;overview-and-explanation&quot;&gt;&lt;strong&gt;Overview and Explanation&lt;/strong&gt;&lt;/h1&gt;
 

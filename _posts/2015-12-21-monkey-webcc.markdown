@@ -15,6 +15,8 @@ Those who aren't familiar with Blitz Research Ltd, and their open-source *langua
 
 This article is an overview of how the WebCC project functions, and what went into making it. This isn't a complete guide, but it does detail certain key parts of the porting process.
 
+Discussion of this article can be done on [Monkey's official forums](http://www.monkey-x.com/Community/posts.php?topic=10294).
+
 
 # **Overview and Explanation**
 
