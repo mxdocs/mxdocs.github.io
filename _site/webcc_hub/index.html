@@ -6,11 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>regal: Halloween Update 2015 (October updates)</title>
-  <meta name="description" content="The main forum thread for ‘regal’ can be found here.">
+  <title>WebCC</title>
+  <meta name="description" content="This is a test website, nothing to see here.
+">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://Regal-Internet-Brothers.github.io/meta/2015/10/31/october-updates.html">
+  <link rel="canonical" href="http://Regal-Internet-Brothers.github.io/webcc_hub/">
   <link rel="alternate" type="application/rss+xml" title="The Regal Internet Brothers" href="http://Regal-Internet-Brothers.github.io/feed.xml">
 </head>
 
@@ -62,28 +63,21 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">regal: Halloween Update 2015 (October updates)</h1>
-    <p class="post-meta"><time datetime="2015-10-31T05:30:14-06:00" itemprop="datePublished">Oct 31, 2015</time></p>
+    <h1 class="post-title">WebCC</h1>
   </header>
 
-  <div class="post-content" itemprop="articleBody">
-    <p>The main forum thread for ‘regal’ can be <a href="http://www.monkey-x.com/Community/posts.php?topic=8506#112545">found here</a>.</p>
+  <div class="post-content">
+    <p>WebCC is an in-browser Monkey X compiler.</p>
 
-<p><strong>UPDATE (October 31st, 2015)</strong></p>
+<center>
+<h3><a href="/webcc/index.html">Try it Yourself</a></h3>
+<iframe src="/webcc/index.html" style="width: 100%; height: 480px;"></iframe>
+</center>
 
-<ul>
-  <li>Our Monkey modules officially have a name; “regal”. Every module, experimental or stable, will have this as a prefix. Any legacy code assuming global placement can easily be supported for compatibility purposes. For details, <a href="https://github.com/Regal-Internet-Brothers/regal-modules#installation">the installation guide</a> reflects this now, including legacy support.</li>
-  <li>Added experimental SHA1 support to ‘<a href="https://github.com/Regal-Internet-Brothers/hash">hash</a>’; requires ‘HASH_EXPERIMENTAL’ to be enabled with the preprocessor. Still need to make it into a proper generic routine like ‘MD5’.</li>
-  <li>Added Base64 support to ‘<a href="https://github.com/Regal-Internet-Brothers/hash">hash</a>’ (Based loosely on <a href="https://github.com/swoolcock/diddy/blob/master/src/diddy/base64.monkey">Diddy’s implementation</a>; uses ‘Streams’, doesn’t use a table to map values, etc).</li>
-  <li>Small fixes to ‘<a href="https://github.com/Regal-Internet-Brothers/mojoinmojo2">mojoinmojo2</a>’, and (Threaded) asynchronous image loading was added. As usual, use at your own risk.</li>
-  <li>It hasn’t gone anywhere yet, but I’ve done some tests with ‘<a href="https://github.com/Regal-Internet-Brothers/networking">networking</a>’, and I was able to make a connection with WebSockets to a host ‘NetworkEngine’. Ideally, WebSocket support on the HTML5 side will be added, and support for the protocol and handshake will be an option for ‘NetworkEngines’. This is still a little while away, but it’s definitely on the road-map.</li>
-  <li>As stated last week, full documentation is available for ‘<a href="https://github.com/Regal-Internet-Brothers/networking">networking</a>’. Build it yourself, or <a href="https://regal-internet-brothers.github.io/monkey/docs/Modules_regal.networking">view it online here</a>.</li>
-</ul>
-
-<p>Other than that, there have been a number of bug fixes. To update everything, <a href="https://github.com/Regal-Internet-Brothers/regal-modules/blob/master/Update_Submodules_Pull.bat">“Update_Submodules_Pull.bat”</a> should work.</p>
+<p><strong>Read about how it was done, <a href="/wccexplain">here</a>.</strong></p>
 
   </div>
 

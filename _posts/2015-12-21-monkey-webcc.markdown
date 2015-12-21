@@ -1,5 +1,6 @@
 ---
 layout: post
+permalink: /wccexplain/
 title:  "WebCC: Monkey Compiler for the Web (Detailed Explanation)"
 date:   2015-12-21 14:46:00 -0600
 categories: monkey_webcc
