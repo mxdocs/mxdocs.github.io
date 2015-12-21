@@ -215,7 +215,7 @@ function displayUserFile(table, rep, size)
 {
 	if (table != null)
 	{
-		var ext = name.substring(name.lastIndexOf(".")+1).toUpperCase(); // ..
+		var ext = rep.substring(rep.lastIndexOf(".")+1).toUpperCase(); // ..
 		
 		// If nothing else, give an "unknown type" symbol.
 		if (ext == null)
