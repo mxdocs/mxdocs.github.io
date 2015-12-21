@@ -6,8 +6,8 @@
 </description>
     <link>http://Regal-Internet-Brothers.github.io/</link>
     <atom:link href="http://Regal-Internet-Brothers.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 21 Dec 2015 15:25:34 -0700</pubDate>
-    <lastBuildDate>Mon, 21 Dec 2015 15:25:34 -0700</lastBuildDate>
+    <pubDate>Mon, 21 Dec 2015 15:28:15 -0700</pubDate>
+    <lastBuildDate>Mon, 21 Dec 2015 15:28:15 -0700</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -30,8 +30,8 @@
 
 &lt;center&gt;
 
-&lt;p&gt;&lt;b&gt;&lt;i&gt;&lt;a href=&quot;https://regal-internet-brothers.github.io/webcc&quot;&gt;Try it out yourself&lt;/a&gt;&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;iframe src=&quot;https://regal-internet-brothers.github.io/webcc&quot; style=&quot;width: 100%; height: 480px;&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;&lt;b&gt;&lt;i&gt;&lt;a href=&quot;/webcc&quot;&gt;Try it out yourself&lt;/a&gt;&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;iframe src=&quot;/webcc/index.html&quot; style=&quot;width: 100%; height: 480px;&quot;&gt;&lt;/iframe&gt;
 
 &lt;/center&gt;
 
