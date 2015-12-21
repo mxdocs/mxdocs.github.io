@@ -1,8 +1,8 @@
 
 /*
 	META:
-		Native 'Storage' format: Base64
-		Native 'Storage' object: 'sessionStorage'
+		Native 'Storage' format: String
+		Native 'Storage' object: 'localStorage'
 */
 
 // Constant variable(s):
@@ -12,8 +12,22 @@ var FILETYPE_NONE = 0;
 var FILETYPE_FILE = 1;
 var FILETYPE_DIR = 2;
 
+// File-time macro(s):
+var FILETIME_NONE = 0; // -1
+
 // Internal:
+
+// All symbols must start with this prefix.
+var __os_symbol_prefix = "||";
+
+// Accessor symbols:
+var __os_version_symbol = "||__os_version||";
+
 var __os_filesystem_type_symbol = "||__os_filesystem_type||";
+var __os_filesystem_time_map_symbol = "||__os_filesystem_time_map||";
+var __os_filesystem_time_map_toggle_symbol = "||__os_filesystem_time_map_toggle||"
+
+// Content symbols:
 var __os_directory_symbol = "||DIR||"; // "//"
 var __os_emptyFile_symbol = "||EMPTY||"; // "/|E"
 
@@ -31,9 +45,12 @@ var FILESYSTEM_ENCODING_BASE64 = 1;
 var FILESYSTEM_ENCODING_ARRAYBUFFER = 2;
 
 // This acts as the default encoding scheme for file-systems.
-var FILESYSTEM_ENCODING_DEFAULT = FILESYSTEM_ENCODING_ARRAYBUFFER; // FILESYSTEM_ENCODING_STRING; // FILESYSTEM_ENCODING_BASE64;
+var FILESYSTEM_ENCODING_DEFAULT = FILESYSTEM_ENCODING_STRING; // FILESYSTEM_ENCODING_ARRAYBUFFER // FILESYSTEM_ENCODING_BASE64;
 
 // Global variable(s):
+
+// This is used when '__os_getVersion' assigns the internal version. (When one isn't found)
+var __os_default_version = 4;
 
 // This is used to supply arguments to the application.
 var __os_appargs = [];
@@ -42,38 +59,106 @@ var __os_appargs = [];
 var __os_currentdir = "";
 
 // This specifies the default storage.
-var __os_storage = {}; // sessionStorage; // localStorage;
+var __os_storage = localStorage; // {}; // sessionStorage;
 
 // This states if '__os_storage' is a known source (Global 'Storage' object).
-var __os_storage_is_known_source = false; // true;
+var __os_storage_is_known_source = true; // false; // true;
 
 // This states if all known sources should be checked when performing abstract file-operations.
 // This should only be enabled when using a known source for storage.
-var __os_storage_all_sources = __os_storage_is_known_source; // true;
+var __os_storage_all_sources = false; // __os_storage_is_known_source; // true;
 
 // This holds this document's loaded URIs. For details, see: '__os_allocateResource'.
 var __os_resources = {};
 
 // If enabled, this will keep track of invalid remote paths.
-var __os_log_failed_remote_paths = true;
+var __os_should_log_remote_file_responses = true;
 
-// This stores failed paths if '__os_log_failed_remote_paths' is enabled.
-var __os_failed_remote_paths = [];
+// This stores remote file-responses if '__os_should_log_remote_file_responses' is enabled.
+// This has no long-term storage guarantee.
+var __os_remote_file_responses = {};
 
-// This is used to force re-downloads of remote files. (Unfinished behavior)
+/*
+	A path-map of known file-times.
+	Ideally, this should be loaded before use.
+	For details, see: '__os_load_filesystem_time_map'.
+	
+	When you want to store this map for
+	storage-defined durations, use '__os_save_filesystem_time_map'.
+*/
+
+var __os_filesystem_time_map = {};
+
+// This is used to force re-downloads of remote files.
 var __os_badcache = false;
+
+// This is used internally when an unsafe operation is applied.
+// If this is 'false', fallback behavior may be used implicitly.
+var __os_safe = true; // false;
 
 // This is used to generate handles to resources.
 var __os_resource_generator = window.URL || window.webkitURL;
 
 // Functions:
 
+// Meta:
+
+// This retrieves the internal version of this module.
+// If a version number wasn't supplied, one will be assigned.
+// To disable such behavior, set 'force_stop_assignment' to 'true'.
+function __os_getVersion(force_stop_assignment) //force_stop_assignment=false
+{
+	if (__os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return Number(__os_storage[__os_version_symbol]);
+	}
+	
+	if (!force_stop_assignment)
+	{
+		__os_setVersion(__os_default_version, false);
+		
+		return __os_default_version;
+	}
+	
+	return __os_default_version; // OS_VERSION_NOT_FOUND;
+}
+
+// Please do not call this function. It will be handled automatically by '__os_getVersion'.
+// The return value of this function indicates the success of the operation.
+function __os_setVersion(versionNumber, safety) //safety=false
+{
+	if (safety && __os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return false;
+	}
+	
+	__os_storage[__os_version_symbol] = versionNumber;
+	
+	// Return the default response.
+	return true;
+}
+
+// If '__os_should_log_remote_file_responses' is true,
+// this will mark 'url' with 'value' using '__os_remote_file_responses'.
+function __os_mark_remote_file(url, value)
+{
+	if (__os_should_log_remote_file_responses)
+	{
+		__os_remote_file_responses[url] = value;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
+}
+
 // Conversion and storage semantics:
 
 // Changing this on normal runtime will result in horribly undefined behavior, usually leading to corruption.
 // If you wish to change the internal storage mechanism, do it before anything else.
 // Transferral of containers is unsupported, and will need to be handled by the caller.
-function __os_setFileSystemContainer(container, disallowMultiSource)
+function __os_set_FileSystemContainer(container, disallowMultiSource)
 {
 	if (container == sessionStorage || container == localStorage)
 	{
@@ -105,7 +190,7 @@ function __os_getFileSystemContainer()
 // This represents the native encoding scheme. (DO NOT MODIFY; see '__os_setFileSystemEncoding')
 function __os_getFileSystemEncoding()
 {
-	if (__os_storage.hasOwnProperty(__os_filesystem_type_symbol))
+	if (__os_hasFileSystemEncoding())
 	{
 		// Unfortunately, everything is a string in 'Storage' objects.
 		return Number(__os_storage[__os_filesystem_type_symbol]);
@@ -118,18 +203,98 @@ function __os_getFileSystemEncoding()
 	return type;
 }
 
+// This checks if '__os_storage' contains '__os_filesystem_type_symbol'.
+function __os_hasFileSystemEncoding()
+{
+	return __os_storage.hasOwnProperty(__os_filesystem_type_symbol);
+}
+
 // Changing this on normal runtime will result in horribly undefined behavior, usually leading to corruption.
 // Similarly, do not change this if you're using persistent storage, like 'localStorage'.
 // As a rule of thumb, if you're going to call this, do it before anything else.
 // If this is not first called, it will be called internally using the default type.
 function __os_setFileSystemEncoding(type)
 {
+	/*
+		if (__os_hasFileSystemEncoding())
+		{
+			return false;
+		}
+	*/
+	
 	__os_storage[__os_filesystem_type_symbol] = type;
+	
+	// Return the default response.
+	return true;
+}
+
+// This is used to toggle logging of tile-times.
+//var __os_log_file_times = true
+
+// This toggles file-time logging with the file-system.
+// The return-value indicates if the value was changed or not.
+function __os_set_should_log_filesystem_times(value)
+{
+	__os_storage[__os_filesystem_time_map_toggle_symbol] = Number(value);
+	
+	return value;
+}
+
+// This states if the file-system should log file-times.
+function __os_get_should_log_filesystem_times()
+{
+	if (__os_storage.hasOwnProperty(__os_filesystem_time_map_toggle_symbol))
+	{
+		return Number(__os_storage[__os_filesystem_time_map_toggle_symbol]);
+	}
+	
+	// Return the default response.
+	return true;
+}
+
+// This loads the file-system's file-time data from '__os_storage', if available.
+function __os_load_filesystem_time_map(keepOnFailure)
+{
+	var entry = __os_storage[__os_filesystem_time_map_symbol];
+	
+	if (entry != null)
+	{
+		__os_filesystem_time_map = JSON.parse(entry);
+		__os_set_should_log_filesystem_times(true);
+		
+		return true;
+	}
+	
+	if (!keepOnFailure)
+	{
+		__os_filesystem_time_map = {};
+	}
+	
+	return false;
+}
+
+// This saves the file-system's file-time data to '__os_storage'.
+function __os_save_filesystem_time_map(clearOnSave) // clearOnSave=false
+{
+	if (Object.keys(__os_filesystem_time_map).length > 0)
+	{
+		__os_storage[__os_filesystem_time_map_symbol] = JSON.stringify(__os_filesystem_time_map);
+		
+		if (clearOnSave)
+		{
+			__os_filesystem_time_map = {};
+		}
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
 }
 
 function __os_enableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = true;
+	__os_should_log_remote_file_responses = true;
 	
 	if (clear)
 	{
@@ -139,7 +304,7 @@ function __os_enableResponseLogging(clear)
 
 function __os_disableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = false;
+	__os_should_log_remote_file_responses = false;
 	
 	if (clear)
 	{
@@ -149,7 +314,7 @@ function __os_disableResponseLogging(clear)
 
 function __os_clearLoggedResponses()
 {
-	__os_failed_remote_paths = [];
+	__os_remote_file_responses = {};
 }
 
 // Implementation-level:
@@ -167,7 +332,7 @@ function __os_ArrayBuffer_To_String(rawData, chunk_size)
 		chunk_size = 1024;
 	}
 	
-	var content = new String();
+	var content = ""; // new String();
 	
 	var bytesLeft = rawData.byteLength;
 	var offset = 0;
@@ -186,19 +351,19 @@ function __os_ArrayBuffer_To_String(rawData, chunk_size)
 	return content;
 }
 
-function __os_String_To_ArrayBuffer(fileData)
+function __os_String_To_ArrayBuffer(str)
 {
-	if (fileData == null)
+	if (str == null)
 	{
 		return null;
 	}
 	
-	var buf = new ArrayBuffer(fileData.length);
+	var buf = new ArrayBuffer(str.length);
 	var bufView = new Uint8Array(buf);
 	
-	for (var i = 0, strLen = fileData.length; i < strLen; i++)
+	for (var i = 0, strLen = str.length; i < strLen; i++)
 	{
-		bufView[i] = (fileData.charCodeAt(i)); // [i] // & 0xFF;
+		bufView[i] = (str.charCodeAt(i)); // [i] // & 0xFF;
 	}
 	
 	return buf;
@@ -266,6 +431,37 @@ function __os_ArrayBuffer_To_Base64(rawData)
 }
 
 // Abstraction layer:
+function __os_nativeSize(nativeData)
+{
+	switch (__os_getFileSystemEncoding())
+	{
+		case FILESYSTEM_ENCODING_STRING:
+			return nativeData.length;
+		case FILESYSTEM_ENCODING_ARRAYBUFFER:
+			return nativeData.byteLength;
+		case FILESYSTEM_ENCODING_BASE64:
+			if (CFG_VIRTUALOS_CARE_ABOUT_SIZES !== undefined)
+			{
+				// This is horribly slow, but the only way to do this accurately.
+				return __os_Native_To_String(nativeData).length;
+			}
+			
+			return nativeData.length;
+	}
+}
+
+function __os_nativeEmpty()
+{
+	switch (__os_getFileSystemEncoding())
+	{
+		case FILESYSTEM_ENCODING_ARRAYBUFFER:
+			return null; // new ArrayBuffer();
+		case FILESYSTEM_ENCODING_STRING:
+		case FILESYSTEM_ENCODING_BASE64:
+			return "";
+	}
+}
+
 function __os_Native_To_String(nativeData)
 {
 	switch (__os_getFileSystemEncoding())
@@ -371,19 +567,71 @@ function __os_inheritParent()
 	__os_currentdir = parent.__os_currentdir;
 	__os_storage = parent.__os_storage;
 	
+	__os_safe = parent.__os_safe;
+	
 	__os_storage_is_known_source = parent.__os_storage_is_known_source;
 	__os_storage_all_sources = parent.__os_storage_all_sources;
 	
-	__os_log_failed_remote_paths = parent.__os_log_failed_remote_paths;
-	__os_failed_remote_paths = parent.__os_failed_remote_paths;
+	__os_should_log_remote_file_responses = parent.__os_should_log_remote_file_responses;
+	__os_remote_file_responses = parent.__os_remote_file_responses;
+	
+	__os_filesystem_time_map = parent.__os_filesystem_time_map;
 	
 	//__os_resource_generator = parent.__os_resource_generator;
 	//__os_badcache = parent.__os_badcache;
 }
 
-function __os_setAppArgs(args)
+// Capitalized to ensure association ('AppArgs' command).
+function __os_set_AppArgs(args)
 {
 	__os_appargs = args
+}
+
+// This gets the file-time of 'realPath'.
+function __os_get_FileTime(realPath)
+{
+	if (__os_filesystem_time_map.hasOwnProperty(realPath))
+	{
+		return __os_filesystem_time_map[realPath];
+	}
+	
+	// Return the default response.
+	return FILETIME_NONE;
+}
+
+// This sets the file-time of 'realPath' using 'time'.
+// If the operation could not be performed, and/or
+// 'time' is 'FILETIME_NONE', this will return 'false'.
+function __os_set_FileTime(realPath, time)
+{
+	if (time == FILETIME_NONE)
+	{
+		return false;
+	}
+	
+	/*
+		if (!fileTimesEnabled)
+		{
+			return false;
+		}
+	*/
+	
+	__os_filesystem_time_map[realPath] = time;
+	
+	// Return the default response.
+	return true;
+}
+
+// This removes a time-data entry from the file-system. (Use at your own risk)
+function __os_remove_FileTime(realPath)
+{
+	delete __os_filesystem_time_map[realPath];
+}
+
+// This function is highly unsafe, and should be avoided, unless you know exactly what you're doing.
+function __os_clear_FileTimes()
+{
+	__os_filesystem_time_map = {}
 }
 
 // This DOES NOT call 'RealPath', please call that first.
@@ -413,26 +661,11 @@ function __os_toRemotePath(realPath)
 	return (output + realPath);
 }
 
-/*
-	// This is a hack, as we currently retrieve a string anyway, but this is future-proof:
-	function __os_download_as_string(url)
-	{
-		var nativeData = __os_download(url);
-		
-		if (nativeData == null)
-		{
-			return null;
-		}
-		
-		return __os_Native_To_String(nativeData);
-	}
-*/
-
 // This downloads from 'url', and returns the file's data.
 // If no file was found, the return-value is undefined.
-function __os_download(url)
+function __os_download(url, lastTime, out_ext) // lastTime=null
 {
-	var rawData = __os_download_as_string(url); // __os_download_raw(url);
+	var rawData = __os_download_as_string(url, lastTime, out_ext); // __os_download_raw(url, lastTime);
 	
 	if (rawData == null)
 	{
@@ -442,26 +675,27 @@ function __os_download(url)
 	return __os_String_To_Native(rawData);
 }
 
-function __os_download_as_string(url)
+function __os_download_as_string(url, lastTime, out_ext) // lastTime=null
 {
-	return __os_download_raw(url);
+	return __os_download_raw(url, lastTime, out_ext);
 }
 
-function __os_download_raw(url)
+function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 {
-	if (__os_log_failed_remote_paths)
+	if (__os_should_log_remote_file_responses)
 	{
-		var urlPos = __os_failed_remote_paths.indexOf(url);
-		
-		if (urlPos != -1)
+		if (__os_remote_file_responses.hasOwnProperty(url))
 		{
 			if (__os_badcache)
 			{
-				__os_failed_remote_paths.splice(urlPos, 1);
+				delete __os_remote_file_responses[url]
 			}
 			else
 			{
-				return null;
+				if (!__os_remote_file_responses[url])
+				{
+					return null;
+				}
 			}
 		}
 	}
@@ -471,28 +705,82 @@ function __os_download_raw(url)
 	try
 	{
 		xhr.open("GET", url, false); // "HEAD"
-		//xhr.responseType = "arraybuffer";
 		
-		// For now, we don't care about file updates.
-		// This is something to look into later:
 		//xhr.overrideMimeType('text/plain');
 		//xhr.overrideMimeType("application/octet-stream");
 		xhr.overrideMimeType("text/plain ; charset=x-user-defined");
-		xhr.setRequestHeader("Cache-Control", "no-cache");
-		xhr.setRequestHeader("Pragma", "no-cache");
-		xhr.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+		
+		if (lastTime != null && lastTime != FILETIME_NONE)
+		{
+			if (isNaN())
+			{
+				xhr.setRequestHeader("If-None-Match", lastTime);
+			}
+			else
+			{
+				var date = new Date(lastTime * 1000); // <-- May or may not actually be needed.
+				var converted_date = date.toString();
+				
+				xhr.setRequestHeader("If-Modified-Since", converted_date);
+			}
+		}
+		else
+		{
+			xhr.setRequestHeader("Cache-Control", "no-cache");
+			xhr.setRequestHeader("Pragma", "no-cache");
+			xhr.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+		}
+		
 		//xhr.setRequestHeader("Cache-Control", "must-revalidate");
 		
 		xhr.send(null);
 		
+		// Check if 'out_ext' was defined:
+		if (out_ext !== undefined)
+		{
+			var lastModified = xhr.getResponseHeader("Last-Modified");
+			
+			if (lastModified)
+			{
+				out_ext[0] = Date.parse(lastModified); // out_ext.push(..);
+			}
+			else
+			{
+				var eTag = xhr.getResponseHeader("ETag");
+				
+				if (eTag)
+				{
+					var value = eTag.replace(/['"']+/g, "");
+					
+					if (isNaN(value))
+					{
+						out_ext[0] = value;
+					}
+					else
+					{
+						var ivalue = Number(value);
+						
+						out_ext[0] = (ivalue);
+					}
+				}
+				else
+				{
+					out_ext[0] = FILETIME_NONE; // out_ext.push(..);
+				}
+			}
+		}
+		
 		switch (xhr.status)
 		{
-			case 0:
 			case 304:
-			case 200:
-				return xhr.responseText; // xhr.response;
+				__os_mark_remote_file(url, true);
 				
-				break;
+				return null;
+			case 0:
+			case 200:
+				__os_mark_remote_file(url, true);
+				
+				return xhr.responseText; break; // xhr.response;
 		}
 	}
 	catch (ex)
@@ -500,9 +788,9 @@ function __os_download_raw(url)
 		// Nothing so far.
 	}
 	
-	if (!__os_badcache && __os_log_failed_remote_paths)
+	if (!__os_badcache)
 	{
-		__os_failed_remote_paths.push(url);
+		__os_mark_remote_file(url, false);
 	}
 }
 
@@ -511,16 +799,50 @@ function __os_downloadFileUsingRep(storage, url, rep, isEmpty) // isEmpty=false
 {
 	var repValue = storage[rep];
 	
-	if (isEmpty || repValue == null || __os_badcache || repValue == __os_emptyFile_symbol) // === undefined
+	if
+	(
+		(((isEmpty || repValue == __os_emptyFile_symbol) || repValue == null) && __os_should_log_remote_file_responses && !__os_remote_file_responses.hasOwnProperty(url))
+		||
+		(__os_badcache)
+	)
 	{
-		var data = __os_download(url);
+		var fileTimesEnabled = __os_get_should_log_filesystem_times();
 		
-		if (data != null)
+		var data;
+		
+		if (fileTimesEnabled)
 		{
-			__os_createFileEntryWith(storage, rep, data);
+			var out = [FILETIME_NONE]; // <-- Just to be safe.
+			var currentFileTime = __os_get_FileTime(rep);
+			
+			data = __os_download(url, currentFileTime, out);
+			
+			if (data != null)
+			{
+				if (out.length > 0)
+				{
+					if (out[0] != FILETIME_NONE)
+					{
+						__os_set_FileTime(rep, out[0]);
+					}
+				}
+			}
+		}
+		else
+		{
+			data = __os_download(url);
 		}
 		
-		return data;
+		// Make sure we have data to work with:
+		if (data != null)
+		{
+			// Build a file-entry for this element.
+			if (__os_createFileEntryWith(storage, rep, data, true)) // false
+			{
+				// Return the raw data we loaded.
+				return data;
+			}
+		}
 	}
 	
 	return repValue;
@@ -689,14 +1011,24 @@ function __os_storageLookup(realPath)
 	}
 }
 
-function __os_createFileEntryWith(storage, rep, data)
+function __os_createFileEntryWith(storage, rep, data, force) //force=false
 {
-	storage[rep] = data;
+	var currentEntry = storage[rep];
+	
+	if (force || (!__os_safe || currentEntry == null || currentEntry == __os_emptyFile_symbol || currentEntry == __os_nativeEmpty()))
+	{
+		storage[rep] = data;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
 }
 
-function __os_createFileEntry(rep, data, isDir)
+function __os_createFileEntry(rep, data, isDir, force)
 {
-	__os_createFileEntryWith(__os_storage, rep, data);
+	return __os_createFileEntryWith(__os_storage, rep, data, force);
 }
 
 // This creates a "file link". "File links" are basically 'to-be-loaded'
@@ -704,7 +1036,7 @@ function __os_createFileEntry(rep, data, isDir)
 // This command is abstract from the underlying storage system.
 function __os_createFileLink(rep)
 {
-	__os_createFileEntry(rep, __os_emptyFile_symbol, false);
+	return __os_createFileEntry(rep, __os_emptyFile_symbol, false);
 }
 
 // This gets a file using 'realPath' from a remote host.
@@ -778,11 +1110,23 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 	
 	if (value != null)
 	{
-		delete storage[realPath];
+		if (typeof storage.removeItem === "function")
+		{
+			storage.removeItem(realPath);
+		}
+		else
+		{
+			delete storage[realPath];
+		}
 		
 		if (isDir === undefined && value == __os_directory_symbol)
 		{
 			isDir = true;
+		}
+		
+		if (!isDir)
+		{
+			__os_remove_FileTime(realPath);
 		}
 		
 		response = true;
@@ -795,14 +1139,13 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 			if (e.indexOf(realPath) == 0)
 			{
 				var lastSlash = e.lastIndexOf("/");
-				var ePath = e.substring(0, lastSlash-1);
 				
 				// Remove only what we need to: If we're doing this
 				// recursively, delete everything, but if not,
 				// make sure this isn't a sub-directory:
 				if ((recursive || lastSlash < realPath.length))
 				{
-					__os_removeStorageEntry(storage, ePath, undefined, recursive, e); // 'isDir' may need to be calculated later.
+					__os_removeStorageEntry(storage, e, undefined, recursive); // 'isDir' may need to be calculated later.
 				}
 			}
 		}
@@ -813,8 +1156,25 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 	return response;
 }
 
+// This removes all elements in 'storage' that start with 'prefix'. (Use at your own risk)
+function __os_eliminateByPrefix(storage, prefix)
+{
+	for (var e in storage)
+	{
+		if (e.indexOf(prefix) == 0)
+		{
+			var lastSlash = e.lastIndexOf("/");
+			
+			if (lastSlash < prefix.length)
+			{
+				__os_removeStorageEntry(storage, e, undefined, true);
+			}
+		}
+	}
+}
+
 // This attempts to produce a valid MIME-type for 'path'.
-function __os_getMIMEType(realPath) // ext=undefined
+function __os_get_MIMEType(realPath, fallback) //fallback=false
 {
 	var blobType;
 	
@@ -885,7 +1245,7 @@ function __os_getMIMEType(realPath) // ext=undefined
 
 // This looks 'realPath' up internally, and if present, generates a URI for that resource.
 // This is useful for frameworks like Mojo, which normally require server-side storage mechanics.
-function __os_allocateResource(realPath, fallback)
+function __os_allocateResource(realPath, fallback) //fallback=false
 {
 	var f = __os_storageLookup(realPath);
 	
@@ -903,7 +1263,7 @@ function __os_allocateResource(realPath, fallback)
 	var extPos, fullExt, ext;
 	
 	// Build the resource:
-	var blobType = __os_getMIMEType(realPath);
+	var blobType = __os_get_MIMEType(realPath, fallback);
 	
 	if (blobType == null)
 	{
@@ -1040,7 +1400,7 @@ function RealPath(path)
 }
 
 // This attempts to recognize the "file-type" of 'path'. (Uses supported files)
-function FileType(path)
+function FileType(path, skip_request) //skip_request=false
 {
 	var realPath = RealPath(path);
 	
@@ -1049,14 +1409,17 @@ function FileType(path)
 	
 	var isEmpty;
 	
-	// Check if we don't have an entry to view:
-	if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
+	if (!skip_request)
 	{
-		// Check if we could load this file using the current file-system:
-		if (isEmpty || __os_fileCouldExist(realPath))
+		// Check if we don't have an entry to view:
+		if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
 		{
-			// Try to load our file from the server.
-			file = __os_getFile(realPath, isEmpty);
+			// Check if we could load this file using the current file-system:
+			if (isEmpty || __os_fileCouldExist(realPath))
+			{
+				// Try to load our file from the server.
+				file = __os_getFile(realPath, isEmpty);
+			}
 		}
 	}
 	
@@ -1076,6 +1439,13 @@ function FileType(path)
 	return FILETYPE_NONE;
 }
 
+function FileTime(path)
+{
+	var rpath = RealPath(path);
+	
+	return __os_get_FileTime(rpath);
+}
+
 function FileSize(path)
 {
 	var rpath = RealPath(path);
@@ -1086,7 +1456,7 @@ function FileSize(path)
 		return 0; // -1;
 	}
 	
-	return f.length;
+	return __os_nativeSize(f);
 }
 
 function CopyFile(src, dst)
@@ -1101,7 +1471,13 @@ function CopyFile(src, dst)
 	
 	var rdst = RealPath(dst);
 	
-	__os_createFileEntry(rdst, f);
+	if (!__os_createFileEntry(rdst, f))
+	{
+		return false;
+	}
+	
+	// Update this entry's file-time.
+	__os_set_FileTime(rdst, __os_get_FileTime(rsrc));
 	
 	// Return the default response.
 	return true;
@@ -1124,9 +1500,9 @@ function LoadString(path)
 	return "";
 }
 
-function SaveString(str, path)
+function SaveString(str, path, safe) //safe=false
 {
-	__os_createFileEntry(RealPath(path), __os_String_To_Native(str));
+	return __os_createFileEntry(RealPath(path), __os_String_To_Native(str), false, !safe);
 }
 
 // This loads all files and folders in 'realPath' specifically.
@@ -1180,11 +1556,14 @@ function LoadDir(path)
 	return [];
 }
 
+function CreateFile(path)
+{
+	return __os_createFileEntry(RealPath(path), __os_nativeEmpty());
+}
+
 function CreateDir(path)
 {
-	__os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
-	
-	return true;
+	return __os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
 }
 
 function DeleteDir(path, recursive) // recursive=false

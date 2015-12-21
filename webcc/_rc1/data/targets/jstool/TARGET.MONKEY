@@ -1,4 +1,0 @@
-
-#TARGET_NAME="JavaScript Tool"
-#TARGET_SYSTEM="html5"
-#TARGET_BUILDER="html5"

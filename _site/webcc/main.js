@@ -17,6 +17,7 @@ CFG_SAFEMODE="0";
 CFG_SOUND_FILES="*.wav|*.ogg|*.mp3|*.m4a";
 CFG_TARGET="html5";
 CFG_TEXT_FILES="*.txt|*.xml|*.json|*.monkey|*.js|*.dir|*.html|*.MONKEY|*.TXT";
+CFG_VIRTUALOS_CARE_ABOUT_SIZES="1";
 CFG_VIRTUALOS_EXTENSION_DL="1";
 CFG_VIRTUALOS_EXTENSION_NATIVE_RECURSION="1";
 CFG_VIRTUALOS_EXTENSION_REMOTEPATH="1";
@@ -26,7 +27,6 @@ CFG_VIRTUALOS_FLAG_OS="1";
 CFG_VIRTUALOS_IMPLEMENTED="1";
 CFG_VIRTUALOS_JS_TARGET="1";
 CFG_VIRTUALOS_MAP_ENV="1";
-CFG_VIRTUALOS_MAP_FILETIMES="1";
 CFG_VIRTUALOS_STANDALONE="1";
 //${CONFIG_END}
 
@@ -539,8 +539,8 @@ BBStream.prototype.Write=function( buffer,offset,count ){
 
 /*
 	META:
-		Native 'Storage' format: Base64
-		Native 'Storage' object: 'sessionStorage'
+		Native 'Storage' format: String
+		Native 'Storage' object: 'localStorage'
 */
 
 // Constant variable(s):
@@ -550,8 +550,22 @@ var FILETYPE_NONE = 0;
 var FILETYPE_FILE = 1;
 var FILETYPE_DIR = 2;
 
+// File-time macro(s):
+var FILETIME_NONE = 0; // -1
+
 // Internal:
+
+// All symbols must start with this prefix.
+var __os_symbol_prefix = "||";
+
+// Accessor symbols:
+var __os_version_symbol = "||__os_version||";
+
 var __os_filesystem_type_symbol = "||__os_filesystem_type||";
+var __os_filesystem_time_map_symbol = "||__os_filesystem_time_map||";
+var __os_filesystem_time_map_toggle_symbol = "||__os_filesystem_time_map_toggle||"
+
+// Content symbols:
 var __os_directory_symbol = "||DIR||"; // "//"
 var __os_emptyFile_symbol = "||EMPTY||"; // "/|E"
 
@@ -569,9 +583,12 @@ var FILESYSTEM_ENCODING_BASE64 = 1;
 var FILESYSTEM_ENCODING_ARRAYBUFFER = 2;
 
 // This acts as the default encoding scheme for file-systems.
-var FILESYSTEM_ENCODING_DEFAULT = FILESYSTEM_ENCODING_ARRAYBUFFER; // FILESYSTEM_ENCODING_STRING; // FILESYSTEM_ENCODING_BASE64;
+var FILESYSTEM_ENCODING_DEFAULT = FILESYSTEM_ENCODING_STRING; // FILESYSTEM_ENCODING_ARRAYBUFFER // FILESYSTEM_ENCODING_BASE64;
 
 // Global variable(s):
+
+// This is used when '__os_getVersion' assigns the internal version. (When one isn't found)
+var __os_default_version = 4;
 
 // This is used to supply arguments to the application.
 var __os_appargs = [];
@@ -580,38 +597,106 @@ var __os_appargs = [];
 var __os_currentdir = "";
 
 // This specifies the default storage.
-var __os_storage = {}; // sessionStorage; // localStorage;
+var __os_storage = localStorage; // {}; // sessionStorage;
 
 // This states if '__os_storage' is a known source (Global 'Storage' object).
-var __os_storage_is_known_source = false; // true;
+var __os_storage_is_known_source = true; // false; // true;
 
 // This states if all known sources should be checked when performing abstract file-operations.
 // This should only be enabled when using a known source for storage.
-var __os_storage_all_sources = __os_storage_is_known_source; // true;
+var __os_storage_all_sources = false; // __os_storage_is_known_source; // true;
 
 // This holds this document's loaded URIs. For details, see: '__os_allocateResource'.
 var __os_resources = {};
 
 // If enabled, this will keep track of invalid remote paths.
-var __os_log_failed_remote_paths = true;
+var __os_should_log_remote_file_responses = true;
 
-// This stores failed paths if '__os_log_failed_remote_paths' is enabled.
-var __os_failed_remote_paths = [];
+// This stores remote file-responses if '__os_should_log_remote_file_responses' is enabled.
+// This has no long-term storage guarantee.
+var __os_remote_file_responses = {};
 
-// This is used to force re-downloads of remote files. (Unfinished behavior)
+/*
+	A path-map of known file-times.
+	Ideally, this should be loaded before use.
+	For details, see: '__os_load_filesystem_time_map'.
+	
+	When you want to store this map for
+	storage-defined durations, use '__os_save_filesystem_time_map'.
+*/
+
+var __os_filesystem_time_map = {};
+
+// This is used to force re-downloads of remote files.
 var __os_badcache = false;
+
+// This is used internally when an unsafe operation is applied.
+// If this is 'false', fallback behavior may be used implicitly.
+var __os_safe = true; // false;
 
 // This is used to generate handles to resources.
 var __os_resource_generator = window.URL || window.webkitURL;
 
 // Functions:
 
+// Meta:
+
+// This retrieves the internal version of this module.
+// If a version number wasn't supplied, one will be assigned.
+// To disable such behavior, set 'force_stop_assignment' to 'true'.
+function __os_getVersion(force_stop_assignment) //force_stop_assignment=false
+{
+	if (__os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return Number(__os_storage[__os_version_symbol]);
+	}
+	
+	if (!force_stop_assignment)
+	{
+		__os_setVersion(__os_default_version, false);
+		
+		return __os_default_version;
+	}
+	
+	return __os_default_version; // OS_VERSION_NOT_FOUND;
+}
+
+// Please do not call this function. It will be handled automatically by '__os_getVersion'.
+// The return value of this function indicates the success of the operation.
+function __os_setVersion(versionNumber, safety) //safety=false
+{
+	if (safety && __os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return false;
+	}
+	
+	__os_storage[__os_version_symbol] = versionNumber;
+	
+	// Return the default response.
+	return true;
+}
+
+// If '__os_should_log_remote_file_responses' is true,
+// this will mark 'url' with 'value' using '__os_remote_file_responses'.
+function __os_mark_remote_file(url, value)
+{
+	if (__os_should_log_remote_file_responses)
+	{
+		__os_remote_file_responses[url] = value;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
+}
+
 // Conversion and storage semantics:
 
 // Changing this on normal runtime will result in horribly undefined behavior, usually leading to corruption.
 // If you wish to change the internal storage mechanism, do it before anything else.
 // Transferral of containers is unsupported, and will need to be handled by the caller.
-function __os_setFileSystemContainer(container, disallowMultiSource)
+function __os_set_FileSystemContainer(container, disallowMultiSource)
 {
 	if (container == sessionStorage || container == localStorage)
 	{
@@ -643,7 +728,7 @@ function __os_getFileSystemContainer()
 // This represents the native encoding scheme. (DO NOT MODIFY; see '__os_setFileSystemEncoding')
 function __os_getFileSystemEncoding()
 {
-	if (__os_storage.hasOwnProperty(__os_filesystem_type_symbol))
+	if (__os_hasFileSystemEncoding())
 	{
 		// Unfortunately, everything is a string in 'Storage' objects.
 		return Number(__os_storage[__os_filesystem_type_symbol]);
@@ -656,18 +741,98 @@ function __os_getFileSystemEncoding()
 	return type;
 }
 
+// This checks if '__os_storage' contains '__os_filesystem_type_symbol'.
+function __os_hasFileSystemEncoding()
+{
+	return __os_storage.hasOwnProperty(__os_filesystem_type_symbol);
+}
+
 // Changing this on normal runtime will result in horribly undefined behavior, usually leading to corruption.
 // Similarly, do not change this if you're using persistent storage, like 'localStorage'.
 // As a rule of thumb, if you're going to call this, do it before anything else.
 // If this is not first called, it will be called internally using the default type.
 function __os_setFileSystemEncoding(type)
 {
+	/*
+		if (__os_hasFileSystemEncoding())
+		{
+			return false;
+		}
+	*/
+	
 	__os_storage[__os_filesystem_type_symbol] = type;
+	
+	// Return the default response.
+	return true;
+}
+
+// This is used to toggle logging of tile-times.
+//var __os_log_file_times = true
+
+// This toggles file-time logging with the file-system.
+// The return-value indicates if the value was changed or not.
+function __os_set_should_log_filesystem_times(value)
+{
+	__os_storage[__os_filesystem_time_map_toggle_symbol] = Number(value);
+	
+	return value;
+}
+
+// This states if the file-system should log file-times.
+function __os_get_should_log_filesystem_times()
+{
+	if (__os_storage.hasOwnProperty(__os_filesystem_time_map_toggle_symbol))
+	{
+		return Number(__os_storage[__os_filesystem_time_map_toggle_symbol]);
+	}
+	
+	// Return the default response.
+	return true;
+}
+
+// This loads the file-system's file-time data from '__os_storage', if available.
+function __os_load_filesystem_time_map(keepOnFailure)
+{
+	var entry = __os_storage[__os_filesystem_time_map_symbol];
+	
+	if (entry != null)
+	{
+		__os_filesystem_time_map = JSON.parse(entry);
+		__os_set_should_log_filesystem_times(true);
+		
+		return true;
+	}
+	
+	if (!keepOnFailure)
+	{
+		__os_filesystem_time_map = {};
+	}
+	
+	return false;
+}
+
+// This saves the file-system's file-time data to '__os_storage'.
+function __os_save_filesystem_time_map(clearOnSave) // clearOnSave=false
+{
+	if (Object.keys(__os_filesystem_time_map).length > 0)
+	{
+		__os_storage[__os_filesystem_time_map_symbol] = JSON.stringify(__os_filesystem_time_map);
+		
+		if (clearOnSave)
+		{
+			__os_filesystem_time_map = {};
+		}
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
 }
 
 function __os_enableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = true;
+	__os_should_log_remote_file_responses = true;
 	
 	if (clear)
 	{
@@ -677,7 +842,7 @@ function __os_enableResponseLogging(clear)
 
 function __os_disableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = false;
+	__os_should_log_remote_file_responses = false;
 	
 	if (clear)
 	{
@@ -687,7 +852,7 @@ function __os_disableResponseLogging(clear)
 
 function __os_clearLoggedResponses()
 {
-	__os_failed_remote_paths = [];
+	__os_remote_file_responses = {};
 }
 
 // Implementation-level:
@@ -705,7 +870,7 @@ function __os_ArrayBuffer_To_String(rawData, chunk_size)
 		chunk_size = 1024;
 	}
 	
-	var content = new String();
+	var content = ""; // new String();
 	
 	var bytesLeft = rawData.byteLength;
 	var offset = 0;
@@ -724,19 +889,19 @@ function __os_ArrayBuffer_To_String(rawData, chunk_size)
 	return content;
 }
 
-function __os_String_To_ArrayBuffer(fileData)
+function __os_String_To_ArrayBuffer(str)
 {
-	if (fileData == null)
+	if (str == null)
 	{
 		return null;
 	}
 	
-	var buf = new ArrayBuffer(fileData.length);
+	var buf = new ArrayBuffer(str.length);
 	var bufView = new Uint8Array(buf);
 	
-	for (var i = 0, strLen = fileData.length; i < strLen; i++)
+	for (var i = 0, strLen = str.length; i < strLen; i++)
 	{
-		bufView[i] = (fileData.charCodeAt(i)); // [i] // & 0xFF;
+		bufView[i] = (str.charCodeAt(i)); // [i] // & 0xFF;
 	}
 	
 	return buf;
@@ -804,6 +969,37 @@ function __os_ArrayBuffer_To_Base64(rawData)
 }
 
 // Abstraction layer:
+function __os_nativeSize(nativeData)
+{
+	switch (__os_getFileSystemEncoding())
+	{
+		case FILESYSTEM_ENCODING_STRING:
+			return nativeData.length;
+		case FILESYSTEM_ENCODING_ARRAYBUFFER:
+			return nativeData.byteLength;
+		case FILESYSTEM_ENCODING_BASE64:
+			if (CFG_VIRTUALOS_CARE_ABOUT_SIZES !== undefined)
+			{
+				// This is horribly slow, but the only way to do this accurately.
+				return __os_Native_To_String(nativeData).length;
+			}
+			
+			return nativeData.length;
+	}
+}
+
+function __os_nativeEmpty()
+{
+	switch (__os_getFileSystemEncoding())
+	{
+		case FILESYSTEM_ENCODING_ARRAYBUFFER:
+			return null; // new ArrayBuffer();
+		case FILESYSTEM_ENCODING_STRING:
+		case FILESYSTEM_ENCODING_BASE64:
+			return "";
+	}
+}
+
 function __os_Native_To_String(nativeData)
 {
 	switch (__os_getFileSystemEncoding())
@@ -909,19 +1105,71 @@ function __os_inheritParent()
 	__os_currentdir = parent.__os_currentdir;
 	__os_storage = parent.__os_storage;
 	
+	__os_safe = parent.__os_safe;
+	
 	__os_storage_is_known_source = parent.__os_storage_is_known_source;
 	__os_storage_all_sources = parent.__os_storage_all_sources;
 	
-	__os_log_failed_remote_paths = parent.__os_log_failed_remote_paths;
-	__os_failed_remote_paths = parent.__os_failed_remote_paths;
+	__os_should_log_remote_file_responses = parent.__os_should_log_remote_file_responses;
+	__os_remote_file_responses = parent.__os_remote_file_responses;
+	
+	__os_filesystem_time_map = parent.__os_filesystem_time_map;
 	
 	//__os_resource_generator = parent.__os_resource_generator;
 	//__os_badcache = parent.__os_badcache;
 }
 
-function __os_setAppArgs(args)
+// Capitalized to ensure association ('AppArgs' command).
+function __os_set_AppArgs(args)
 {
 	__os_appargs = args
+}
+
+// This gets the file-time of 'realPath'.
+function __os_get_FileTime(realPath)
+{
+	if (__os_filesystem_time_map.hasOwnProperty(realPath))
+	{
+		return __os_filesystem_time_map[realPath];
+	}
+	
+	// Return the default response.
+	return FILETIME_NONE;
+}
+
+// This sets the file-time of 'realPath' using 'time'.
+// If the operation could not be performed, and/or
+// 'time' is 'FILETIME_NONE', this will return 'false'.
+function __os_set_FileTime(realPath, time)
+{
+	if (time == FILETIME_NONE)
+	{
+		return false;
+	}
+	
+	/*
+		if (!fileTimesEnabled)
+		{
+			return false;
+		}
+	*/
+	
+	__os_filesystem_time_map[realPath] = time;
+	
+	// Return the default response.
+	return true;
+}
+
+// This removes a time-data entry from the file-system. (Use at your own risk)
+function __os_remove_FileTime(realPath)
+{
+	delete __os_filesystem_time_map[realPath];
+}
+
+// This function is highly unsafe, and should be avoided, unless you know exactly what you're doing.
+function __os_clear_FileTimes()
+{
+	__os_filesystem_time_map = {}
 }
 
 // This DOES NOT call 'RealPath', please call that first.
@@ -951,26 +1199,11 @@ function __os_toRemotePath(realPath)
 	return (output + realPath);
 }
 
-/*
-	// This is a hack, as we currently retrieve a string anyway, but this is future-proof:
-	function __os_download_as_string(url)
-	{
-		var nativeData = __os_download(url);
-		
-		if (nativeData == null)
-		{
-			return null;
-		}
-		
-		return __os_Native_To_String(nativeData);
-	}
-*/
-
 // This downloads from 'url', and returns the file's data.
 // If no file was found, the return-value is undefined.
-function __os_download(url)
+function __os_download(url, lastTime, out_ext) // lastTime=null
 {
-	var rawData = __os_download_as_string(url); // __os_download_raw(url);
+	var rawData = __os_download_as_string(url, lastTime, out_ext); // __os_download_raw(url, lastTime);
 	
 	if (rawData == null)
 	{
@@ -980,26 +1213,27 @@ function __os_download(url)
 	return __os_String_To_Native(rawData);
 }
 
-function __os_download_as_string(url)
+function __os_download_as_string(url, lastTime, out_ext) // lastTime=null
 {
-	return __os_download_raw(url);
+	return __os_download_raw(url, lastTime, out_ext);
 }
 
-function __os_download_raw(url)
+function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 {
-	if (__os_log_failed_remote_paths)
+	if (__os_should_log_remote_file_responses)
 	{
-		var urlPos = __os_failed_remote_paths.indexOf(url);
-		
-		if (urlPos != -1)
+		if (__os_remote_file_responses.hasOwnProperty(url))
 		{
 			if (__os_badcache)
 			{
-				__os_failed_remote_paths.splice(urlPos, 1);
+				delete __os_remote_file_responses[url]
 			}
 			else
 			{
-				return null;
+				if (!__os_remote_file_responses[url])
+				{
+					return null;
+				}
 			}
 		}
 	}
@@ -1009,28 +1243,82 @@ function __os_download_raw(url)
 	try
 	{
 		xhr.open("GET", url, false); // "HEAD"
-		//xhr.responseType = "arraybuffer";
 		
-		// For now, we don't care about file updates.
-		// This is something to look into later:
 		//xhr.overrideMimeType('text/plain');
 		//xhr.overrideMimeType("application/octet-stream");
 		xhr.overrideMimeType("text/plain ; charset=x-user-defined");
-		xhr.setRequestHeader("Cache-Control", "no-cache");
-		xhr.setRequestHeader("Pragma", "no-cache");
-		xhr.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+		
+		if (lastTime != null && lastTime != FILETIME_NONE)
+		{
+			if (isNaN())
+			{
+				xhr.setRequestHeader("If-None-Match", lastTime);
+			}
+			else
+			{
+				var date = new Date(lastTime * 1000); // <-- May or may not actually be needed.
+				var converted_date = date.toString();
+				
+				xhr.setRequestHeader("If-Modified-Since", converted_date);
+			}
+		}
+		else
+		{
+			xhr.setRequestHeader("Cache-Control", "no-cache");
+			xhr.setRequestHeader("Pragma", "no-cache");
+			xhr.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+		}
+		
 		//xhr.setRequestHeader("Cache-Control", "must-revalidate");
 		
 		xhr.send(null);
 		
+		// Check if 'out_ext' was defined:
+		if (out_ext !== undefined)
+		{
+			var lastModified = xhr.getResponseHeader("Last-Modified");
+			
+			if (lastModified)
+			{
+				out_ext[0] = Date.parse(lastModified); // out_ext.push(..);
+			}
+			else
+			{
+				var eTag = xhr.getResponseHeader("ETag");
+				
+				if (eTag)
+				{
+					var value = eTag.replace(/['"']+/g, "");
+					
+					if (isNaN(value))
+					{
+						out_ext[0] = value;
+					}
+					else
+					{
+						var ivalue = Number(value);
+						
+						out_ext[0] = (ivalue);
+					}
+				}
+				else
+				{
+					out_ext[0] = FILETIME_NONE; // out_ext.push(..);
+				}
+			}
+		}
+		
 		switch (xhr.status)
 		{
-			case 0:
 			case 304:
-			case 200:
-				return xhr.responseText; // xhr.response;
+				__os_mark_remote_file(url, true);
 				
-				break;
+				return null;
+			case 0:
+			case 200:
+				__os_mark_remote_file(url, true);
+				
+				return xhr.responseText; break; // xhr.response;
 		}
 	}
 	catch (ex)
@@ -1038,9 +1326,9 @@ function __os_download_raw(url)
 		// Nothing so far.
 	}
 	
-	if (!__os_badcache && __os_log_failed_remote_paths)
+	if (!__os_badcache)
 	{
-		__os_failed_remote_paths.push(url);
+		__os_mark_remote_file(url, false);
 	}
 }
 
@@ -1049,16 +1337,50 @@ function __os_downloadFileUsingRep(storage, url, rep, isEmpty) // isEmpty=false
 {
 	var repValue = storage[rep];
 	
-	if (isEmpty || repValue == null || __os_badcache || repValue == __os_emptyFile_symbol) // === undefined
+	if
+	(
+		(((isEmpty || repValue == __os_emptyFile_symbol) || repValue == null) && __os_should_log_remote_file_responses && !__os_remote_file_responses.hasOwnProperty(url))
+		||
+		(__os_badcache)
+	)
 	{
-		var data = __os_download(url);
+		var fileTimesEnabled = __os_get_should_log_filesystem_times();
 		
-		if (data != null)
+		var data;
+		
+		if (fileTimesEnabled)
 		{
-			__os_createFileEntryWith(storage, rep, data);
+			var out = [FILETIME_NONE]; // <-- Just to be safe.
+			var currentFileTime = __os_get_FileTime(rep);
+			
+			data = __os_download(url, currentFileTime, out);
+			
+			if (data != null)
+			{
+				if (out.length > 0)
+				{
+					if (out[0] != FILETIME_NONE)
+					{
+						__os_set_FileTime(rep, out[0]);
+					}
+				}
+			}
+		}
+		else
+		{
+			data = __os_download(url);
 		}
 		
-		return data;
+		// Make sure we have data to work with:
+		if (data != null)
+		{
+			// Build a file-entry for this element.
+			if (__os_createFileEntryWith(storage, rep, data, true)) // false
+			{
+				// Return the raw data we loaded.
+				return data;
+			}
+		}
 	}
 	
 	return repValue;
@@ -1227,14 +1549,24 @@ function __os_storageLookup(realPath)
 	}
 }
 
-function __os_createFileEntryWith(storage, rep, data)
+function __os_createFileEntryWith(storage, rep, data, force) //force=false
 {
-	storage[rep] = data;
+	var currentEntry = storage[rep];
+	
+	if (force || (!__os_safe || currentEntry == null || currentEntry == __os_emptyFile_symbol || currentEntry == __os_nativeEmpty()))
+	{
+		storage[rep] = data;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
 }
 
-function __os_createFileEntry(rep, data, isDir)
+function __os_createFileEntry(rep, data, isDir, force)
 {
-	__os_createFileEntryWith(__os_storage, rep, data);
+	return __os_createFileEntryWith(__os_storage, rep, data, force);
 }
 
 // This creates a "file link". "File links" are basically 'to-be-loaded'
@@ -1242,7 +1574,7 @@ function __os_createFileEntry(rep, data, isDir)
 // This command is abstract from the underlying storage system.
 function __os_createFileLink(rep)
 {
-	__os_createFileEntry(rep, __os_emptyFile_symbol, false);
+	return __os_createFileEntry(rep, __os_emptyFile_symbol, false);
 }
 
 // This gets a file using 'realPath' from a remote host.
@@ -1316,11 +1648,23 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 	
 	if (value != null)
 	{
-		delete storage[realPath];
+		if (typeof storage.removeItem === "function")
+		{
+			storage.removeItem(realPath);
+		}
+		else
+		{
+			delete storage[realPath];
+		}
 		
 		if (isDir === undefined && value == __os_directory_symbol)
 		{
 			isDir = true;
+		}
+		
+		if (!isDir)
+		{
+			__os_remove_FileTime(realPath);
 		}
 		
 		response = true;
@@ -1333,14 +1677,13 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 			if (e.indexOf(realPath) == 0)
 			{
 				var lastSlash = e.lastIndexOf("/");
-				var ePath = e.substring(0, lastSlash-1);
 				
 				// Remove only what we need to: If we're doing this
 				// recursively, delete everything, but if not,
 				// make sure this isn't a sub-directory:
 				if ((recursive || lastSlash < realPath.length))
 				{
-					__os_removeStorageEntry(storage, ePath, undefined, recursive, e); // 'isDir' may need to be calculated later.
+					__os_removeStorageEntry(storage, e, undefined, recursive); // 'isDir' may need to be calculated later.
 				}
 			}
 		}
@@ -1351,8 +1694,25 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 	return response;
 }
 
+// This removes all elements in 'storage' that start with 'prefix'. (Use at your own risk)
+function __os_eliminateByPrefix(storage, prefix)
+{
+	for (var e in storage)
+	{
+		if (e.indexOf(prefix) == 0)
+		{
+			var lastSlash = e.lastIndexOf("/");
+			
+			if (lastSlash < prefix.length)
+			{
+				__os_removeStorageEntry(storage, e, undefined, true);
+			}
+		}
+	}
+}
+
 // This attempts to produce a valid MIME-type for 'path'.
-function __os_getMIMEType(realPath) // ext=undefined
+function __os_get_MIMEType(realPath, fallback) //fallback=false
 {
 	var blobType;
 	
@@ -1423,7 +1783,7 @@ function __os_getMIMEType(realPath) // ext=undefined
 
 // This looks 'realPath' up internally, and if present, generates a URI for that resource.
 // This is useful for frameworks like Mojo, which normally require server-side storage mechanics.
-function __os_allocateResource(realPath, fallback)
+function __os_allocateResource(realPath, fallback) //fallback=false
 {
 	var f = __os_storageLookup(realPath);
 	
@@ -1441,7 +1801,7 @@ function __os_allocateResource(realPath, fallback)
 	var extPos, fullExt, ext;
 	
 	// Build the resource:
-	var blobType = __os_getMIMEType(realPath);
+	var blobType = __os_get_MIMEType(realPath, fallback);
 	
 	if (blobType == null)
 	{
@@ -1578,7 +1938,7 @@ function RealPath(path)
 }
 
 // This attempts to recognize the "file-type" of 'path'. (Uses supported files)
-function FileType(path)
+function FileType(path, skip_request) //skip_request=false
 {
 	var realPath = RealPath(path);
 	
@@ -1587,14 +1947,17 @@ function FileType(path)
 	
 	var isEmpty;
 	
-	// Check if we don't have an entry to view:
-	if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
+	if (!skip_request)
 	{
-		// Check if we could load this file using the current file-system:
-		if (isEmpty || __os_fileCouldExist(realPath))
+		// Check if we don't have an entry to view:
+		if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
 		{
-			// Try to load our file from the server.
-			file = __os_getFile(realPath, isEmpty);
+			// Check if we could load this file using the current file-system:
+			if (isEmpty || __os_fileCouldExist(realPath))
+			{
+				// Try to load our file from the server.
+				file = __os_getFile(realPath, isEmpty);
+			}
 		}
 	}
 	
@@ -1614,6 +1977,13 @@ function FileType(path)
 	return FILETYPE_NONE;
 }
 
+function FileTime(path)
+{
+	var rpath = RealPath(path);
+	
+	return __os_get_FileTime(rpath);
+}
+
 function FileSize(path)
 {
 	var rpath = RealPath(path);
@@ -1624,7 +1994,7 @@ function FileSize(path)
 		return 0; // -1;
 	}
 	
-	return f.length;
+	return __os_nativeSize(f);
 }
 
 function CopyFile(src, dst)
@@ -1639,7 +2009,13 @@ function CopyFile(src, dst)
 	
 	var rdst = RealPath(dst);
 	
-	__os_createFileEntry(rdst, f);
+	if (!__os_createFileEntry(rdst, f))
+	{
+		return false;
+	}
+	
+	// Update this entry's file-time.
+	__os_set_FileTime(rdst, __os_get_FileTime(rsrc));
 	
 	// Return the default response.
 	return true;
@@ -1662,9 +2038,9 @@ function LoadString(path)
 	return "";
 }
 
-function SaveString(str, path)
+function SaveString(str, path, safe) //safe=false
 {
-	__os_createFileEntry(RealPath(path), __os_String_To_Native(str));
+	return __os_createFileEntry(RealPath(path), __os_String_To_Native(str), false, !safe);
 }
 
 // This loads all files and folders in 'realPath' specifically.
@@ -1718,11 +2094,14 @@ function LoadDir(path)
 	return [];
 }
 
+function CreateFile(path)
+{
+	return __os_createFileEntry(RealPath(path), __os_nativeEmpty());
+}
+
 function CreateDir(path)
 {
-	__os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
-	
-	return true;
+	return __os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
 }
 
 function DeleteDir(path, recursive) // recursive=false
@@ -1794,6 +2173,10 @@ function ExitApp(retCode)
 	throw null;
 }
 
+
+// Global variable(s):
+var __monkey_DirectoryLoaded = false;
+
 function c_WebCC(){
 	Object.call(this);
 	this.m_args=[];
@@ -1821,8 +2204,8 @@ function c_WebCC(){
 	this.m_MSBUILD_PATH="";
 	this.m_HTML_PLAYER="";
 	this.m_FLASH_PLAYER="";
-	this.m__builders=c_StringMap4.m_new.call(new c_StringMap4);
-	this.m__targets=c_StringMap7.m_new.call(new c_StringMap7);
+	this.m__builders=c_StringMap3.m_new.call(new c_StringMap3);
+	this.m__targets=c_StringMap6.m_new.call(new c_StringMap6);
 	this.m_target=null;
 }
 c_WebCC.m_new=function(){
@@ -2070,7 +2453,7 @@ c_WebCC.prototype.p_EnumBuilders=function(){
 	while(t_.p_HasNext()){
 		var t_it=t_.p_NextObject();
 		if(t_it.p_Value().p_IsValid()){
-			this.m__builders.p_Set4(t_it.p_Key(),t_it.p_Value());
+			this.m__builders.p_Set3(t_it.p_Key(),t_it.p_Value());
 		}
 	}
 }
@@ -2095,7 +2478,7 @@ c_WebCC.prototype.p_EnumTargets=function(t_dir){
 				if((t_builder)!=null){
 					var t_host=bb_config_GetConfigVar("TARGET_HOST");
 					if(!((t_host).length!=0) || t_host==HostOS()){
-						this.m__targets.p_Set7(t_name,c_Target.m_new.call(new c_Target,t_f,t_name,t_system,t_builder));
+						this.m__targets.p_Set6(t_name,c_Target.m_new.call(new c_Target,t_f,t_name,t_system,t_builder));
 					}
 				}
 			}
@@ -2157,7 +2540,6 @@ c_WebCC.prototype.p_Execute=function(t_cmd,t_failHard){
 	}
 	return false;
 }
-var bb_webcc___Monkey_DirectoryLoaded=false;
 function c_DataBuffer(){
 	BBDataBuffer.call(this);
 }
@@ -2728,6 +3110,88 @@ function bb_virtualos_SmartClip(t_Input,t_Symbol,t_Length){
 function bb_virtualos_SmartClip2(t_Input,t_Symbol){
 	return bb_virtualos_SmartClip(t_Input,t_Symbol,t_Input.length);
 }
+function bb_virtualos___OS_ParseFileSystem_CreateFileEntry(t_Entry,t_IsFileDescriptor){
+	if(t_IsFileDescriptor){
+		__os_createFileLink(RealPath(t_Entry));
+	}else{
+		CreateDir(t_Entry);
+	}
+	return;
+}
+function bb_virtualos___OS_ParseFileSystem(t_S,t_Context,t_OpenPrefix){
+	var t_LastMasterPath="";
+	var t_Cache_Context="";
+	while(!((t_S.p_Eof())!=0)){
+		var t_Origin=t_S.p_Position();
+		var t_IsFileDescriptor=false;
+		var t_FirstChar=t_S.p_ReadString(1,"utf8");
+		var t_4=t_FirstChar;
+		if(t_4=="\n" || t_4=="\r" || t_4=="\t" || t_4==" "){
+			continue;
+		}else{
+			if(t_4=="!"){
+				t_IsFileDescriptor=true;
+			}else{
+				if(t_4=="{"){
+					t_Context.p_Push(t_LastMasterPath);
+					t_Cache_Context=bb_virtualos___OS_ParseFileSystem_Update_ContextRep(t_Context);
+					continue;
+				}else{
+					if(t_4=="}"){
+						if(!t_Context.p_IsEmpty()){
+							t_Context.p_Pop();
+						}
+						t_Cache_Context=bb_virtualos___OS_ParseFileSystem_Update_ContextRep(t_Context);
+						continue;
+					}else{
+						t_IsFileDescriptor=false;
+						t_S.p_Seek(t_Origin);
+					}
+				}
+			}
+		}
+		var t_Line=t_S.p_ReadLine();
+		var t_Entries=t_Line.split(",");
+		if(!t_IsFileDescriptor){
+			t_LastMasterPath=t_Entries[t_Entries.length-1];
+		}
+		for(var t_I=0;t_I<t_Entries.length;t_I=t_I+1){
+			var t_E=t_Entries[t_I];
+			var t_E_Length=t_E.length;
+			t_E=t_Cache_Context+bb_virtualos_SmartClip(t_E,32,t_E_Length);
+			var t_Time_First=t_E.indexOf("[",0);
+			if(t_Time_First!=-1){
+				var t_Processed_E=t_E.slice(0,t_Time_First);
+				bb_virtualos___OS_ParseFileSystem_CreateFileEntry(t_Processed_E,t_IsFileDescriptor);
+			}else{
+				bb_virtualos___OS_ParseFileSystem_CreateFileEntry(t_E,t_IsFileDescriptor);
+			}
+		}
+	}
+	return;
+}
+function bb_virtualos___OS_ParseFileSystem2(t_S){
+	bb_virtualos___OS_ParseFileSystem(t_S,(c_StringStack.m_new2.call(new c_StringStack)),true);
+	return;
+}
+function bb_virtualos___OS_AddFileSystem(t_URL){
+	var t_FileData=__os_download_as_string(t_URL);
+	var t_Buf=c_DataBuffer.m_new.call(new c_DataBuffer,t_FileData.length,false);
+	t_Buf.p_PokeString(0,t_FileData,"utf8");
+	var t_SS=c_DataStream.m_new.call(new c_DataStream,t_Buf,0);
+	bb_virtualos___OS_ParseFileSystem2(t_SS);
+	return;
+}
+function bb_virtualos_ExtractDir(t_Path){
+	var t_I=t_Path.lastIndexOf("/");
+	if(t_I==-1){
+		t_I=t_Path.lastIndexOf("\\");
+	}
+	if(t_I!=-1){
+		return t_Path.slice(0,t_I);
+	}
+	return "";
+}
 function c_Map(){
 	Object.call(this);
 	this.m_root=null;
@@ -2863,120 +3327,28 @@ c_Map.prototype.p_FindNode=function(t_key){
 	}
 	return t_node;
 }
-c_Map.prototype.p_Contains=function(t_key){
-	return this.p_FindNode(t_key)!=null;
-}
 c_Map.prototype.p_Get2=function(t_key){
 	var t_node=this.p_FindNode(t_key);
 	if((t_node)!=null){
 		return t_node.m_value;
 	}
-	return 0;
+	return "";
 }
-c_Map.prototype.p_DeleteFixup=function(t_node,t_parent){
-	while(t_node!=this.m_root && (!((t_node)!=null) || t_node.m_color==1)){
-		if(t_node==t_parent.m_left){
-			var t_sib=t_parent.m_right;
-			if(t_sib.m_color==-1){
-				t_sib.m_color=1;
-				t_parent.m_color=-1;
-				this.p_RotateLeft(t_parent);
-				t_sib=t_parent.m_right;
-			}
-			if((!((t_sib.m_left)!=null) || t_sib.m_left.m_color==1) && (!((t_sib.m_right)!=null) || t_sib.m_right.m_color==1)){
-				t_sib.m_color=-1;
-				t_node=t_parent;
-				t_parent=t_parent.m_parent;
-			}else{
-				if(!((t_sib.m_right)!=null) || t_sib.m_right.m_color==1){
-					t_sib.m_left.m_color=1;
-					t_sib.m_color=-1;
-					this.p_RotateRight(t_sib);
-					t_sib=t_parent.m_right;
-				}
-				t_sib.m_color=t_parent.m_color;
-				t_parent.m_color=1;
-				t_sib.m_right.m_color=1;
-				this.p_RotateLeft(t_parent);
-				t_node=this.m_root;
-			}
-		}else{
-			var t_sib2=t_parent.m_left;
-			if(t_sib2.m_color==-1){
-				t_sib2.m_color=1;
-				t_parent.m_color=-1;
-				this.p_RotateRight(t_parent);
-				t_sib2=t_parent.m_left;
-			}
-			if((!((t_sib2.m_right)!=null) || t_sib2.m_right.m_color==1) && (!((t_sib2.m_left)!=null) || t_sib2.m_left.m_color==1)){
-				t_sib2.m_color=-1;
-				t_node=t_parent;
-				t_parent=t_parent.m_parent;
-			}else{
-				if(!((t_sib2.m_left)!=null) || t_sib2.m_left.m_color==1){
-					t_sib2.m_right.m_color=1;
-					t_sib2.m_color=-1;
-					this.p_RotateLeft(t_sib2);
-					t_sib2=t_parent.m_left;
-				}
-				t_sib2.m_color=t_parent.m_color;
-				t_parent.m_color=1;
-				t_sib2.m_left.m_color=1;
-				this.p_RotateRight(t_parent);
-				t_node=this.m_root;
-			}
-		}
-	}
-	if((t_node)!=null){
-		t_node.m_color=1;
-	}
-	return 0;
+c_Map.prototype.p_Contains=function(t_key){
+	return this.p_FindNode(t_key)!=null;
 }
-c_Map.prototype.p_RemoveNode=function(t_node){
-	var t_splice=null;
-	var t_child=null;
-	if(!((t_node.m_left)!=null)){
-		t_splice=t_node;
-		t_child=t_node.m_right;
-	}else{
-		if(!((t_node.m_right)!=null)){
-			t_splice=t_node;
-			t_child=t_node.m_left;
-		}else{
-			t_splice=t_node.m_left;
-			while((t_splice.m_right)!=null){
-				t_splice=t_splice.m_right;
-			}
-			t_child=t_splice.m_left;
-			t_node.m_key=t_splice.m_key;
-			t_node.m_value=t_splice.m_value;
-		}
+c_Map.prototype.p_FirstNode=function(){
+	if(!((this.m_root)!=null)){
+		return null;
 	}
-	var t_parent=t_splice.m_parent;
-	if((t_child)!=null){
-		t_child.m_parent=t_parent;
+	var t_node=this.m_root;
+	while((t_node.m_left)!=null){
+		t_node=t_node.m_left;
 	}
-	if(!((t_parent)!=null)){
-		this.m_root=t_child;
-		return 0;
-	}
-	if(t_splice==t_parent.m_left){
-		t_parent.m_left=t_child;
-	}else{
-		t_parent.m_right=t_child;
-	}
-	if(t_splice.m_color==1){
-		this.p_DeleteFixup(t_child,t_parent);
-	}
-	return 0;
+	return t_node;
 }
-c_Map.prototype.p_Remove=function(t_key){
-	var t_node=this.p_FindNode(t_key);
-	if(!((t_node)!=null)){
-		return 0;
-	}
-	this.p_RemoveNode(t_node);
-	return 1;
+c_Map.prototype.p_ObjectEnumerator=function(){
+	return c_NodeEnumerator3.m_new.call(new c_NodeEnumerator3,this.p_FirstNode());
 }
 function c_StringMap(){
 	c_Map.call(this);
@@ -2989,13 +3361,13 @@ c_StringMap.m_new=function(){
 c_StringMap.prototype.p_Compare=function(t_lhs,t_rhs){
 	return string_compare(t_lhs,t_rhs);
 }
-var bb_virtualos___OS_FileTimes=null;
+var bb_virtualos___OS_Env=null;
 function c_Node(){
 	Object.call(this);
 	this.m_key="";
 	this.m_right=null;
 	this.m_left=null;
-	this.m_value=0;
+	this.m_value="";
 	this.m_color=0;
 	this.m_parent=null;
 }
@@ -3009,284 +3381,7 @@ c_Node.m_new=function(t_key,t_value,t_color,t_parent){
 c_Node.m_new2=function(){
 	return this;
 }
-function bb_virtualos___OS_SetFileTime(t_RealPath,t_Time){
-	bb_virtualos___OS_FileTimes.p_Set(t_RealPath,t_Time);
-	return;
-}
-function bb_virtualos___OS_ParseFileSystem(t_S,t_Context,t_OpenPrefix){
-	var t_LastMasterPath="";
-	var t_Cache_Context="";
-	while(!((t_S.p_Eof())!=0)){
-		var t_Origin=t_S.p_Position();
-		var t_IsFileDescriptor=false;
-		var t_FirstChar=t_S.p_ReadString(1,"utf8");
-		var t_4=t_FirstChar;
-		if(t_4=="\n" || t_4=="\r" || t_4=="\t" || t_4==" "){
-			continue;
-		}else{
-			if(t_4=="!"){
-				t_IsFileDescriptor=true;
-			}else{
-				if(t_4=="{"){
-					t_Context.p_Push(t_LastMasterPath);
-					t_Cache_Context=bb_virtualos___OS_ParseFileSystem_Update_ContextRep(t_Context);
-					continue;
-				}else{
-					if(t_4=="}"){
-						if(!t_Context.p_IsEmpty()){
-							t_Context.p_Pop();
-						}
-						t_Cache_Context=bb_virtualos___OS_ParseFileSystem_Update_ContextRep(t_Context);
-						continue;
-					}else{
-						t_IsFileDescriptor=false;
-						t_S.p_Seek(t_Origin);
-					}
-				}
-			}
-		}
-		var t_Line=t_S.p_ReadLine();
-		var t_Entries=t_Line.split(",");
-		if(!t_IsFileDescriptor){
-			t_LastMasterPath=t_Entries[t_Entries.length-1];
-		}
-		for(var t_I=0;t_I<t_Entries.length;t_I=t_I+1){
-			var t_E=t_Entries[t_I];
-			var t_E_Length=t_E.length;
-			t_E=t_Cache_Context+bb_virtualos_SmartClip(t_E,32,t_E_Length);
-			var t_Time_First=t_E.indexOf("[",0);
-			if(t_Time_First!=-1){
-				var t_Processed_E=t_E.slice(0,t_Time_First);
-				var t_Time_Second=t_E.indexOf("]",0);
-				if(t_Time_Second!=-1){
-					var t_FTime=parseInt((t_E.slice(t_Time_First+1,t_Time_Second)),10);
-					if(t_FTime!=0){
-						bb_virtualos___OS_SetFileTime(RealPath(t_Processed_E),t_FTime);
-					}
-				}
-				t_E=t_Processed_E;
-			}
-			if(t_IsFileDescriptor){
-				__os_createFileLink(RealPath(t_E));
-			}else{
-				CreateDir(t_E);
-			}
-		}
-	}
-	return;
-}
-function bb_virtualos___OS_ParseFileSystem2(t_S){
-	bb_virtualos___OS_ParseFileSystem(t_S,(c_StringStack.m_new2.call(new c_StringStack)),true);
-	return;
-}
-function bb_virtualos___OS_AddFileSystem(t_URL){
-	var t_FileData=__os_download_as_string(t_URL);
-	var t_Buf=c_DataBuffer.m_new.call(new c_DataBuffer,t_FileData.length,false);
-	t_Buf.p_PokeString(0,t_FileData,"utf8");
-	var t_SS=c_DataStream.m_new.call(new c_DataStream,t_Buf,0);
-	bb_virtualos___OS_ParseFileSystem2(t_SS);
-	return;
-}
-function bb_virtualos_ExtractDir(t_Path){
-	var t_I=t_Path.lastIndexOf("/");
-	if(t_I==-1){
-		t_I=t_Path.lastIndexOf("\\");
-	}
-	if(t_I!=-1){
-		return t_Path.slice(0,t_I);
-	}
-	return "";
-}
-function c_Map2(){
-	Object.call(this);
-	this.m_root=null;
-}
-c_Map2.m_new=function(){
-	return this;
-}
-c_Map2.prototype.p_Compare=function(t_lhs,t_rhs){
-}
-c_Map2.prototype.p_RotateLeft2=function(t_node){
-	var t_child=t_node.m_right;
-	t_node.m_right=t_child.m_left;
-	if((t_child.m_left)!=null){
-		t_child.m_left.m_parent=t_node;
-	}
-	t_child.m_parent=t_node.m_parent;
-	if((t_node.m_parent)!=null){
-		if(t_node==t_node.m_parent.m_left){
-			t_node.m_parent.m_left=t_child;
-		}else{
-			t_node.m_parent.m_right=t_child;
-		}
-	}else{
-		this.m_root=t_child;
-	}
-	t_child.m_left=t_node;
-	t_node.m_parent=t_child;
-	return 0;
-}
-c_Map2.prototype.p_RotateRight2=function(t_node){
-	var t_child=t_node.m_left;
-	t_node.m_left=t_child.m_right;
-	if((t_child.m_right)!=null){
-		t_child.m_right.m_parent=t_node;
-	}
-	t_child.m_parent=t_node.m_parent;
-	if((t_node.m_parent)!=null){
-		if(t_node==t_node.m_parent.m_right){
-			t_node.m_parent.m_right=t_child;
-		}else{
-			t_node.m_parent.m_left=t_child;
-		}
-	}else{
-		this.m_root=t_child;
-	}
-	t_child.m_right=t_node;
-	t_node.m_parent=t_child;
-	return 0;
-}
-c_Map2.prototype.p_InsertFixup2=function(t_node){
-	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
-		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
-			var t_uncle=t_node.m_parent.m_parent.m_right;
-			if(((t_uncle)!=null) && t_uncle.m_color==-1){
-				t_node.m_parent.m_color=1;
-				t_uncle.m_color=1;
-				t_uncle.m_parent.m_color=-1;
-				t_node=t_uncle.m_parent;
-			}else{
-				if(t_node==t_node.m_parent.m_right){
-					t_node=t_node.m_parent;
-					this.p_RotateLeft2(t_node);
-				}
-				t_node.m_parent.m_color=1;
-				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateRight2(t_node.m_parent.m_parent);
-			}
-		}else{
-			var t_uncle2=t_node.m_parent.m_parent.m_left;
-			if(((t_uncle2)!=null) && t_uncle2.m_color==-1){
-				t_node.m_parent.m_color=1;
-				t_uncle2.m_color=1;
-				t_uncle2.m_parent.m_color=-1;
-				t_node=t_uncle2.m_parent;
-			}else{
-				if(t_node==t_node.m_parent.m_left){
-					t_node=t_node.m_parent;
-					this.p_RotateRight2(t_node);
-				}
-				t_node.m_parent.m_color=1;
-				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateLeft2(t_node.m_parent.m_parent);
-			}
-		}
-	}
-	this.m_root.m_color=1;
-	return 0;
-}
-c_Map2.prototype.p_Set2=function(t_key,t_value){
-	var t_node=this.m_root;
-	var t_parent=null;
-	var t_cmp=0;
-	while((t_node)!=null){
-		t_parent=t_node;
-		t_cmp=this.p_Compare(t_key,t_node.m_key);
-		if(t_cmp>0){
-			t_node=t_node.m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node.m_left;
-			}else{
-				t_node.m_value=t_value;
-				return false;
-			}
-		}
-	}
-	t_node=c_Node2.m_new.call(new c_Node2,t_key,t_value,-1,t_parent);
-	if((t_parent)!=null){
-		if(t_cmp>0){
-			t_parent.m_right=t_node;
-		}else{
-			t_parent.m_left=t_node;
-		}
-		this.p_InsertFixup2(t_node);
-	}else{
-		this.m_root=t_node;
-	}
-	return true;
-}
-c_Map2.prototype.p_FindNode=function(t_key){
-	var t_node=this.m_root;
-	while((t_node)!=null){
-		var t_cmp=this.p_Compare(t_key,t_node.m_key);
-		if(t_cmp>0){
-			t_node=t_node.m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node.m_left;
-			}else{
-				return t_node;
-			}
-		}
-	}
-	return t_node;
-}
-c_Map2.prototype.p_Get2=function(t_key){
-	var t_node=this.p_FindNode(t_key);
-	if((t_node)!=null){
-		return t_node.m_value;
-	}
-	return "";
-}
-c_Map2.prototype.p_Contains=function(t_key){
-	return this.p_FindNode(t_key)!=null;
-}
-c_Map2.prototype.p_FirstNode=function(){
-	if(!((this.m_root)!=null)){
-		return null;
-	}
-	var t_node=this.m_root;
-	while((t_node.m_left)!=null){
-		t_node=t_node.m_left;
-	}
-	return t_node;
-}
-c_Map2.prototype.p_ObjectEnumerator=function(){
-	return c_NodeEnumerator3.m_new.call(new c_NodeEnumerator3,this.p_FirstNode());
-}
-function c_StringMap2(){
-	c_Map2.call(this);
-}
-c_StringMap2.prototype=extend_class(c_Map2);
-c_StringMap2.m_new=function(){
-	c_Map2.m_new.call(this);
-	return this;
-}
-c_StringMap2.prototype.p_Compare=function(t_lhs,t_rhs){
-	return string_compare(t_lhs,t_rhs);
-}
-var bb_virtualos___OS_Env=null;
-function c_Node2(){
-	Object.call(this);
-	this.m_key="";
-	this.m_right=null;
-	this.m_left=null;
-	this.m_value="";
-	this.m_color=0;
-	this.m_parent=null;
-}
-c_Node2.m_new=function(t_key,t_value,t_color,t_parent){
-	this.m_key=t_key;
-	this.m_value=t_value;
-	this.m_color=t_color;
-	this.m_parent=t_parent;
-	return this;
-}
-c_Node2.m_new2=function(){
-	return this;
-}
-c_Node2.prototype.p_NextNode=function(){
+c_Node.prototype.p_NextNode=function(){
 	var t_node=null;
 	if((this.m_right)!=null){
 		t_node=this.m_right;
@@ -3303,14 +3398,14 @@ c_Node2.prototype.p_NextNode=function(){
 	}
 	return t_parent;
 }
-c_Node2.prototype.p_Key=function(){
+c_Node.prototype.p_Key=function(){
 	return this.m_key;
 }
-c_Node2.prototype.p_Value=function(){
+c_Node.prototype.p_Value=function(){
 	return this.m_value;
 }
 function bb_virtualos_SetEnv(t_Name,t_Value){
-	bb_virtualos___OS_Env.p_Set2(t_Name,t_Value);
+	bb_virtualos___OS_Env.p_Set(t_Name,t_Value);
 	return;
 }
 function bb_webcc_StripQuotes(t_Str){
@@ -3562,7 +3657,7 @@ c_Decl.prototype.p_IsFinal=function(){
 function c_ScopeDecl(){
 	c_Decl.call(this);
 	this.m_decls=c_List3.m_new.call(new c_List3);
-	this.m_declsMap=c_StringMap5.m_new.call(new c_StringMap5);
+	this.m_declsMap=c_StringMap4.m_new.call(new c_StringMap4);
 	this.m_semanted=c_List3.m_new.call(new c_List3);
 }
 c_ScopeDecl.prototype=extend_class(c_Decl);
@@ -3868,8 +3963,8 @@ c_ScopeDecl.prototype.p_FindScopeDecl=function(t_ident){
 }
 function c_ConfigScope(){
 	c_ScopeDecl.call(this);
-	this.m_cdecls=c_StringMap3.m_new.call(new c_StringMap3);
-	this.m_vars=c_StringMap2.m_new.call(new c_StringMap2);
+	this.m_cdecls=c_StringMap2.m_new.call(new c_StringMap2);
+	this.m_vars=c_StringMap.m_new.call(new c_StringMap);
 }
 c_ConfigScope.prototype=extend_class(c_ScopeDecl);
 c_ConfigScope.m_new=function(){
@@ -3954,16 +4049,16 @@ c_ConstDecl.prototype.p_OnSemant=function(){
 	}
 	return 0;
 }
-function c_Map3(){
+function c_Map2(){
 	Object.call(this);
 	this.m_root=null;
 }
-c_Map3.m_new=function(){
+c_Map2.m_new=function(){
 	return this;
 }
-c_Map3.prototype.p_Compare=function(t_lhs,t_rhs){
+c_Map2.prototype.p_Compare=function(t_lhs,t_rhs){
 }
-c_Map3.prototype.p_FindNode=function(t_key){
+c_Map2.prototype.p_FindNode=function(t_key){
 	var t_node=this.m_root;
 	while((t_node)!=null){
 		var t_cmp=this.p_Compare(t_key,t_node.m_key);
@@ -3979,14 +4074,14 @@ c_Map3.prototype.p_FindNode=function(t_key){
 	}
 	return t_node;
 }
-c_Map3.prototype.p_Get2=function(t_key){
+c_Map2.prototype.p_Get2=function(t_key){
 	var t_node=this.p_FindNode(t_key);
 	if((t_node)!=null){
 		return t_node.m_value;
 	}
 	return null;
 }
-c_Map3.prototype.p_RotateLeft3=function(t_node){
+c_Map2.prototype.p_RotateLeft2=function(t_node){
 	var t_child=t_node.m_right;
 	t_node.m_right=t_child.m_left;
 	if((t_child.m_left)!=null){
@@ -4006,7 +4101,7 @@ c_Map3.prototype.p_RotateLeft3=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map3.prototype.p_RotateRight3=function(t_node){
+c_Map2.prototype.p_RotateRight2=function(t_node){
 	var t_child=t_node.m_left;
 	t_node.m_left=t_child.m_right;
 	if((t_child.m_right)!=null){
@@ -4026,7 +4121,7 @@ c_Map3.prototype.p_RotateRight3=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map3.prototype.p_InsertFixup3=function(t_node){
+c_Map2.prototype.p_InsertFixup2=function(t_node){
 	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
 		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
 			var t_uncle=t_node.m_parent.m_parent.m_right;
@@ -4038,11 +4133,11 @@ c_Map3.prototype.p_InsertFixup3=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_right){
 					t_node=t_node.m_parent;
-					this.p_RotateLeft3(t_node);
+					this.p_RotateLeft2(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateRight3(t_node.m_parent.m_parent);
+				this.p_RotateRight2(t_node.m_parent.m_parent);
 			}
 		}else{
 			var t_uncle2=t_node.m_parent.m_parent.m_left;
@@ -4054,18 +4149,18 @@ c_Map3.prototype.p_InsertFixup3=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_left){
 					t_node=t_node.m_parent;
-					this.p_RotateRight3(t_node);
+					this.p_RotateRight2(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateLeft3(t_node.m_parent.m_parent);
+				this.p_RotateLeft2(t_node.m_parent.m_parent);
 			}
 		}
 	}
 	this.m_root.m_color=1;
 	return 0;
 }
-c_Map3.prototype.p_Set3=function(t_key,t_value){
+c_Map2.prototype.p_Set2=function(t_key,t_value){
 	var t_node=this.m_root;
 	var t_parent=null;
 	var t_cmp=0;
@@ -4083,34 +4178,34 @@ c_Map3.prototype.p_Set3=function(t_key,t_value){
 			}
 		}
 	}
-	t_node=c_Node3.m_new.call(new c_Node3,t_key,t_value,-1,t_parent);
+	t_node=c_Node2.m_new.call(new c_Node2,t_key,t_value,-1,t_parent);
 	if((t_parent)!=null){
 		if(t_cmp>0){
 			t_parent.m_right=t_node;
 		}else{
 			t_parent.m_left=t_node;
 		}
-		this.p_InsertFixup3(t_node);
+		this.p_InsertFixup2(t_node);
 	}else{
 		this.m_root=t_node;
 	}
 	return true;
 }
-c_Map3.prototype.p_Contains=function(t_key){
+c_Map2.prototype.p_Contains=function(t_key){
 	return this.p_FindNode(t_key)!=null;
 }
-function c_StringMap3(){
-	c_Map3.call(this);
+function c_StringMap2(){
+	c_Map2.call(this);
 }
-c_StringMap3.prototype=extend_class(c_Map3);
-c_StringMap3.m_new=function(){
-	c_Map3.m_new.call(this);
+c_StringMap2.prototype=extend_class(c_Map2);
+c_StringMap2.m_new=function(){
+	c_Map2.m_new.call(this);
 	return this;
 }
-c_StringMap3.prototype.p_Compare=function(t_lhs,t_rhs){
+c_StringMap2.prototype.p_Compare=function(t_lhs,t_rhs){
 	return string_compare(t_lhs,t_rhs);
 }
-function c_Node3(){
+function c_Node2(){
 	Object.call(this);
 	this.m_key="";
 	this.m_right=null;
@@ -4119,14 +4214,14 @@ function c_Node3(){
 	this.m_color=0;
 	this.m_parent=null;
 }
-c_Node3.m_new=function(t_key,t_value,t_color,t_parent){
+c_Node2.m_new=function(t_key,t_value,t_color,t_parent){
 	this.m_key=t_key;
 	this.m_value=t_value;
 	this.m_color=t_color;
 	this.m_parent=t_parent;
 	return this;
 }
-c_Node3.m_new2=function(){
+c_Node2.m_new2=function(){
 	return this;
 }
 function c_Expr(){
@@ -4282,7 +4377,7 @@ function bb_config_SetConfigVar(t_key,t_val,t_type){
 		t_decl.m_type=t_type;
 	}else{
 		t_decl=c_ConstDecl.m_new.call(new c_ConstDecl,t_key,1048576,t_type,null);
-		bb_config__cfgScope.m_cdecls.p_Set3(t_key,t_decl);
+		bb_config__cfgScope.m_cdecls.p_Set2(t_key,t_decl);
 	}
 	t_decl.m_value=t_val;
 	if((object_downcast((t_type),c_BoolType))!=null){
@@ -4292,7 +4387,7 @@ function bb_config_SetConfigVar(t_key,t_val,t_type){
 			t_val="0";
 		}
 	}
-	bb_config__cfgScope.m_vars.p_Set2(t_key,t_val);
+	bb_config__cfgScope.m_vars.p_Set(t_key,t_val);
 	return 0;
 }
 function bb_config_SetConfigVar2(t_key,t_val){
@@ -4349,7 +4444,7 @@ function c_Builder(){
 	this.m_BINARY_FILES="";
 	this.m_DATA_FILES="";
 	this.m_syncData=false;
-	this.m_dataFiles=c_StringMap2.m_new.call(new c_StringMap2);
+	this.m_dataFiles=c_StringMap.m_new.call(new c_StringMap);
 }
 c_Builder.m_new=function(t_WCC){
 	this.m_WCC=t_WCC;
@@ -4485,9 +4580,9 @@ c_Builder.prototype.p_Make=function(){
 	ChangeDir(t_cd);
 }
 c_Builder.prototype.p_CCopyFile=function(t_src,t_dst){
-	if(bb_virtualos_FileTime(t_src)>bb_virtualos_FileTime(t_dst) || FileSize(t_src)!=FileSize(t_dst)){
-		bb_virtualos_DeleteFile(t_dst);
-		bb_virtualos_CopyFile(t_src,t_dst);
+	if(FileTime(t_src)>FileTime(t_dst) || FileSize(t_src)!=FileSize(t_dst)){
+		DeleteFile(t_dst);
+		CopyFile(t_src,t_dst);
 	}
 }
 c_Builder.prototype.p_CreateDataDir=function(t_dir){
@@ -4525,7 +4620,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 					if(bb_webcc_MatchPath(t_r,this.m_DATA_FILES)){
 						this.p_CCopyFile(t_p,t_t);
 						t_udata.p_Insert(t_t);
-						this.m_dataFiles.p_Set2(t_p,t_r);
+						this.m_dataFiles.p_Set(t_p,t_r);
 					}
 				}else{
 					if(t_22==2){
@@ -4544,7 +4639,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 		if(bb_webcc_MatchPath(t_r2,this.m_DATA_FILES)){
 			this.p_CCopyFile(t_p2,t_t2);
 			t_udata.p_Insert(t_t2);
-			this.m_dataFiles.p_Set2(t_p2,t_r2);
+			this.m_dataFiles.p_Set(t_p2,t_r2);
 		}
 	}
 	if((t_dataPath).length!=0){
@@ -4566,7 +4661,7 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 				var t_32=FileType(t_p3);
 				if(t_32==1){
 					if(!t_udata.p_Contains(t_p3)){
-						bb_virtualos_DeleteFile(t_p3);
+						DeleteFile(t_p3);
 					}
 				}else{
 					if(t_32==2){
@@ -4584,16 +4679,16 @@ c_Builder.prototype.p_CreateDataDir=function(t_dir){
 c_Builder.prototype.p_Execute=function(t_cmd,t_failHard){
 	return this.m_WCC.p_Execute(t_cmd,t_failHard);
 }
-function c_Map4(){
+function c_Map3(){
 	Object.call(this);
 	this.m_root=null;
 }
-c_Map4.m_new=function(){
+c_Map3.m_new=function(){
 	return this;
 }
-c_Map4.prototype.p_Compare=function(t_lhs,t_rhs){
+c_Map3.prototype.p_Compare=function(t_lhs,t_rhs){
 }
-c_Map4.prototype.p_RotateLeft4=function(t_node){
+c_Map3.prototype.p_RotateLeft3=function(t_node){
 	var t_child=t_node.m_right;
 	t_node.m_right=t_child.m_left;
 	if((t_child.m_left)!=null){
@@ -4613,7 +4708,7 @@ c_Map4.prototype.p_RotateLeft4=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map4.prototype.p_RotateRight4=function(t_node){
+c_Map3.prototype.p_RotateRight3=function(t_node){
 	var t_child=t_node.m_left;
 	t_node.m_left=t_child.m_right;
 	if((t_child.m_right)!=null){
@@ -4633,7 +4728,7 @@ c_Map4.prototype.p_RotateRight4=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map4.prototype.p_InsertFixup4=function(t_node){
+c_Map3.prototype.p_InsertFixup3=function(t_node){
 	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
 		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
 			var t_uncle=t_node.m_parent.m_parent.m_right;
@@ -4645,11 +4740,11 @@ c_Map4.prototype.p_InsertFixup4=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_right){
 					t_node=t_node.m_parent;
-					this.p_RotateLeft4(t_node);
+					this.p_RotateLeft3(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateRight4(t_node.m_parent.m_parent);
+				this.p_RotateRight3(t_node.m_parent.m_parent);
 			}
 		}else{
 			var t_uncle2=t_node.m_parent.m_parent.m_left;
@@ -4661,18 +4756,18 @@ c_Map4.prototype.p_InsertFixup4=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_left){
 					t_node=t_node.m_parent;
-					this.p_RotateRight4(t_node);
+					this.p_RotateRight3(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateLeft4(t_node.m_parent.m_parent);
+				this.p_RotateLeft3(t_node.m_parent.m_parent);
 			}
 		}
 	}
 	this.m_root.m_color=1;
 	return 0;
 }
-c_Map4.prototype.p_Set4=function(t_key,t_value){
+c_Map3.prototype.p_Set3=function(t_key,t_value){
 	var t_node=this.m_root;
 	var t_parent=null;
 	var t_cmp=0;
@@ -4690,20 +4785,20 @@ c_Map4.prototype.p_Set4=function(t_key,t_value){
 			}
 		}
 	}
-	t_node=c_Node4.m_new.call(new c_Node4,t_key,t_value,-1,t_parent);
+	t_node=c_Node3.m_new.call(new c_Node3,t_key,t_value,-1,t_parent);
 	if((t_parent)!=null){
 		if(t_cmp>0){
 			t_parent.m_right=t_node;
 		}else{
 			t_parent.m_left=t_node;
 		}
-		this.p_InsertFixup4(t_node);
+		this.p_InsertFixup3(t_node);
 	}else{
 		this.m_root=t_node;
 	}
 	return true;
 }
-c_Map4.prototype.p_FirstNode=function(){
+c_Map3.prototype.p_FirstNode=function(){
 	if(!((this.m_root)!=null)){
 		return null;
 	}
@@ -4713,10 +4808,10 @@ c_Map4.prototype.p_FirstNode=function(){
 	}
 	return t_node;
 }
-c_Map4.prototype.p_ObjectEnumerator=function(){
+c_Map3.prototype.p_ObjectEnumerator=function(){
 	return c_NodeEnumerator.m_new.call(new c_NodeEnumerator,this.p_FirstNode());
 }
-c_Map4.prototype.p_FindNode=function(t_key){
+c_Map3.prototype.p_FindNode=function(t_key){
 	var t_node=this.m_root;
 	while((t_node)!=null){
 		var t_cmp=this.p_Compare(t_key,t_node.m_key);
@@ -4732,22 +4827,22 @@ c_Map4.prototype.p_FindNode=function(t_key){
 	}
 	return t_node;
 }
-c_Map4.prototype.p_Get2=function(t_key){
+c_Map3.prototype.p_Get2=function(t_key){
 	var t_node=this.p_FindNode(t_key);
 	if((t_node)!=null){
 		return t_node.m_value;
 	}
 	return null;
 }
-function c_StringMap4(){
-	c_Map4.call(this);
+function c_StringMap3(){
+	c_Map3.call(this);
 }
-c_StringMap4.prototype=extend_class(c_Map4);
-c_StringMap4.m_new=function(){
-	c_Map4.m_new.call(this);
+c_StringMap3.prototype=extend_class(c_Map3);
+c_StringMap3.m_new=function(){
+	c_Map3.m_new.call(this);
 	return this;
 }
-c_StringMap4.prototype.p_Compare=function(t_lhs,t_rhs){
+c_StringMap3.prototype.p_Compare=function(t_lhs,t_rhs){
 	return string_compare(t_lhs,t_rhs);
 }
 function c_Html5Builder(){
@@ -4826,7 +4921,7 @@ c_Html5Builder.prototype.p_MakeTarget=function(){
 		this.p_Execute(t_t,false);
 	}
 }
-function c_Node4(){
+function c_Node3(){
 	Object.call(this);
 	this.m_key="";
 	this.m_right=null;
@@ -4835,17 +4930,17 @@ function c_Node4(){
 	this.m_color=0;
 	this.m_parent=null;
 }
-c_Node4.m_new=function(t_key,t_value,t_color,t_parent){
+c_Node3.m_new=function(t_key,t_value,t_color,t_parent){
 	this.m_key=t_key;
 	this.m_value=t_value;
 	this.m_color=t_color;
 	this.m_parent=t_parent;
 	return this;
 }
-c_Node4.m_new2=function(){
+c_Node3.m_new2=function(){
 	return this;
 }
-c_Node4.prototype.p_NextNode=function(){
+c_Node3.prototype.p_NextNode=function(){
 	var t_node=null;
 	if((this.m_right)!=null){
 		t_node=this.m_right;
@@ -4862,15 +4957,15 @@ c_Node4.prototype.p_NextNode=function(){
 	}
 	return t_parent;
 }
-c_Node4.prototype.p_Value=function(){
+c_Node3.prototype.p_Value=function(){
 	return this.m_value;
 }
-c_Node4.prototype.p_Key=function(){
+c_Node3.prototype.p_Key=function(){
 	return this.m_key;
 }
 function bb_builders_Builders(t_WCC){
-	var t_BuildMap=c_StringMap4.m_new.call(new c_StringMap4);
-	t_BuildMap.p_Set4("html5",(c_Html5Builder.m_new.call(new c_Html5Builder,t_WCC)));
+	var t_BuildMap=c_StringMap3.m_new.call(new c_StringMap3);
+	t_BuildMap.p_Set3("html5",(c_Html5Builder.m_new.call(new c_Html5Builder,t_WCC)));
 	return t_BuildMap;
 }
 function c_NodeEnumerator(){
@@ -5076,9 +5171,9 @@ function c_ModuleDecl(){
 	this.m_rmodpath="";
 	this.m_filepath="";
 	this.m_modpath="";
-	this.m_imported=c_StringMap6.m_new.call(new c_StringMap6);
+	this.m_imported=c_StringMap5.m_new.call(new c_StringMap5);
 	this.m_friends=c_StringSet.m_new.call(new c_StringSet);
-	this.m_pubImported=c_StringMap6.m_new.call(new c_StringMap6);
+	this.m_pubImported=c_StringMap5.m_new.call(new c_StringMap5);
 }
 c_ModuleDecl.prototype=extend_class(c_ScopeDecl);
 c_ModuleDecl.m_new=function(t_ident,t_attrs,t_munged,t_modpath,t_filepath,t_app){
@@ -5096,7 +5191,7 @@ c_ModuleDecl.m_new=function(t_ident,t_attrs,t_munged,t_modpath,t_filepath,t_app)
 			this.m_rmodpath=bb_virtualos_StripExt(t_modpath);
 		}
 	}
-	this.m_imported.p_Set6(t_filepath,this);
+	this.m_imported.p_Set5(t_filepath,this);
 	t_app.p_InsertModule(this);
 	return this;
 }
@@ -5212,7 +5307,7 @@ c_ModuleDecl.prototype.p_GetDecl2=function(t_ident){
 }
 c_ModuleDecl.prototype.p_GetDecl=function(t_ident){
 	var t_todo=c_List9.m_new.call(new c_List9);
-	var t_done=c_StringMap6.m_new.call(new c_StringMap6);
+	var t_done=c_StringMap5.m_new.call(new c_StringMap5);
 	t_todo.p_AddLast9(this);
 	t_done.p_Insert3(this.m_filepath,this);
 	var t_decl=null;
@@ -5285,7 +5380,7 @@ c_List.m_new=function(){
 	return this;
 }
 c_List.prototype.p_AddLast=function(t_data){
-	return c_Node5.m_new.call(new c_Node5,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node4.m_new.call(new c_Node4,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List.m_new2=function(t_data){
 	var t_=t_data;
@@ -5302,7 +5397,7 @@ c_List.prototype.p_IsEmpty=function(){
 }
 c_List.prototype.p_RemoveLast=function(){
 	var t_data=this.m__head.m__pred.m__data;
-	this.m__head.m__pred.p_Remove2();
+	this.m__head.m__pred.p_Remove();
 	return t_data;
 }
 c_List.prototype.p_Equals=function(t_lhs,t_rhs){
@@ -5323,16 +5418,16 @@ c_List.prototype.p_FindLast2=function(t_value){
 c_List.prototype.p_RemoveLast2=function(t_value){
 	var t_node=this.p_FindLast2(t_value);
 	if((t_node)!=null){
-		t_node.p_Remove2();
+		t_node.p_Remove();
 	}
 }
-function c_Node5(){
+function c_Node4(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node5.m_new=function(t_succ,t_pred,t_data){
+c_Node4.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -5340,20 +5435,20 @@ c_Node5.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node5.m_new2=function(){
+c_Node4.m_new2=function(){
 	return this;
 }
-c_Node5.prototype.p_Remove2=function(){
+c_Node4.prototype.p_Remove=function(){
 	this.m__succ.m__pred=this.m__pred;
 	this.m__pred.m__succ=this.m__succ;
 	return 0;
 }
 function c_HeadNode(){
-	c_Node5.call(this);
+	c_Node4.call(this);
 }
-c_HeadNode.prototype=extend_class(c_Node5);
+c_HeadNode.prototype=extend_class(c_Node4);
 c_HeadNode.m_new=function(){
-	c_Node5.m_new2.call(this);
+	c_Node4.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -5607,8 +5702,289 @@ function c_StringSet(){
 }
 c_StringSet.prototype=extend_class(c_Set);
 c_StringSet.m_new=function(){
-	c_Set.m_new.call(this,(c_StringMap5.m_new.call(new c_StringMap5)));
+	c_Set.m_new.call(this,(c_StringMap4.m_new.call(new c_StringMap4)));
 	return this;
+}
+function c_Map4(){
+	Object.call(this);
+	this.m_root=null;
+}
+c_Map4.m_new=function(){
+	return this;
+}
+c_Map4.prototype.p_Compare=function(t_lhs,t_rhs){
+}
+c_Map4.prototype.p_RotateLeft4=function(t_node){
+	var t_child=t_node.m_right;
+	t_node.m_right=t_child.m_left;
+	if((t_child.m_left)!=null){
+		t_child.m_left.m_parent=t_node;
+	}
+	t_child.m_parent=t_node.m_parent;
+	if((t_node.m_parent)!=null){
+		if(t_node==t_node.m_parent.m_left){
+			t_node.m_parent.m_left=t_child;
+		}else{
+			t_node.m_parent.m_right=t_child;
+		}
+	}else{
+		this.m_root=t_child;
+	}
+	t_child.m_left=t_node;
+	t_node.m_parent=t_child;
+	return 0;
+}
+c_Map4.prototype.p_RotateRight4=function(t_node){
+	var t_child=t_node.m_left;
+	t_node.m_left=t_child.m_right;
+	if((t_child.m_right)!=null){
+		t_child.m_right.m_parent=t_node;
+	}
+	t_child.m_parent=t_node.m_parent;
+	if((t_node.m_parent)!=null){
+		if(t_node==t_node.m_parent.m_right){
+			t_node.m_parent.m_right=t_child;
+		}else{
+			t_node.m_parent.m_left=t_child;
+		}
+	}else{
+		this.m_root=t_child;
+	}
+	t_child.m_right=t_node;
+	t_node.m_parent=t_child;
+	return 0;
+}
+c_Map4.prototype.p_InsertFixup4=function(t_node){
+	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
+		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
+			var t_uncle=t_node.m_parent.m_parent.m_right;
+			if(((t_uncle)!=null) && t_uncle.m_color==-1){
+				t_node.m_parent.m_color=1;
+				t_uncle.m_color=1;
+				t_uncle.m_parent.m_color=-1;
+				t_node=t_uncle.m_parent;
+			}else{
+				if(t_node==t_node.m_parent.m_right){
+					t_node=t_node.m_parent;
+					this.p_RotateLeft4(t_node);
+				}
+				t_node.m_parent.m_color=1;
+				t_node.m_parent.m_parent.m_color=-1;
+				this.p_RotateRight4(t_node.m_parent.m_parent);
+			}
+		}else{
+			var t_uncle2=t_node.m_parent.m_parent.m_left;
+			if(((t_uncle2)!=null) && t_uncle2.m_color==-1){
+				t_node.m_parent.m_color=1;
+				t_uncle2.m_color=1;
+				t_uncle2.m_parent.m_color=-1;
+				t_node=t_uncle2.m_parent;
+			}else{
+				if(t_node==t_node.m_parent.m_left){
+					t_node=t_node.m_parent;
+					this.p_RotateRight4(t_node);
+				}
+				t_node.m_parent.m_color=1;
+				t_node.m_parent.m_parent.m_color=-1;
+				this.p_RotateLeft4(t_node.m_parent.m_parent);
+			}
+		}
+	}
+	this.m_root.m_color=1;
+	return 0;
+}
+c_Map4.prototype.p_Set4=function(t_key,t_value){
+	var t_node=this.m_root;
+	var t_parent=null;
+	var t_cmp=0;
+	while((t_node)!=null){
+		t_parent=t_node;
+		t_cmp=this.p_Compare(t_key,t_node.m_key);
+		if(t_cmp>0){
+			t_node=t_node.m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node.m_left;
+			}else{
+				t_node.m_value=t_value;
+				return false;
+			}
+		}
+	}
+	t_node=c_Node5.m_new.call(new c_Node5,t_key,t_value,-1,t_parent);
+	if((t_parent)!=null){
+		if(t_cmp>0){
+			t_parent.m_right=t_node;
+		}else{
+			t_parent.m_left=t_node;
+		}
+		this.p_InsertFixup4(t_node);
+	}else{
+		this.m_root=t_node;
+	}
+	return true;
+}
+c_Map4.prototype.p_Insert2=function(t_key,t_value){
+	return this.p_Set4(t_key,t_value);
+}
+c_Map4.prototype.p_FindNode=function(t_key){
+	var t_node=this.m_root;
+	while((t_node)!=null){
+		var t_cmp=this.p_Compare(t_key,t_node.m_key);
+		if(t_cmp>0){
+			t_node=t_node.m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node.m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_Map4.prototype.p_Contains=function(t_key){
+	return this.p_FindNode(t_key)!=null;
+}
+c_Map4.prototype.p_Get2=function(t_key){
+	var t_node=this.p_FindNode(t_key);
+	if((t_node)!=null){
+		return t_node.m_value;
+	}
+	return null;
+}
+function c_StringMap4(){
+	c_Map4.call(this);
+}
+c_StringMap4.prototype=extend_class(c_Map4);
+c_StringMap4.m_new=function(){
+	c_Map4.m_new.call(this);
+	return this;
+}
+c_StringMap4.prototype.p_Compare=function(t_lhs,t_rhs){
+	return string_compare(t_lhs,t_rhs);
+}
+function c_Node5(){
+	Object.call(this);
+	this.m_key="";
+	this.m_right=null;
+	this.m_left=null;
+	this.m_value=null;
+	this.m_color=0;
+	this.m_parent=null;
+}
+c_Node5.m_new=function(t_key,t_value,t_color,t_parent){
+	this.m_key=t_key;
+	this.m_value=t_value;
+	this.m_color=t_color;
+	this.m_parent=t_parent;
+	return this;
+}
+c_Node5.m_new2=function(){
+	return this;
+}
+function bb_config_IsSpace(t_ch){
+	return ((t_ch<=32)?1:0);
+}
+function bb_config_IsAlpha(t_ch){
+	return ((t_ch>=65 && t_ch<=90 || t_ch>=97 && t_ch<=122)?1:0);
+}
+function bb_config_IsDigit(t_ch){
+	return ((t_ch>=48 && t_ch<=57)?1:0);
+}
+function bb_config_IsBinDigit(t_ch){
+	return ((t_ch==48 || t_ch==49)?1:0);
+}
+function bb_config_IsHexDigit(t_ch){
+	return ((t_ch>=48 && t_ch<=57 || t_ch>=65 && t_ch<=70 || t_ch>=97 && t_ch<=102)?1:0);
+}
+var bb_parser_FILE_EXT="";
+var bb_config_ENV_MODPATH="";
+function bb_virtualos_StripExt(t_Path){
+	var t_I=t_Path.lastIndexOf(".");
+	var t_SecondarySearchPos=t_I+1;
+	if(t_I!=-1 && t_Path.indexOf("/",t_SecondarySearchPos)==-1 && t_Path.indexOf("\\",t_SecondarySearchPos)==-1){
+		return t_Path.slice(0,t_I);
+	}
+	return t_Path;
+}
+function bb_virtualos_StripDir(t_Path){
+	var t_I=t_Path.lastIndexOf("/");
+	if(t_I==-1){
+		t_I=t_Path.lastIndexOf("\\");
+	}
+	if(t_I!=-1){
+		return t_Path.slice(t_I+1);
+	}
+	return t_Path;
+}
+function bb_config_Err(t_err){
+	print(bb_config__errInfo+" : Error : "+t_err);
+	ExitApp(-1);
+	return 0;
+}
+function bb_virtualos_ExtractExt(t_Path){
+	var t_I=t_Path.lastIndexOf(".");
+	var t_SecondarySearchPos=t_I+1;
+	if(t_I!=-1 && t_Path.indexOf("/",t_SecondarySearchPos)==-1 && t_Path.indexOf("\\",t_SecondarySearchPos)==-1){
+		return t_Path.slice(t_SecondarySearchPos);
+	}
+	return "";
+}
+function c_AppDecl(){
+	c_ScopeDecl.call(this);
+	this.m_imported=c_StringMap5.m_new.call(new c_StringMap5);
+	this.m_mainModule=null;
+	this.m_fileImports=c_StringList.m_new2.call(new c_StringList);
+	this.m_allSemantedDecls=c_List3.m_new.call(new c_List3);
+	this.m_semantedGlobals=c_List8.m_new.call(new c_List8);
+	this.m_semantedClasses=c_List6.m_new.call(new c_List6);
+	this.m_mainFunc=null;
+}
+c_AppDecl.prototype=extend_class(c_ScopeDecl);
+c_AppDecl.prototype.p_InsertModule=function(t_mdecl){
+	t_mdecl.m_scope=(this);
+	this.m_imported.p_Insert3(t_mdecl.m_filepath,t_mdecl);
+	if(!((this.m_mainModule)!=null)){
+		this.m_mainModule=t_mdecl;
+	}
+	return 0;
+}
+c_AppDecl.m_new=function(){
+	c_ScopeDecl.m_new.call(this);
+	return this;
+}
+c_AppDecl.prototype.p_FinalizeClasses=function(){
+	bb_decl__env=null;
+	do{
+		var t_more=0;
+		var t_=this.m_semantedClasses.p_ObjectEnumerator();
+		while(t_.p_HasNext()){
+			var t_cdecl=t_.p_NextObject();
+			t_more+=t_cdecl.p_UpdateLiveMethods();
+		}
+		if(!((t_more)!=0)){
+			break;
+		}
+	}while(!(false));
+	var t_2=this.m_semantedClasses.p_ObjectEnumerator();
+	while(t_2.p_HasNext()){
+		var t_cdecl2=t_2.p_NextObject();
+		t_cdecl2.p_FinalizeClass();
+	}
+	return 0;
+}
+c_AppDecl.prototype.p_OnSemant=function(){
+	bb_decl__env=null;
+	this.m_mainFunc=this.m_mainModule.p_FindFuncDecl("Main",[],0);
+	if(!((this.m_mainFunc)!=null)){
+		bb_config_Err("Function 'Main' not found.");
+	}
+	if(!((object_downcast((this.m_mainFunc.m_retType),c_IntType))!=null) || ((this.m_mainFunc.m_argDecls.length)!=0)){
+		bb_config_Err("Main function must be of type Main:Int()");
+	}
+	this.p_FinalizeClasses();
+	return 0;
 }
 function c_Map5(){
 	Object.call(this);
@@ -5618,6 +5994,32 @@ c_Map5.m_new=function(){
 	return this;
 }
 c_Map5.prototype.p_Compare=function(t_lhs,t_rhs){
+}
+c_Map5.prototype.p_FindNode=function(t_key){
+	var t_node=this.m_root;
+	while((t_node)!=null){
+		var t_cmp=this.p_Compare(t_key,t_node.m_key);
+		if(t_cmp>0){
+			t_node=t_node.m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node.m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_Map5.prototype.p_Get2=function(t_key){
+	var t_node=this.p_FindNode(t_key);
+	if((t_node)!=null){
+		return t_node.m_value;
+	}
+	return null;
+}
+c_Map5.prototype.p_Contains=function(t_key){
+	return this.p_FindNode(t_key)!=null;
 }
 c_Map5.prototype.p_RotateLeft5=function(t_node){
 	var t_child=t_node.m_right;
@@ -5729,34 +6131,21 @@ c_Map5.prototype.p_Set5=function(t_key,t_value){
 	}
 	return true;
 }
-c_Map5.prototype.p_Insert2=function(t_key,t_value){
+c_Map5.prototype.p_Insert3=function(t_key,t_value){
 	return this.p_Set5(t_key,t_value);
 }
-c_Map5.prototype.p_FindNode=function(t_key){
+c_Map5.prototype.p_Values=function(){
+	return c_MapValues.m_new.call(new c_MapValues,this);
+}
+c_Map5.prototype.p_FirstNode=function(){
+	if(!((this.m_root)!=null)){
+		return null;
+	}
 	var t_node=this.m_root;
-	while((t_node)!=null){
-		var t_cmp=this.p_Compare(t_key,t_node.m_key);
-		if(t_cmp>0){
-			t_node=t_node.m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node.m_left;
-			}else{
-				return t_node;
-			}
-		}
+	while((t_node.m_left)!=null){
+		t_node=t_node.m_left;
 	}
 	return t_node;
-}
-c_Map5.prototype.p_Contains=function(t_key){
-	return this.p_FindNode(t_key)!=null;
-}
-c_Map5.prototype.p_Get2=function(t_key){
-	var t_node=this.p_FindNode(t_key);
-	if((t_node)!=null){
-		return t_node.m_value;
-	}
-	return null;
 }
 function c_StringMap5(){
 	c_Map5.call(this);
@@ -5788,301 +6177,7 @@ c_Node6.m_new=function(t_key,t_value,t_color,t_parent){
 c_Node6.m_new2=function(){
 	return this;
 }
-function bb_config_IsSpace(t_ch){
-	return ((t_ch<=32)?1:0);
-}
-function bb_config_IsAlpha(t_ch){
-	return ((t_ch>=65 && t_ch<=90 || t_ch>=97 && t_ch<=122)?1:0);
-}
-function bb_config_IsDigit(t_ch){
-	return ((t_ch>=48 && t_ch<=57)?1:0);
-}
-function bb_config_IsBinDigit(t_ch){
-	return ((t_ch==48 || t_ch==49)?1:0);
-}
-function bb_config_IsHexDigit(t_ch){
-	return ((t_ch>=48 && t_ch<=57 || t_ch>=65 && t_ch<=70 || t_ch>=97 && t_ch<=102)?1:0);
-}
-var bb_parser_FILE_EXT="";
-var bb_config_ENV_MODPATH="";
-function bb_virtualos_StripExt(t_Path){
-	var t_I=t_Path.lastIndexOf(".");
-	var t_SecondarySearchPos=t_I+1;
-	if(t_I!=-1 && t_Path.indexOf("/",t_SecondarySearchPos)==-1 && t_Path.indexOf("\\",t_SecondarySearchPos)==-1){
-		return t_Path.slice(0,t_I);
-	}
-	return t_Path;
-}
-function bb_virtualos_StripDir(t_Path){
-	var t_I=t_Path.lastIndexOf("/");
-	if(t_I==-1){
-		t_I=t_Path.lastIndexOf("\\");
-	}
-	if(t_I!=-1){
-		return t_Path.slice(t_I+1);
-	}
-	return t_Path;
-}
-function bb_config_Err(t_err){
-	print(bb_config__errInfo+" : Error : "+t_err);
-	ExitApp(-1);
-	return 0;
-}
-function bb_virtualos_ExtractExt(t_Path){
-	var t_I=t_Path.lastIndexOf(".");
-	var t_SecondarySearchPos=t_I+1;
-	if(t_I!=-1 && t_Path.indexOf("/",t_SecondarySearchPos)==-1 && t_Path.indexOf("\\",t_SecondarySearchPos)==-1){
-		return t_Path.slice(t_SecondarySearchPos);
-	}
-	return "";
-}
-function c_AppDecl(){
-	c_ScopeDecl.call(this);
-	this.m_imported=c_StringMap6.m_new.call(new c_StringMap6);
-	this.m_mainModule=null;
-	this.m_fileImports=c_StringList.m_new2.call(new c_StringList);
-	this.m_allSemantedDecls=c_List3.m_new.call(new c_List3);
-	this.m_semantedGlobals=c_List8.m_new.call(new c_List8);
-	this.m_semantedClasses=c_List6.m_new.call(new c_List6);
-	this.m_mainFunc=null;
-}
-c_AppDecl.prototype=extend_class(c_ScopeDecl);
-c_AppDecl.prototype.p_InsertModule=function(t_mdecl){
-	t_mdecl.m_scope=(this);
-	this.m_imported.p_Insert3(t_mdecl.m_filepath,t_mdecl);
-	if(!((this.m_mainModule)!=null)){
-		this.m_mainModule=t_mdecl;
-	}
-	return 0;
-}
-c_AppDecl.m_new=function(){
-	c_ScopeDecl.m_new.call(this);
-	return this;
-}
-c_AppDecl.prototype.p_FinalizeClasses=function(){
-	bb_decl__env=null;
-	do{
-		var t_more=0;
-		var t_=this.m_semantedClasses.p_ObjectEnumerator();
-		while(t_.p_HasNext()){
-			var t_cdecl=t_.p_NextObject();
-			t_more+=t_cdecl.p_UpdateLiveMethods();
-		}
-		if(!((t_more)!=0)){
-			break;
-		}
-	}while(!(false));
-	var t_2=this.m_semantedClasses.p_ObjectEnumerator();
-	while(t_2.p_HasNext()){
-		var t_cdecl2=t_2.p_NextObject();
-		t_cdecl2.p_FinalizeClass();
-	}
-	return 0;
-}
-c_AppDecl.prototype.p_OnSemant=function(){
-	bb_decl__env=null;
-	this.m_mainFunc=this.m_mainModule.p_FindFuncDecl("Main",[],0);
-	if(!((this.m_mainFunc)!=null)){
-		bb_config_Err("Function 'Main' not found.");
-	}
-	if(!((object_downcast((this.m_mainFunc.m_retType),c_IntType))!=null) || ((this.m_mainFunc.m_argDecls.length)!=0)){
-		bb_config_Err("Main function must be of type Main:Int()");
-	}
-	this.p_FinalizeClasses();
-	return 0;
-}
-function c_Map6(){
-	Object.call(this);
-	this.m_root=null;
-}
-c_Map6.m_new=function(){
-	return this;
-}
-c_Map6.prototype.p_Compare=function(t_lhs,t_rhs){
-}
-c_Map6.prototype.p_FindNode=function(t_key){
-	var t_node=this.m_root;
-	while((t_node)!=null){
-		var t_cmp=this.p_Compare(t_key,t_node.m_key);
-		if(t_cmp>0){
-			t_node=t_node.m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node.m_left;
-			}else{
-				return t_node;
-			}
-		}
-	}
-	return t_node;
-}
-c_Map6.prototype.p_Get2=function(t_key){
-	var t_node=this.p_FindNode(t_key);
-	if((t_node)!=null){
-		return t_node.m_value;
-	}
-	return null;
-}
-c_Map6.prototype.p_Contains=function(t_key){
-	return this.p_FindNode(t_key)!=null;
-}
-c_Map6.prototype.p_RotateLeft6=function(t_node){
-	var t_child=t_node.m_right;
-	t_node.m_right=t_child.m_left;
-	if((t_child.m_left)!=null){
-		t_child.m_left.m_parent=t_node;
-	}
-	t_child.m_parent=t_node.m_parent;
-	if((t_node.m_parent)!=null){
-		if(t_node==t_node.m_parent.m_left){
-			t_node.m_parent.m_left=t_child;
-		}else{
-			t_node.m_parent.m_right=t_child;
-		}
-	}else{
-		this.m_root=t_child;
-	}
-	t_child.m_left=t_node;
-	t_node.m_parent=t_child;
-	return 0;
-}
-c_Map6.prototype.p_RotateRight6=function(t_node){
-	var t_child=t_node.m_left;
-	t_node.m_left=t_child.m_right;
-	if((t_child.m_right)!=null){
-		t_child.m_right.m_parent=t_node;
-	}
-	t_child.m_parent=t_node.m_parent;
-	if((t_node.m_parent)!=null){
-		if(t_node==t_node.m_parent.m_right){
-			t_node.m_parent.m_right=t_child;
-		}else{
-			t_node.m_parent.m_left=t_child;
-		}
-	}else{
-		this.m_root=t_child;
-	}
-	t_child.m_right=t_node;
-	t_node.m_parent=t_child;
-	return 0;
-}
-c_Map6.prototype.p_InsertFixup6=function(t_node){
-	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
-		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
-			var t_uncle=t_node.m_parent.m_parent.m_right;
-			if(((t_uncle)!=null) && t_uncle.m_color==-1){
-				t_node.m_parent.m_color=1;
-				t_uncle.m_color=1;
-				t_uncle.m_parent.m_color=-1;
-				t_node=t_uncle.m_parent;
-			}else{
-				if(t_node==t_node.m_parent.m_right){
-					t_node=t_node.m_parent;
-					this.p_RotateLeft6(t_node);
-				}
-				t_node.m_parent.m_color=1;
-				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateRight6(t_node.m_parent.m_parent);
-			}
-		}else{
-			var t_uncle2=t_node.m_parent.m_parent.m_left;
-			if(((t_uncle2)!=null) && t_uncle2.m_color==-1){
-				t_node.m_parent.m_color=1;
-				t_uncle2.m_color=1;
-				t_uncle2.m_parent.m_color=-1;
-				t_node=t_uncle2.m_parent;
-			}else{
-				if(t_node==t_node.m_parent.m_left){
-					t_node=t_node.m_parent;
-					this.p_RotateRight6(t_node);
-				}
-				t_node.m_parent.m_color=1;
-				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateLeft6(t_node.m_parent.m_parent);
-			}
-		}
-	}
-	this.m_root.m_color=1;
-	return 0;
-}
-c_Map6.prototype.p_Set6=function(t_key,t_value){
-	var t_node=this.m_root;
-	var t_parent=null;
-	var t_cmp=0;
-	while((t_node)!=null){
-		t_parent=t_node;
-		t_cmp=this.p_Compare(t_key,t_node.m_key);
-		if(t_cmp>0){
-			t_node=t_node.m_right;
-		}else{
-			if(t_cmp<0){
-				t_node=t_node.m_left;
-			}else{
-				t_node.m_value=t_value;
-				return false;
-			}
-		}
-	}
-	t_node=c_Node7.m_new.call(new c_Node7,t_key,t_value,-1,t_parent);
-	if((t_parent)!=null){
-		if(t_cmp>0){
-			t_parent.m_right=t_node;
-		}else{
-			t_parent.m_left=t_node;
-		}
-		this.p_InsertFixup6(t_node);
-	}else{
-		this.m_root=t_node;
-	}
-	return true;
-}
-c_Map6.prototype.p_Insert3=function(t_key,t_value){
-	return this.p_Set6(t_key,t_value);
-}
-c_Map6.prototype.p_Values=function(){
-	return c_MapValues.m_new.call(new c_MapValues,this);
-}
-c_Map6.prototype.p_FirstNode=function(){
-	if(!((this.m_root)!=null)){
-		return null;
-	}
-	var t_node=this.m_root;
-	while((t_node.m_left)!=null){
-		t_node=t_node.m_left;
-	}
-	return t_node;
-}
-function c_StringMap6(){
-	c_Map6.call(this);
-}
-c_StringMap6.prototype=extend_class(c_Map6);
-c_StringMap6.m_new=function(){
-	c_Map6.m_new.call(this);
-	return this;
-}
-c_StringMap6.prototype.p_Compare=function(t_lhs,t_rhs){
-	return string_compare(t_lhs,t_rhs);
-}
-function c_Node7(){
-	Object.call(this);
-	this.m_key="";
-	this.m_right=null;
-	this.m_left=null;
-	this.m_value=null;
-	this.m_color=0;
-	this.m_parent=null;
-}
-c_Node7.m_new=function(t_key,t_value,t_color,t_parent){
-	this.m_key=t_key;
-	this.m_value=t_value;
-	this.m_color=t_color;
-	this.m_parent=t_parent;
-	return this;
-}
-c_Node7.m_new2=function(){
-	return this;
-}
-c_Node7.prototype.p_NextNode=function(){
+c_Node6.prototype.p_NextNode=function(){
 	var t_node=null;
 	if((this.m_right)!=null){
 		t_node=this.m_right;
@@ -6201,7 +6296,6 @@ c_Parser.prototype.p_ParseIdent=function(){
 		if(t_3=="object" || t_3=="throwable"){
 		}else{
 			if(this.m__tokeType!=2){
-				debugStop();
 				bb_config_Err("Syntax error - expecting identifier.");
 			}
 		}
@@ -7711,7 +7805,7 @@ c_List2.m_new=function(){
 	return this;
 }
 c_List2.prototype.p_AddLast2=function(t_data){
-	return c_Node8.m_new.call(new c_Node8,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node7.m_new.call(new c_Node7,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List2.m_new2=function(t_data){
 	var t_=t_data;
@@ -7725,7 +7819,7 @@ c_List2.m_new2=function(t_data){
 }
 c_List2.prototype.p_RemoveLast=function(){
 	var t_data=this.m__head.m__pred.m__data;
-	this.m__head.m__pred.p_Remove2();
+	this.m__head.m__pred.p_Remove();
 	return t_data;
 }
 c_List2.prototype.p_Equals2=function(t_lhs,t_rhs){
@@ -7746,7 +7840,7 @@ c_List2.prototype.p_FindLast4=function(t_value){
 c_List2.prototype.p_RemoveLast3=function(t_value){
 	var t_node=this.p_FindLast4(t_value);
 	if((t_node)!=null){
-		t_node.p_Remove2();
+		t_node.p_Remove();
 	}
 }
 c_List2.prototype.p_ObjectEnumerator=function(){
@@ -7767,13 +7861,13 @@ c_StringList.m_new2=function(){
 c_StringList.prototype.p_Equals2=function(t_lhs,t_rhs){
 	return t_lhs==t_rhs;
 }
-function c_Node8(){
+function c_Node7(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data="";
 }
-c_Node8.m_new=function(t_succ,t_pred,t_data){
+c_Node7.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -7781,20 +7875,20 @@ c_Node8.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node8.m_new2=function(){
+c_Node7.m_new2=function(){
 	return this;
 }
-c_Node8.prototype.p_Remove2=function(){
+c_Node7.prototype.p_Remove=function(){
 	this.m__succ.m__pred=this.m__pred;
 	this.m__pred.m__succ=this.m__succ;
 	return 0;
 }
 function c_HeadNode2(){
-	c_Node8.call(this);
+	c_Node7.call(this);
 }
-c_HeadNode2.prototype=extend_class(c_Node8);
+c_HeadNode2.prototype=extend_class(c_Node7);
 c_HeadNode2.m_new=function(){
-	c_Node8.m_new2.call(this);
+	c_Node7.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -7887,7 +7981,7 @@ c_List3.m_new=function(){
 	return this;
 }
 c_List3.prototype.p_AddLast3=function(t_data){
-	return c_Node9.m_new.call(new c_Node9,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node8.m_new.call(new c_Node8,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List3.m_new2=function(t_data){
 	var t_=t_data;
@@ -7911,13 +8005,13 @@ c_List3.prototype.p_Count=function(){
 	}
 	return t_n;
 }
-function c_Node9(){
+function c_Node8(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node9.m_new=function(t_succ,t_pred,t_data){
+c_Node8.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -7925,15 +8019,15 @@ c_Node9.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node9.m_new2=function(){
+c_Node8.m_new2=function(){
 	return this;
 }
 function c_HeadNode3(){
-	c_Node9.call(this);
+	c_Node8.call(this);
 }
-c_HeadNode3.prototype=extend_class(c_Node9);
+c_HeadNode3.prototype=extend_class(c_Node8);
 c_HeadNode3.m_new=function(){
-	c_Node9.m_new2.call(this);
+	c_Node8.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -8140,7 +8234,7 @@ c_List4.m_new=function(){
 	return this;
 }
 c_List4.prototype.p_AddLast4=function(t_data){
-	return c_Node10.m_new.call(new c_Node10,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node9.m_new.call(new c_Node9,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List4.m_new2=function(t_data){
 	var t_=t_data;
@@ -8163,13 +8257,13 @@ c_FuncDeclList.m_new=function(){
 	c_List4.m_new.call(this);
 	return this;
 }
-function c_Node10(){
+function c_Node9(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node10.m_new=function(t_succ,t_pred,t_data){
+c_Node9.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -8177,15 +8271,15 @@ c_Node10.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node10.m_new2=function(){
+c_Node9.m_new2=function(){
 	return this;
 }
 function c_HeadNode4(){
-	c_Node10.call(this);
+	c_Node9.call(this);
 }
-c_HeadNode4.prototype=extend_class(c_Node10);
+c_HeadNode4.prototype=extend_class(c_Node9);
 c_HeadNode4.m_new=function(){
-	c_Node10.m_new2.call(this);
+	c_Node9.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -9566,7 +9660,7 @@ c_List5.m_new=function(){
 	return this;
 }
 c_List5.prototype.p_AddLast5=function(t_data){
-	return c_Node11.m_new.call(new c_Node11,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node10.m_new.call(new c_Node10,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List5.m_new2=function(t_data){
 	var t_=t_data;
@@ -9585,15 +9679,15 @@ c_List5.prototype.p_ObjectEnumerator=function(){
 	return c_Enumerator7.m_new.call(new c_Enumerator7,this);
 }
 c_List5.prototype.p_AddFirst=function(t_data){
-	return c_Node11.m_new.call(new c_Node11,this.m__head.m__succ,this.m__head,t_data);
+	return c_Node10.m_new.call(new c_Node10,this.m__head.m__succ,this.m__head,t_data);
 }
-function c_Node11(){
+function c_Node10(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node11.m_new=function(t_succ,t_pred,t_data){
+c_Node10.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -9601,15 +9695,15 @@ c_Node11.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node11.m_new2=function(){
+c_Node10.m_new2=function(){
 	return this;
 }
 function c_HeadNode5(){
-	c_Node11.call(this);
+	c_Node10.call(this);
 }
-c_HeadNode5.prototype=extend_class(c_Node11);
+c_HeadNode5.prototype=extend_class(c_Node10);
 c_HeadNode5.m_new=function(){
-	c_Node11.m_new2.call(this);
+	c_Node10.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -10416,7 +10510,7 @@ c_List6.m_new=function(){
 	return this;
 }
 c_List6.prototype.p_AddLast6=function(t_data){
-	return c_Node12.m_new.call(new c_Node12,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node11.m_new.call(new c_Node11,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List6.m_new2=function(t_data){
 	var t_=t_data;
@@ -10431,13 +10525,13 @@ c_List6.m_new2=function(t_data){
 c_List6.prototype.p_ObjectEnumerator=function(){
 	return c_Enumerator5.m_new.call(new c_Enumerator5,this);
 }
-function c_Node12(){
+function c_Node11(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node12.m_new=function(t_succ,t_pred,t_data){
+c_Node11.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -10445,15 +10539,15 @@ c_Node12.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node12.m_new2=function(){
+c_Node11.m_new2=function(){
 	return this;
 }
 function c_HeadNode6(){
-	c_Node12.call(this);
+	c_Node11.call(this);
 }
-c_HeadNode6.prototype=extend_class(c_Node12);
+c_HeadNode6.prototype=extend_class(c_Node11);
 c_HeadNode6.m_new=function(){
-	c_Node12.m_new2.call(this);
+	c_Node11.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -10523,7 +10617,7 @@ c_List7.m_new=function(){
 	return this;
 }
 c_List7.prototype.p_AddLast7=function(t_data){
-	return c_Node13.m_new.call(new c_Node13,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node12.m_new.call(new c_Node12,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List7.m_new2=function(t_data){
 	var t_=t_data;
@@ -10537,7 +10631,7 @@ c_List7.m_new2=function(t_data){
 }
 c_List7.prototype.p_RemoveLast=function(){
 	var t_data=this.m__head.m__pred.m__data;
-	this.m__head.m__pred.p_Remove2();
+	this.m__head.m__pred.p_Remove();
 	return t_data;
 }
 c_List7.prototype.p_Equals3=function(t_lhs,t_rhs){
@@ -10558,16 +10652,16 @@ c_List7.prototype.p_FindLast6=function(t_value){
 c_List7.prototype.p_RemoveLast4=function(t_value){
 	var t_node=this.p_FindLast6(t_value);
 	if((t_node)!=null){
-		t_node.p_Remove2();
+		t_node.p_Remove();
 	}
 }
-function c_Node13(){
+function c_Node12(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node13.m_new=function(t_succ,t_pred,t_data){
+c_Node12.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -10575,20 +10669,20 @@ c_Node13.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node13.m_new2=function(){
+c_Node12.m_new2=function(){
 	return this;
 }
-c_Node13.prototype.p_Remove2=function(){
+c_Node12.prototype.p_Remove=function(){
 	this.m__succ.m__pred=this.m__pred;
 	this.m__pred.m__succ=this.m__succ;
 	return 0;
 }
 function c_HeadNode7(){
-	c_Node13.call(this);
+	c_Node12.call(this);
 }
-c_HeadNode7.prototype=extend_class(c_Node13);
+c_HeadNode7.prototype=extend_class(c_Node12);
 c_HeadNode7.m_new=function(){
-	c_Node13.m_new2.call(this);
+	c_Node12.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -11254,7 +11348,7 @@ c_List8.m_new=function(){
 	return this;
 }
 c_List8.prototype.p_AddLast8=function(t_data){
-	return c_Node14.m_new.call(new c_Node14,this.m__head,this.m__head.m__pred,t_data);
+	return c_Node13.m_new.call(new c_Node13,this.m__head,this.m__head.m__pred,t_data);
 }
 c_List8.m_new2=function(t_data){
 	var t_=t_data;
@@ -11269,13 +11363,13 @@ c_List8.m_new2=function(t_data){
 c_List8.prototype.p_ObjectEnumerator=function(){
 	return c_Enumerator8.m_new.call(new c_Enumerator8,this);
 }
-function c_Node14(){
+function c_Node13(){
 	Object.call(this);
 	this.m__succ=null;
 	this.m__pred=null;
 	this.m__data=null;
 }
-c_Node14.m_new=function(t_succ,t_pred,t_data){
+c_Node13.m_new=function(t_succ,t_pred,t_data){
 	this.m__succ=t_succ;
 	this.m__pred=t_pred;
 	this.m__succ.m__pred=this;
@@ -11283,15 +11377,15 @@ c_Node14.m_new=function(t_succ,t_pred,t_data){
 	this.m__data=t_data;
 	return this;
 }
-c_Node14.m_new2=function(){
+c_Node13.m_new2=function(){
 	return this;
 }
 function c_HeadNode8(){
-	c_Node14.call(this);
+	c_Node13.call(this);
 }
-c_HeadNode8.prototype=extend_class(c_Node14);
+c_HeadNode8.prototype=extend_class(c_Node13);
 c_HeadNode8.m_new=function(){
-	c_Node14.m_new2.call(this);
+	c_Node13.m_new2.call(this);
 	this.m__succ=(this);
 	this.m__pred=(this);
 	return this;
@@ -11411,10 +11505,8 @@ function bb_preprocessor_PreProcess(t_path,t_mdecl){
 	}else{
 		bb_config_SetConfigVar2("MODPATH","");
 	}
-	var t_x=LoadString(t_path);
-	var t_toker=c_Toker.m_new.call(new c_Toker,t_path,t_x);
+	var t_toker=c_Toker.m_new.call(new c_Toker,t_path,LoadString(t_path));
 	t_toker.p_NextToke();
-	print("FILE ["+t_path+"] ("+String(t_x.length)+")");
 	var t_attrs=0;
 	do{
 		if((t_line)!=0){
@@ -11626,16 +11718,16 @@ c_Target.m_new=function(t_dir,t_name,t_system,t_builder){
 c_Target.m_new2=function(){
 	return this;
 }
-function c_Map7(){
+function c_Map6(){
 	Object.call(this);
 	this.m_root=null;
 }
-c_Map7.m_new=function(){
+c_Map6.m_new=function(){
 	return this;
 }
-c_Map7.prototype.p_Compare=function(t_lhs,t_rhs){
+c_Map6.prototype.p_Compare=function(t_lhs,t_rhs){
 }
-c_Map7.prototype.p_RotateLeft7=function(t_node){
+c_Map6.prototype.p_RotateLeft6=function(t_node){
 	var t_child=t_node.m_right;
 	t_node.m_right=t_child.m_left;
 	if((t_child.m_left)!=null){
@@ -11655,7 +11747,7 @@ c_Map7.prototype.p_RotateLeft7=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map7.prototype.p_RotateRight7=function(t_node){
+c_Map6.prototype.p_RotateRight6=function(t_node){
 	var t_child=t_node.m_left;
 	t_node.m_left=t_child.m_right;
 	if((t_child.m_right)!=null){
@@ -11675,7 +11767,7 @@ c_Map7.prototype.p_RotateRight7=function(t_node){
 	t_node.m_parent=t_child;
 	return 0;
 }
-c_Map7.prototype.p_InsertFixup7=function(t_node){
+c_Map6.prototype.p_InsertFixup6=function(t_node){
 	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
 		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
 			var t_uncle=t_node.m_parent.m_parent.m_right;
@@ -11687,11 +11779,11 @@ c_Map7.prototype.p_InsertFixup7=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_right){
 					t_node=t_node.m_parent;
-					this.p_RotateLeft7(t_node);
+					this.p_RotateLeft6(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateRight7(t_node.m_parent.m_parent);
+				this.p_RotateRight6(t_node.m_parent.m_parent);
 			}
 		}else{
 			var t_uncle2=t_node.m_parent.m_parent.m_left;
@@ -11703,18 +11795,18 @@ c_Map7.prototype.p_InsertFixup7=function(t_node){
 			}else{
 				if(t_node==t_node.m_parent.m_left){
 					t_node=t_node.m_parent;
-					this.p_RotateRight7(t_node);
+					this.p_RotateRight6(t_node);
 				}
 				t_node.m_parent.m_color=1;
 				t_node.m_parent.m_parent.m_color=-1;
-				this.p_RotateLeft7(t_node.m_parent.m_parent);
+				this.p_RotateLeft6(t_node.m_parent.m_parent);
 			}
 		}
 	}
 	this.m_root.m_color=1;
 	return 0;
 }
-c_Map7.prototype.p_Set7=function(t_key,t_value){
+c_Map6.prototype.p_Set6=function(t_key,t_value){
 	var t_node=this.m_root;
 	var t_parent=null;
 	var t_cmp=0;
@@ -11732,20 +11824,20 @@ c_Map7.prototype.p_Set7=function(t_key,t_value){
 			}
 		}
 	}
-	t_node=c_Node15.m_new.call(new c_Node15,t_key,t_value,-1,t_parent);
+	t_node=c_Node14.m_new.call(new c_Node14,t_key,t_value,-1,t_parent);
 	if((t_parent)!=null){
 		if(t_cmp>0){
 			t_parent.m_right=t_node;
 		}else{
 			t_parent.m_left=t_node;
 		}
-		this.p_InsertFixup7(t_node);
+		this.p_InsertFixup6(t_node);
 	}else{
 		this.m_root=t_node;
 	}
 	return true;
 }
-c_Map7.prototype.p_FirstNode=function(){
+c_Map6.prototype.p_FirstNode=function(){
 	if(!((this.m_root)!=null)){
 		return null;
 	}
@@ -11755,10 +11847,10 @@ c_Map7.prototype.p_FirstNode=function(){
 	}
 	return t_node;
 }
-c_Map7.prototype.p_ObjectEnumerator=function(){
+c_Map6.prototype.p_ObjectEnumerator=function(){
 	return c_NodeEnumerator2.m_new.call(new c_NodeEnumerator2,this.p_FirstNode());
 }
-c_Map7.prototype.p_FindNode=function(t_key){
+c_Map6.prototype.p_FindNode=function(t_key){
 	var t_node=this.m_root;
 	while((t_node)!=null){
 		var t_cmp=this.p_Compare(t_key,t_node.m_key);
@@ -11774,25 +11866,25 @@ c_Map7.prototype.p_FindNode=function(t_key){
 	}
 	return t_node;
 }
-c_Map7.prototype.p_Get2=function(t_key){
+c_Map6.prototype.p_Get2=function(t_key){
 	var t_node=this.p_FindNode(t_key);
 	if((t_node)!=null){
 		return t_node.m_value;
 	}
 	return null;
 }
-function c_StringMap7(){
-	c_Map7.call(this);
+function c_StringMap6(){
+	c_Map6.call(this);
 }
-c_StringMap7.prototype=extend_class(c_Map7);
-c_StringMap7.m_new=function(){
-	c_Map7.m_new.call(this);
+c_StringMap6.prototype=extend_class(c_Map6);
+c_StringMap6.m_new=function(){
+	c_Map6.m_new.call(this);
 	return this;
 }
-c_StringMap7.prototype.p_Compare=function(t_lhs,t_rhs){
+c_StringMap6.prototype.p_Compare=function(t_lhs,t_rhs){
 	return string_compare(t_lhs,t_rhs);
 }
-function c_Node15(){
+function c_Node14(){
 	Object.call(this);
 	this.m_key="";
 	this.m_right=null;
@@ -11801,17 +11893,17 @@ function c_Node15(){
 	this.m_color=0;
 	this.m_parent=null;
 }
-c_Node15.m_new=function(t_key,t_value,t_color,t_parent){
+c_Node14.m_new=function(t_key,t_value,t_color,t_parent){
 	this.m_key=t_key;
 	this.m_value=t_value;
 	this.m_color=t_color;
 	this.m_parent=t_parent;
 	return this;
 }
-c_Node15.m_new2=function(){
+c_Node14.m_new2=function(){
 	return this;
 }
-c_Node15.prototype.p_NextNode=function(){
+c_Node14.prototype.p_NextNode=function(){
 	var t_node=null;
 	if((this.m_right)!=null){
 		t_node=this.m_right;
@@ -11828,7 +11920,7 @@ c_Node15.prototype.p_NextNode=function(){
 	}
 	return t_parent;
 }
-c_Node15.prototype.p_Key=function(){
+c_Node14.prototype.p_Key=function(){
 	return this.m_key;
 }
 function bb_config_PopConfigScope(){
@@ -11873,11 +11965,11 @@ function c_Reflector(){
 	this.m_refmod=null;
 	this.m_langmod=null;
 	this.m_boxesmod=null;
-	this.m_munged=c_StringMap.m_new.call(new c_StringMap);
-	this.m_modexprs=c_StringMap2.m_new.call(new c_StringMap2);
+	this.m_munged=c_StringMap7.m_new.call(new c_StringMap7);
+	this.m_modexprs=c_StringMap.m_new.call(new c_StringMap);
 	this.m_refmods=c_StringSet.m_new.call(new c_StringSet);
 	this.m_classdecls=c_Stack10.m_new.call(new c_Stack10);
-	this.m_classids=c_StringMap.m_new.call(new c_StringMap);
+	this.m_classids=c_StringMap7.m_new.call(new c_StringMap7);
 	this.m_output=c_StringStack.m_new2.call(new c_StringStack);
 }
 c_Reflector.m_new=function(){
@@ -11934,10 +12026,10 @@ c_Reflector.prototype.p_Mung=function(t_ident){
 	if(this.m_munged.p_Contains(t_ident)){
 		var t_n=this.m_munged.p_Get2(t_ident);
 		t_n+=1;
-		this.m_munged.p_Set(t_ident,t_n);
+		this.m_munged.p_Set7(t_ident,t_n);
 		t_ident=t_ident+String(t_n);
 	}else{
-		this.m_munged.p_Set(t_ident,1);
+		this.m_munged.p_Set7(t_ident,1);
 	}
 	return t_ident;
 }
@@ -12007,7 +12099,7 @@ c_Reflector.prototype.p_DeclExpr=function(t_decl,t_path){
 			print("REFLECTION ERROR");
 			t_expr=this.p_Mung(t_mdecl.m_rmodpath);
 			this.m_refmod.p_InsertDecl(c_AliasDecl.m_new.call(new c_AliasDecl,t_expr,0,(t_mdecl)));
-			this.m_modexprs.p_Set2(t_mdecl.m_filepath,t_expr);
+			this.m_modexprs.p_Set(t_mdecl.m_filepath,t_expr);
 		}
 		return t_expr;
 	}
@@ -12088,7 +12180,7 @@ c_Reflector.prototype.p_TypeInfo=function(t_ty){
 			}
 		}
 		var t_id=this.m_classdecls.p_Length2();
-		this.m_classids.p_Set(t_name,t_id);
+		this.m_classids.p_Set7(t_name,t_id);
 		this.m_classdecls.p_Push28(t_cdecl);
 		return "_classes["+String(t_id)+"]";
 	}
@@ -12470,7 +12562,7 @@ c_Reflector.prototype.p_Semant3=function(t_app){
 		}
 		var t_expr=this.p_Mung(t_path2);
 		this.m_refmod.p_InsertDecl(c_AliasDecl.m_new.call(new c_AliasDecl,t_expr,0,(t_mdecl2)));
-		this.m_modexprs.p_Set2(t_mdecl2.m_filepath,t_expr);
+		this.m_modexprs.p_Set(t_mdecl2.m_filepath,t_expr);
 		this.m_refmods.p_Insert(t_mdecl2.m_filepath);
 		t_mdecl2.p_SemantAll();
 	}
@@ -12500,7 +12592,7 @@ c_Reflector.prototype.p_Semant3=function(t_app){
 		}
 		var t_cdecl=object_downcast((t_decl),c_ClassDecl);
 		if(((t_cdecl)!=null) && this.p_ValidClass(t_cdecl)){
-			this.m_classids.p_Set(this.p_DeclExpr((t_cdecl),true),this.m_classdecls.p_Length2());
+			this.m_classids.p_Set7(this.p_DeclExpr((t_cdecl),true),this.m_classdecls.p_Length2());
 			this.m_classdecls.p_Push28(t_cdecl);
 			continue;
 		}
@@ -12637,6 +12729,181 @@ c_ValueEnumerator.prototype.p_NextObject=function(){
 	var t_t=this.m_node;
 	this.m_node=this.m_node.p_NextNode();
 	return t_t.m_value;
+}
+function c_Map7(){
+	Object.call(this);
+	this.m_root=null;
+}
+c_Map7.m_new=function(){
+	return this;
+}
+c_Map7.prototype.p_Compare=function(t_lhs,t_rhs){
+}
+c_Map7.prototype.p_FindNode=function(t_key){
+	var t_node=this.m_root;
+	while((t_node)!=null){
+		var t_cmp=this.p_Compare(t_key,t_node.m_key);
+		if(t_cmp>0){
+			t_node=t_node.m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node.m_left;
+			}else{
+				return t_node;
+			}
+		}
+	}
+	return t_node;
+}
+c_Map7.prototype.p_Contains=function(t_key){
+	return this.p_FindNode(t_key)!=null;
+}
+c_Map7.prototype.p_Get2=function(t_key){
+	var t_node=this.p_FindNode(t_key);
+	if((t_node)!=null){
+		return t_node.m_value;
+	}
+	return 0;
+}
+c_Map7.prototype.p_RotateLeft7=function(t_node){
+	var t_child=t_node.m_right;
+	t_node.m_right=t_child.m_left;
+	if((t_child.m_left)!=null){
+		t_child.m_left.m_parent=t_node;
+	}
+	t_child.m_parent=t_node.m_parent;
+	if((t_node.m_parent)!=null){
+		if(t_node==t_node.m_parent.m_left){
+			t_node.m_parent.m_left=t_child;
+		}else{
+			t_node.m_parent.m_right=t_child;
+		}
+	}else{
+		this.m_root=t_child;
+	}
+	t_child.m_left=t_node;
+	t_node.m_parent=t_child;
+	return 0;
+}
+c_Map7.prototype.p_RotateRight7=function(t_node){
+	var t_child=t_node.m_left;
+	t_node.m_left=t_child.m_right;
+	if((t_child.m_right)!=null){
+		t_child.m_right.m_parent=t_node;
+	}
+	t_child.m_parent=t_node.m_parent;
+	if((t_node.m_parent)!=null){
+		if(t_node==t_node.m_parent.m_right){
+			t_node.m_parent.m_right=t_child;
+		}else{
+			t_node.m_parent.m_left=t_child;
+		}
+	}else{
+		this.m_root=t_child;
+	}
+	t_child.m_right=t_node;
+	t_node.m_parent=t_child;
+	return 0;
+}
+c_Map7.prototype.p_InsertFixup7=function(t_node){
+	while(((t_node.m_parent)!=null) && t_node.m_parent.m_color==-1 && ((t_node.m_parent.m_parent)!=null)){
+		if(t_node.m_parent==t_node.m_parent.m_parent.m_left){
+			var t_uncle=t_node.m_parent.m_parent.m_right;
+			if(((t_uncle)!=null) && t_uncle.m_color==-1){
+				t_node.m_parent.m_color=1;
+				t_uncle.m_color=1;
+				t_uncle.m_parent.m_color=-1;
+				t_node=t_uncle.m_parent;
+			}else{
+				if(t_node==t_node.m_parent.m_right){
+					t_node=t_node.m_parent;
+					this.p_RotateLeft7(t_node);
+				}
+				t_node.m_parent.m_color=1;
+				t_node.m_parent.m_parent.m_color=-1;
+				this.p_RotateRight7(t_node.m_parent.m_parent);
+			}
+		}else{
+			var t_uncle2=t_node.m_parent.m_parent.m_left;
+			if(((t_uncle2)!=null) && t_uncle2.m_color==-1){
+				t_node.m_parent.m_color=1;
+				t_uncle2.m_color=1;
+				t_uncle2.m_parent.m_color=-1;
+				t_node=t_uncle2.m_parent;
+			}else{
+				if(t_node==t_node.m_parent.m_left){
+					t_node=t_node.m_parent;
+					this.p_RotateRight7(t_node);
+				}
+				t_node.m_parent.m_color=1;
+				t_node.m_parent.m_parent.m_color=-1;
+				this.p_RotateLeft7(t_node.m_parent.m_parent);
+			}
+		}
+	}
+	this.m_root.m_color=1;
+	return 0;
+}
+c_Map7.prototype.p_Set7=function(t_key,t_value){
+	var t_node=this.m_root;
+	var t_parent=null;
+	var t_cmp=0;
+	while((t_node)!=null){
+		t_parent=t_node;
+		t_cmp=this.p_Compare(t_key,t_node.m_key);
+		if(t_cmp>0){
+			t_node=t_node.m_right;
+		}else{
+			if(t_cmp<0){
+				t_node=t_node.m_left;
+			}else{
+				t_node.m_value=t_value;
+				return false;
+			}
+		}
+	}
+	t_node=c_Node15.m_new.call(new c_Node15,t_key,t_value,-1,t_parent);
+	if((t_parent)!=null){
+		if(t_cmp>0){
+			t_parent.m_right=t_node;
+		}else{
+			t_parent.m_left=t_node;
+		}
+		this.p_InsertFixup7(t_node);
+	}else{
+		this.m_root=t_node;
+	}
+	return true;
+}
+function c_StringMap7(){
+	c_Map7.call(this);
+}
+c_StringMap7.prototype=extend_class(c_Map7);
+c_StringMap7.m_new=function(){
+	c_Map7.m_new.call(this);
+	return this;
+}
+c_StringMap7.prototype.p_Compare=function(t_lhs,t_rhs){
+	return string_compare(t_lhs,t_rhs);
+}
+function c_Node15(){
+	Object.call(this);
+	this.m_key="";
+	this.m_right=null;
+	this.m_left=null;
+	this.m_value=0;
+	this.m_color=0;
+	this.m_parent=null;
+}
+c_Node15.m_new=function(t_key,t_value,t_color,t_parent){
+	this.m_key=t_key;
+	this.m_value=t_value;
+	this.m_color=t_color;
+	this.m_parent=t_parent;
+	return this;
+}
+c_Node15.m_new2=function(){
+	return this;
 }
 function c_Enumerator5(){
 	Object.call(this);
@@ -12806,16 +13073,6 @@ c_Translator.prototype.p_TransExprStmt=function(t_stmt){
 c_Translator.prototype.p_TransInvokeMemberExpr=function(t_expr){
 }
 var bb_translator__trans=null;
-function bb_virtualos_FileTime(t_Path){
-	return bb_virtualos___OS_FileTimes.p_Get2(RealPath(t_Path));
-}
-function bb_virtualos_CopyFile(t_Src,t_Dst){
-	var t_Result=CopyFile(t_Src,t_Dst);
-	if(t_Result){
-		bb_virtualos___OS_SetFileTime(RealPath(t_Dst),bb_virtualos_FileTime(t_Src));
-	}
-	return t_Result;
-}
 function bb_virtualos_CopyDir(t_SourcePath,t_DestinationPath,t_Recursive,t_Hidden){
 	if(FileType(t_SourcePath)!=2){
 		return false;
@@ -12843,7 +13100,7 @@ function bb_virtualos_CopyDir(t_SourcePath,t_DestinationPath,t_Recursive,t_Hidde
 		var t_DstP=t_DestinationPath+"/"+t_F;
 		var t_32=FileType(t_SrcP);
 		if(t_32==1){
-			if(!bb_virtualos_CopyFile(t_SrcP,t_DstP)){
+			if(!CopyFile(t_SrcP,t_DstP)){
 				return false;
 			}
 		}else{
@@ -12858,9 +13115,9 @@ function bb_virtualos_CopyDir(t_SourcePath,t_DestinationPath,t_Recursive,t_Hidde
 }
 function bbMain(){
 	var t_CC=c_WebCC.m_new.call(new c_WebCC);
-	if(!bb_webcc___Monkey_DirectoryLoaded){
+	if(!__monkey_DirectoryLoaded){
 		bb_virtualos___OS_AddFileSystem(__os_toRemotePath(RealPath("data/webcc_filesystem.txt")));
-		bb_webcc___Monkey_DirectoryLoaded=true;
+		__monkey_DirectoryLoaded=true;
 	}
 	t_CC.p_Run(AppArgs());
 	return 0;
@@ -14203,17 +14460,6 @@ function bb_webcc_MatchPath(t_text,t_pattern){
 	}
 	return t_match;
 }
-function bb_virtualos___OS_RemoveFileTime(t_RealPath){
-	bb_virtualos___OS_FileTimes.p_Remove(t_RealPath);
-	return;
-}
-function bb_virtualos_DeleteFile(t_Path){
-	var t_Result=DeleteFile(t_Path);
-	if(t_Result){
-		bb_virtualos___OS_RemoveFileTime(RealPath(t_Path));
-	}
-	return t_Result;
-}
 function c_NodeEnumerator3(){
 	Object.call(this);
 	this.m_node=null;
@@ -14405,7 +14651,7 @@ c_List9.prototype.p_IsEmpty=function(){
 }
 c_List9.prototype.p_RemoveLast=function(){
 	var t_data=this.m__head.m__pred.m__data;
-	this.m__head.m__pred.p_Remove2();
+	this.m__head.m__pred.p_Remove();
 	return t_data;
 }
 c_List9.prototype.p_Equals4=function(t_lhs,t_rhs){
@@ -14426,7 +14672,7 @@ c_List9.prototype.p_FindLast8=function(t_value){
 c_List9.prototype.p_RemoveLast5=function(t_value){
 	var t_node=this.p_FindLast8(t_value);
 	if((t_node)!=null){
-		t_node.p_Remove2();
+		t_node.p_Remove();
 	}
 }
 function c_Node16(){
@@ -14446,7 +14692,7 @@ c_Node16.m_new=function(t_succ,t_pred,t_data){
 c_Node16.m_new2=function(){
 	return this;
 }
-c_Node16.prototype.p_Remove2=function(){
+c_Node16.prototype.p_Remove=function(){
 	this.m__succ.m__pred=this.m__pred;
 	this.m__pred.m__succ=this.m__succ;
 	return 0;
@@ -15180,12 +15426,10 @@ c_Enumerator8.prototype.p_NextObject=function(){
 	return t_data;
 }
 function bbInit(){
-	bb_webcc___Monkey_DirectoryLoaded=false;
 	c_Stack2.m_NIL=null;
 	c_Stack.m_NIL="";
 	c_Stream.m__tmp=c_DataBuffer.m_new.call(new c_DataBuffer,4096,false);
-	bb_virtualos___OS_FileTimes=c_StringMap.m_new.call(new c_StringMap);
-	bb_virtualos___OS_Env=c_StringMap2.m_new.call(new c_StringMap2);
+	bb_virtualos___OS_Env=c_StringMap.m_new.call(new c_StringMap);
 	c_Type.m_stringType=c_StringType.m_new.call(new c_StringType);
 	bb_config__errInfo="";
 	bb_config__cfgScope=c_ConfigScope.m_new.call(new c_ConfigScope);

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>WebCC: Monkey Compiler for the Web (Detailed Explanation)</title>
+  <meta name="description" content="Introduction">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://Regal-Internet-Brothers.github.io/monkey_webcc/2015/12/21/monkey-webcc.html">
+  <link rel="alternate" type="application/rss+xml" title="The Regal Internet Brothers" href="http://Regal-Internet-Brothers.github.io/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">The Regal Internet Brothers</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/monkey/">Monkey</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">WebCC: Monkey Compiler for the Web (Detailed Explanation)</h1>
+    <p class="post-meta"><time datetime="2015-12-21T13:46:00-07:00" itemprop="datePublished">Dec 21, 2015</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h2 id="introduction">Introduction</h2>
+
+<blockquote style="color:gray; text-align: center;">
+  <p>As a quick introduction, my name is Anthony Diamond, and I’ve been programming in <a href="http://www.monkey-x.com/Monkey/_index_.php">Monkey</a> for nearly three years. I <em>currently</em> go by the username <strong><a href="https://github.com/ImmutableOctet"><img src="http://Regal-Internet-Brothers.github.io/assets/immutableoctet/avatar.jpg" alt="Avatar" /> ImmutableOctet</a></strong>, and I’m the developer of the ‘<a href="https://github.com/Regal-Internet-Brothers/regal-modules#regal-modules">regal-modules</a>’ project.</p>
+</blockquote>
+
+<p>Those who aren’t familiar with Blitz Research Ltd, and their open-source <em>language</em>, <strong>Monkey</strong>, can <a href="http://en.wikipedia.org/w/index.php?title=Monkey_X">get more information here</a>. Additionally, Monkey X’s official website can be <a href="http://www.monkey-x.com">found here</a>.</p>
+
+<p>This article is an overview of how the WebCC project functions, and what went into making it. This isn’t a complete guide, but it does detail certain key parts of the porting process.</p>
+
+<h1 id="overview-and-explanation"><strong>Overview and Explanation</strong></h1>
+
+<p>Personally, I feel that one of the most attractive things to see when introduced to a programming language is a presentation built in that language, accessible from where you found it. This doesn’t have to be anything more than a “Hello world” example, but the fact that you have access to the language immediately is a great way to entice users.</p>
+
+<p>So, what is Monkey-WebCC? WebCC was started as a side project of mine, meant to port Monkey’s compiler (TransCC) to JavaScript. The main purpose of this is to allow execution of Monkey code from a webpage. This is especially useful to many Monkey users, who want to run code snippets, examples, or receive help with their projects.</p>
+
+<center>
+
+<p><b><i><a href="http://regal-internet-brothers.github.io/webcc">Try it out yourself</a></i></b></p>
+<iframe src="http://regal-internet-brothers.github.io/webcc" style="width: 100%; height: 480px;"></iframe>
+
+</center>
+
+<p><em>For a list of relevant repositories, <a href="#source-code-and-setup">click here</a>.</em></p>
+
+<p>One of the best parts about the WebCC concept is that the host doesn’t have to pay for the compilation time. Not a single byte of your source code or resources is sent. No work is done by an external machine, just plug ‘n’ play in your browser. Not only that, but we’re relying upon the existing codebase for Monkey’s compiler.</p>
+
+<p>Right now, one of the less desirable aspects about Monkey, is that it requires a desktop environment to run your software. A good example of this is <a href="http://monkeygameprogramming.blogspot.nl">Rudy van Etten’s Monkey programming blog</a>, where compiled examples must be provided alongside code, instead of presenting the program at the user’s discretion.</p>
+
+<h3 id="browser-compatibility">Browser Compatibility</h3>
+
+<p>Though I can’t get into exact details for support, most modern (HTML5 compliant) browsers should work with WebCC. There’s a few dependencies, so don’t be surprised if it’s not perfect on your system. That being said, WebCC has been tested with the latest builds of <a href="https://www.mozilla.org/en-US/firefox/new">Mozilla Firefox</a> (Very minor issues), <a href="https://www.google.com/chrome/browser/desktop">Google Chrome</a>, and the latest <a href="http://www.opera.com/developer">experimental builds of <em>Opera</em></a>.</p>
+
+<h3 id="experience-disclaimer-">== <em>Experience Disclaimer</em> ==</h3>
+
+<p>I’d like to get this out of the way now: I’m not a <em>new</em> programmer. I’ve programmed in several languages over the course of the last ~seven years, but I had <strong><em>very little experience with JavaScript prior to this project</em></strong>. So, if there’s a better way to do something in WebCC / ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’, by all means make a pull request. Though, I should bring up that the global namespace was used for a reason.</p>
+
+<p><em>This article was written over the course of a week, and may have permalinks to outdated source code.</em></p>
+
+<hr />
+
+<h2 id="how-its-done">How It’s Done</h2>
+
+<p>Let me preface this portion of the article by saying:</p>
+
+<p>I refuse to modify the <a href="https://github.com/blitz-research/monkey/tree/develop/modules/trans">‘trans’ modules</a>. This needs to be as minimal as possible, and provide behavior as consistent to the desktop as I can get it. The bulk of the compiler’s codebase (Including reflection) should not care about WebCC. Similarly, this is an exercise in JavaScript, so Monkey shouldn’t be powering the backend. Any Monkey-based frontend portions we can get away with are fine, but the intent is to use JavaScript where it’s ideal.</p>
+
+<p>Now that we’ve gotten the idea out of the way, you might be thinking:</p>
+
+<blockquote>
+  <p>Wait, isn’t Monkey a ‘<em>transpiler</em>’? Shouldn’t TransCC be able to bootstrap itself into JavaScript, and run in a browser?</p>
+</blockquote>
+
+<p>The short answer is: Yes and no. – Though the compiler itself is primarily portable, there are a few dependencies that stop this from happening.</p>
+
+<h3 id="dependencies-the-first-hurdle">Dependencies: The First Hurdle</h3>
+
+<p>The dependency that’s the most limiting is the <a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html">‘os’ module</a>. This module covers behavior available from most Unix-like operating systems. Because of this dependency on Unix-like environments, this module couldn’t be represented well on several of Monkey’s targets. The official answer from BRL (Blitz Research) was to inevitably split and extend ‘os’ by breaking it into the ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.filesystem.html">brl.filesystem</a>’, ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.filepath.html">brl.filepath</a>’, and ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.process.html">brl.process</a>’ submodules.</p>
+
+<p>To summarize their roles, and how they relate to ‘os’:</p>
+
+<ul>
+  <li>‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.filepath.html">brl.filepath</a>’, in particular, isn’t note worthy to this article, as it covers the portable portions of ‘os’.</li>
+  <li>‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.filesystem.html">brl.filesystem</a>’ covers the majority of ‘<em>os</em>’, handling file operations and path semantics.</li>
+  <li>‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_brl.process.html">brl.process</a>’ is in charge of three major things, directory behavior (User-level path transformation), runtime details (Arguments, application-path, environment variables, etc), and finally, <em>execution behavior</em>.</li>
+</ul>
+
+<p>Looking at that list, it’s easy enough to see that the first thing we need is a comprehensive file-system. Luckily, HTML5 has us covered!</p>
+
+<p>Well, sort of… HTML5 has made great strides in the storage mechanics of browsers, sporting both session and local storage for websites. This is done natively with ‘sessionStorage’ and ‘localStorage’, which are effectively maps (Dictionaries) that handle strings exclusively. The string aspect is a bit of a deterrent, but otherwise, storage is pretty straight forward. With this in mind, two of the biggest hurdles seem to be file-encoding and path semantics.</p>
+
+<h3 id="the-ground-floor">The Ground Floor</h3>
+
+<p>Now that we know <em>where</em> we’re going to store the files, we need to figure out how to deal with the demands of TransCC. One of the biggest problems to tackle is source-file downloads. This is still something that isn’t 100% optimal, and likely won’t be.</p>
+
+<p>The idea here is that any call expecting a file needs to retrieve one; calls to commands like ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#FileType">FileType</a>’ and ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#FileSize">FileSize</a>’ need to clearly behave the way they’re expected to. You can’t return 0 on something that needs a size, and you can’t act like a file exists when we don’t have it yet.</p>
+
+<p>Not only do we need to uphold this behavior, but everything needs to be <strong><em>synchronous</em></strong> (The elephant in the room). We can’t simply use modern AJAX as it’s intended, we have to work around it. Thankfully, the well supported ‘XMLHttpRequest’ extension has our back. Using that extension as a synchronous HTTP requester isn’t recommended, but it’s the only way to meet my current criteria.</p>
+
+<p>Access is controlled through several abstraction layers, so if a day comes when ahead-of-time file requests are necessary, we’ll be ready for it. The gist of it is that referencing a file is always safe, as long as the file exists on the remote host, or is a custom entry. If a file doesn’t already exist in the <em>virtual</em> file-system, it needs to be requested, but if we already have the file, there’s no need to re-download it.</p>
+
+<p>The most recent versions of WebCC (And ‘<a href="https://www.github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’) take this a step further. Basically, content is cached locally, and kept between compilations. Each time the compiler is run, requests are made to the host. These requests are used to determine the validity of the local cache. If the files are outdated, the host will say so.</p>
+
+<p>This is done either through Unix standard file-times, or by host-defined “entity tags”. Both options are considered standard, and support a wide variety of servers. With that in mind, it should definitely be noted that second-time requests are practically non-existent with WebCC. Previously understood requests are not attempted again, unless done manually, forcefully, or the page has been refreshed.</p>
+
+<p>Understanding these ideas is crucial to improving the user’s experience, and though the setup still has its hiccups, we can still trim the fat wherever possible.</p>
+
+<h3 id="storing-our-files">Storing our Files</h3>
+
+<p>As I stated in the last segment, we can download files from an HTTP server. The next step is to figure out <em>how</em> to store it. Because we’re using synchronous HTTP, the output is unfortunately limited to binary-string responses. Knowing that we are only able to retrieve strings, we need to ensure that we always get the right format. This is simple enough, since Monkey source is UTF8, and any extra files we’ll need to get will play nicely with “text/plain” as our MIME type, and our custom character-set as “x-user-defined”.</p>
+
+<p>This is where I’d say we move on, but I decided to go the extra mile. WebCC’s file-system is powered by my ‘<a href="https://www.github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’ module, which supports multiple encoding strategies, including binary strings, Base64, and raw ‘ArrayBuffer’ storage.</p>
+
+<p>However, due to HTML5’s local storage limitations, binary strings are used currently. As I stated, Base64 <em>could</em> be used here, but binary-strings seem to be more effective. Unfortunately, if persistent cache (Local storage) is used, ‘ArrayBuffers’ aren’t an option.</p>
+
+<p>That module already has its own abstraction layer, so as far as external resource-views go, we’re solid. Raw buffers can be used when using object-based storage, but since this isn’t the topic, I’m not going to dwell on it.</p>
+
+<hr />
+
+<h3 id="setting-up-the-web-compiler---part-1-fooling-the-source">Setting up the Web Compiler - Part 1: Fooling the Source</h3>
+
+<p>Before we can do anything else, we need to introduce an interceptive module. I stated that ‘trans’ uses ‘os’, and <em>there’s no changing that</em>. What we can change is how ‘os’ is implemented; the source behind it. In my case, I wanted to keep this hack clean, so I personally modified ‘os’ to import ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’, my replacement module. I made some simple preprocessor checks for the target, and imported that module for HTML5 builds, instead.</p>
+
+<p>Now, something to note about this approach is that it’s only necessary when hacking this the way I am. You could easily change the target-checks, and implement “<a href="https://github.com/blitz-research/monkey/tree/develop/modules/os/native">os/native</a>/os.<em>js</em>” yourself, but you won’t be able to extend ‘os’.</p>
+
+<p>Because I wanted full control, I went with a redirect. Here’s where you could modify ‘trans’ as well, importing your personal ‘os’ variant. As I said previously, I chose against this.</p>
+
+<h3 id="setting-up-the-web-compiler---part-2-remote-file-structure">Setting up the Web Compiler - Part 2: Remote File Structure</h3>
+
+<p>With our storage scheme and module-override(s) out of the way, there’s something specific to TransCC we need to do. TransCC uses ‘<a href="https://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#LoadDir">LoadDir</a>’ in several cases, which unlike standard source imports, doesn’t have a nice way of working with HTTP. My solution for this was to make a “virtual directory generator”, to produce relevant file locations and meta-data. These entries are marked using a function called ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos/blob/79749e63ee53898871ba8248b9cecdc8940a7893/native/os.js#L899">__os_createFileLink</a>’ internally, which produces empty-file symbols. If an application performs an operation on one of these files, or the content is otherwise necessary, a request will be made to the remote host over HTTP. This gives us compliance with ‘<a href="https://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#LoadDir">LoadDir</a>’, where file-system chronology may be necessary.</p>
+
+<p>To make a long story short, I was able to achieve this by making a tool that maps out a portion of the server’s local file structure. It then generates a very basic text-based format describing the elements. The source for this tool can be found using the <a href="#source-code-and-setup">repository list</a>.</p>
+
+<p>Next, we need to parse and retrieve the generated file. To do this, I’m stepping out of JavaScript, and into Monkey itself. Because this isn’t a core part of ‘<a href="https://www.github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’, I’m not going to limit myself to JS.</p>
+
+<p>With Monkey, external code can be executed or referenced, but passing data the other way isn’t standard. Monkey generates JavaScript, but the naming schemes used are translator dependent, and based on each element’s context. If you want to pass data back to Monkey safely, you need to initiate the exchange from Monkey. There’s some exceptions, but that’s the gist of it.</p>
+
+<p>When I originally started this project, my intention was to get default TransCC to run with effectively no modifications. This is the step that tripped me up, as I couldn’t simply build a parser in JavaScript without making everything disjointed. Not to mention, dependent on environmental behavior.</p>
+
+<p>The path I chose was to replace and modify the “driver” layer of integration. Though this does segregate WebCC further, this meant I didn’t have to care about what WebCC did before it reached out to other modules. This also meant I could freely modify components local to WebCC’s Monkey codebase, like target-builders. Thankfully, this is still separate from the official ‘trans’ module(s).</p>
+
+<h3 id="path-semantics">Path Semantics</h3>
+
+<p>Before we move on, I’d like to illustrate the concept behind the virtual file-system’s path scheme.</p>
+
+<p><em>To contrast just how safe the current path resolution system is, here’s <strong>what it looked like on my first attempt</strong>:</em></p>
+<center>
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">I decided to get <a href="https://twitter.com/hashtag/MonkeyX?src=hash">#MonkeyX</a>&#39;s compiler working in HTML5. Despite fixing I/O earlier, I think I made it worse. <a href="https://t.co/mwMicFcCFv">pic.twitter.com/mwMicFcCFv</a></p>&mdash; Anthony Diamond (@immutableoctet) <a href="https://twitter.com/immutableoctet/status/670214725016248324">November 27, 2015</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+
+<p>Like a normal ‘os’ implementation, ‘<a href="https://www.github.com/Regal-Internet-Brothers/virtualos">virtualos</a>’ allows for both <em>‘real’</em> and managed paths.</p>
+
+<p>Managed paths simply make assumptions about their parent context. <em>‘Real’</em> paths are global positions relative to the location on the host. For example, the managed path “data/user.monkey” assumes the current directory as a prefix, making it convertible. If the user calls ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#CurrentDir">ChangeDir</a>’, the prefix to managed paths will change. In other words, “data/user.monkey” becomes “<strong>directory_here/data/user.monkey</strong>”.</p>
+
+<p><em>‘Real’</em> paths take this concept to their natural conclusion for the user. Assuming WebCC is held in a sub-directory on the host called “webcc”, a <em>‘real’</em> path would append that to the beginning of the path. As an example, “directory_here/data/user.monkey” becomes “<strong>/webcc/directory_here/data/user.monkey</strong>”. This is the final local path, and that’s what’s used to store elements in the file-system. This might seem like a lot of work, but it ensures unique representation, and safe interoperability with existing storage entries.</p>
+
+<p>The only question remains, how hard is it to use this? The answer is: Not at all. An interface function (Like those described in ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html">os</a>’) expects a managed path, like “data/user.monkey”. Those are then able to call ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#RealPath">RealPath</a>’, which converts the path only if it isn’t already a <em>‘real’</em> path. This means a <em>‘real’</em> path is perfectly valid for the caller to use, and safety is ensured. These functions can then call any internal routines necessary, which only deal with <em>‘real’</em> paths.</p>
+
+<p>A normal access of a text file can simply be:</p>
+
+<blockquote>
+  <p>LoadString –&gt; RealPath –&gt; Abstraction Layer –&gt; File</p>
+</blockquote>
+
+<p>With little overhead during the operation. There’s some small quirks to this, like mimicking operating systems’ support for “..”, but that’s the idea behind it.</p>
+
+<h3 id="setting-up-our-environment">Setting up our Environment</h3>
+
+<p>The first step to getting this running is creating a <em>“data”</em> folder. In our case, we’ve moved on to a WebCC-specific “driver”, so the main file will be called “webcc.monkey”. Since we’re using “webcc.monkey” as our build-file, “<a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/tree/master/webcc.data">webcc.data</a>” is going to be our <em>“data”</em> folder. Simple enough.</p>
+
+<p>Next, we need to populate <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/tree/master/webcc.data">this folder</a> with the usual files of a Monkey installation. We need a “modules” sub-folder, holding the usual suspects: ‘brl’, ‘mojo’, ‘opengl’, etc. – The only module we won’t include the original source for (Excluding native code) is ‘os’. Instead, we’ll copy (Or sym-link) <a href="https://github.com/Regal-Internet-Brothers/virtualos">the module we’re currently writing</a>, and call it “os”.</p>
+
+<p><strong>Below is a disclaimer covering the details of redistributing Monkey’s source code</strong>, and how to go about it. If you’re interested in WebCC’s distribution, please read the disclaimer. If you’re not interested, skip it.</p>
+
+<center><h4><b>MODULE REDISTRIBUTION DISCLAIMER</b></h4></center>
+
+<hr />
+
+<p><strong>If you intend to follow the same path I used, make sure to remove all NATIVE source associated with Mojo (‘mojo’).</strong> This means ANY source in “modules/mojo/native”, <strong>excluding JS (JavaScript) files</strong>. In general, you should remove all <em>native code</em> that isn’t JavaScript (JS). Though, some of this is open source, source files that aren’t JavaScript won’t be relevant to web browsers.</p>
+
+<p><strong>Open Source Monkey code</strong> that is already licensed is fine, but you must follow the appropriate licenses. In my case, I am redistributing <a href="https://github.com/blitz-research/monkey/blob/develop/README.TXT">Monkey’s license</a>.</p>
+
+<p>Mojo is open source, but the only parts that are legal to redistribute are the JavaScript (JS), C++ (<strong><em>GLFW specifically</em></strong>), and <strong>MONKEY</strong> code. Targets (Not including Mojo and Mojo 2) don’t have this restriction. – In addition: <strong>The Mojo 2 module (‘mojo2’) is 100% commercial <em>at this time</em>, and should not be redistributed in any form. For Mojo 2, this includes Monkey source files.</strong></p>
+
+<p>To put it simply, if it’s in the <strong><a href="https://github.com/blitz-research/monkey">official Monkey repository</a></strong>, then you’re free to redistribute it. DO NOT redistribute copyrighted, or otherwise non-distributable software. This includes hosting it publicly on a website, or public git repository.</p>
+
+<blockquote>
+  <p>I am not a lawyer. This advice is based on my personal knowledge of Monkey’s source distribution. WebCC is provided as-is, and does not hold myself, nor The Regal Internet Brothers, legally responsible. This article does not condone license violations.</p>
+</blockquote>
+
+<hr />
+
+<p><br /></p>
+
+<p>With the modules sorted out, we add “VERSIONS.TXT”. “VERSIONS.TXT” is a small change-log shipped with Monkey. Funny enough, TransCC (And by extension, WebCC) looks for this file. This is parsed to know what version number to append to build-folders. This isn’t required by any means, but I’m including it for the sake of completeness. It’s a pretty funny way of doing it, though.</p>
+
+<p>Next we have our “bin” folder. Now, in our interception-module, we’ll actually have to make this the application-directory. The compiler expects this, and handles the path accordingly. This is also <a href="#path-semantics">why good path semantics is necessary</a>. I’m not going to go too much into this, but it’s basically a weird edge-case we need to support.</p>
+
+<p>Moving on to the content of “bin”, we only need one file. <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/blob/master/webcc.data/bin/config.web.txt">This is our configuration file</a>. The name of this file depends on what you make ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#HostOS">HostOS</a>’ return from your <a href="https://github.com/Regal-Internet-Brothers/virtualos">interception-module</a>. For this project, I’m making the host return “web”. This is also what the ‘HOST’ preprocessor-variable will be in browser-compiled Monkey code. This file needs to contain an assignment of the ‘MODPATH’ variable, and a fake path for ‘HTML_PLAYER’. ‘HTML_PLAYER’ should hold a string you’ll use to identify program execution later. If you’re unsure about ‘HTML_PLAYER’, just leave it as-is. <em>Every other variable is useless here.</em></p>
+
+<p>Finally, we have our “targets” folder. The only targets relevant are HTML5/JS based. The disclaimer above applies only to targets that are commercial in some way. Monkey’s default targets aren’t commercial by themselves, but you should still use the <a href="https://github.com/blitz-research/monkey">official GitHub repository</a> as a reference. For now, we’ll leave the copied target(s) as-is (<a href="https://github.com/blitz-research/monkey/tree/develop/targets/html5">“html5” target</a>).</p>
+
+<p>Our final step is to build my <a href="https://github.com/ImmutableOctet/monkey-tools/blob/master/Virtual_Directory_Generator/Virtual_Directory_Generator.monkey">“Virtual Directory Generator”</a>, and use it in our <em>“webcc.data”</em> folder. Remove any unwanted or irrelevant parts. The <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/blob/master/webcc.data/webcc_filesystem.txt">final file</a> should only contain descriptions for the “bin”, “targets”, and “modules” folders, barring minor tweaks. This file should be kept in your <em>“data”</em> folder (<em>“webcc.data”</em>, etc), and named whatever you like. We’ll need to remember this name for later.</p>
+
+<p>With the environment set up, we can start plugging into the compiler. The next segment briefly covers how I plugged everything in.</p>
+
+<h3 id="setting-up-the-web-compiler---part-3-building-an-interface">Setting up the Web Compiler - Part 3: Building an Interface</h3>
+
+<center>
+<p>Early WebCC running without Sandboxing</p>
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">It just makes me tingle all over. <a href="https://t.co/PhJCn2CL9X">https://t.co/PhJCn2CL9X</a> - It finally works, and it&#39;s pretty fast so far. <a href="https://twitter.com/hashtag/MonkeyX?src=hash">#MonkeyX</a> <a href="https://t.co/2JlJUIUzWP">pic.twitter.com/2JlJUIUzWP</a></p>&mdash; Anthony Diamond (@immutableoctet) <a href="https://twitter.com/immutableoctet/status/670986091718180865">November 29, 2015</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+
+<hr />
+
+<p>I should reiterate this now: <em>This is not a step by step guide.</em> I’m going to glance over this part, so we can keep moving. You can see the outcome in the <strong><a href="#source-code-and-setup">source code</a></strong>. Some notable steps I’m not covering are how I handle specifics to WebCC’s codebase. Things like how I handle the behavior of ‘<a href="http://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#Execute">Execute</a>’, or how ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’ retains its state between frames/documents.</p>
+
+<p>I also won’t go into detail about modifying TransCC to work with ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’. If you’re interested, <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/blob/ec181e196ba4f74001fc9ecb54e388bb8024a454/builders/jshtml5.monkey#L14">click here</a>. These are details that can be observed at length through WebCC’s source code, and they would take too long to describe. Even then, explaining it would just be me talking about a lot of hacks most people don’t want to know about.</p>
+
+<p>For questions or comments about how I got this working, you can message me on <a href="https://twitter.com/immutableoctet">Twitter</a>, or make an issue on <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey">GitHub</a>.</p>
+
+<hr />
+
+<p>The following is a brief overview of how to set up TransCC on-demand in a browser. The first step is to create a custom target. <strong><em>This target will be used to build our web-compiler.</em></strong> This is very straight forward in Monkey.</p>
+
+<p>In my particular case, I created a <a href="https://github.com/Regal-Internet-Brothers/jstool-target-monkey">JavaScript-only target</a>, and modified it from there. This was perfect for WebCC. To keep this moving, I’m not covering how to make a target. Installation is very straight forward, simply move the folder into your “targets” folder, and make sure your IDE refreshes its target-list. The WebCC-specific target can be <a href="#source-code-and-setup">found below</a>. I basically made an empty target, then filled it with relevant code to execute the compiler.</p>
+
+<p><strong>If you’re looking to do something like this from scratch, I recommend grabbing ‘<a href="https://github.com/Regal-Internet-Brothers/jstool-target-monkey">jstool</a>’. This simplifies the bootstrapping process.</strong></p>
+
+<p>With our target set up, we add a ‘button’ and ‘textarea’ to our template’s HTML file. For those interested in this, be sure to copy the relevant parts of the target-template’s content if you want to make a custom target.</p>
+
+<p>Our ‘textarea’ will have this (Or similar) as our content:</p>
+
+<blockquote>
+  <p>Function Main(); Print(“Hello world.”); End</p>
+</blockquote>
+
+<p>We give it an ID, and move on.</p>
+
+<p>We make a function called ‘runCompiler’, and have it do the following:</p>
+
+<ul>
+  <li>
+    <p>Get a handle to our ‘textarea’.</p>
+  </li>
+  <li>
+    <p>Make a file-entry by calling an extension defined in our interceptive ‘os’ module (Native). The new file’s name and contents are used to represent our ‘textarea’ (User-defined Monkey source).</p>
+  </li>
+  <li>
+    <p>Execute our Monkey program (Compiler). We’ll use the HTML5 target (Copied previously) to build our file. This can be either a “release” build, or a “debug” one.</p>
+  </li>
+</ul>
+
+<p>In the case of ‘<a href="https://github.com/Regal-Internet-Brothers/jstool-target-monkey">jstool</a>’ and co., we use:</p>
+
+<blockquote>
+  <p>executeMonkey(‘-target=Html5_Game’, ‘-config=Debug’, ‘-run’, ‘“PATH_HERE”’);</p>
+</blockquote>
+
+<p>Our ‘executeMonkey’ function ties into ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">virtualos</a>’ if available. In other words, it only passes ‘<a href="https://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#AppArgs">AppArgs</a>’ if they can be accessed to begin with.</p>
+
+<p>Next, we add the following to our ‘button’ tag, so it triggers the compiler:</p>
+
+<blockquote>
+  <p>onclick=’runCompiler();’</p>
+</blockquote>
+
+<p>The gist of our next step is that we need to create an ‘iframe’ using DOM, and move the compiler output into it. We also make our interceptive ‘os’ module able to share the bulk of its context with an ‘iframe’. This is done by using ‘<a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/parent">parent</a>’, and sharing the values of the same variable names.</p>
+
+<p>The compiled codebase has our custom ‘os’ module because we copied/sym-linked it previously, and we modified the target to use it. The next section glances over why and how we do this, but it’s basically an import in the <em>“data”</em> folder’s target.</p>
+
+<p>If you’re interested in how I hacked this together, here’s a list of areas that are relevant (Permalinks; <strong>may not represent the <a href="#source-code-and-setup">latest source</a></strong>):</p>
+
+<ul>
+  <li>‘<a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey/blob/5094088fd701601ce1f00be711aa52fe94e0b837/template/MonkeyGame.html#L176">runCompiler</a>’</li>
+  <li><a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey/blob/5094088fd701601ce1f00be711aa52fe94e0b837/template/webcc/load.js#L94">“webcc/load.js” and ‘__exec’</a> - Relevant part of ‘virtualos’; ‘<strong><a href="https://github.com/Regal-Internet-Brothers/virtualos/blob/81ff4ede278ebaf15be0a91e78ca469e5813749d/native/os.js#L1485">Execute</a></strong>’.</li>
+  <li><a href="https://github.com/Regal-Internet-Brothers/virtualos/blob/81ff4ede278ebaf15be0a91e78ca469e5813749d/native/os.js#L899">__os_createFileEntry</a>’s implementation.</li>
+  <li><a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/blob/ec181e196ba4f74001fc9ecb54e388bb8024a454/builders/jshtml5.monkey#L14">How WebCC’s HTML/JS builder was modified</a>.</li>
+</ul>
+
+<h3 id="setting-up-the-web-compiler---part-4-managing-resources">Setting up the Web Compiler - Part 4: Managing Resources</h3>
+
+<center>
+<p>WebCC running two Sandboxed Instances of a Monkey program</p>
+<blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">The &quot;Champagne&quot; demo running in two instances compiled in-browser using <a href="https://twitter.com/hashtag/MonkeyX?src=hash">#MonkeyX</a> &quot;WebCC&quot; (Working title). <a href="https://t.co/RRnaFmiJ1r">pic.twitter.com/RRnaFmiJ1r</a></p>&mdash; Anthony Diamond (@immutableoctet) <a href="https://twitter.com/immutableoctet/status/673535719902601216">December 6, 2015</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+
+<p>With our execution sandboxed, we now need to get resources working. This is pretty straight forward; the main thing we need to do is modify the HTML5/JS target(s) we copied, so that uses of ‘XMLHttpRequest’ use calls to the ‘os’ APIs (Including extensions where necessary). There’s also cases where elements’ src’ properties are set. These also need to be modified. You can find my changes to the HTML5 target <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/tree/master/webcc.data/targets/html5">here</a>, and my changes to Mojo <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/tree/master/webcc.data/modules/mojo/native">here</a>.</p>
+
+<p>In the case of “remote paths” where a file’s data is needed from a remote host, you can use one of several options provided by today’s browsers. I personally use a ‘resource-based’ approach, where the URI of something is generated, and cached internally. For details, <a href="https://github.com/Regal-Internet-Brothers/virtualos/blob/cbb105e3481507ff228e333b03dd004ebaa40ffe/native/os.js#L1115">click here</a> (Permalink).</p>
+
+<p>As a side note, since we embed the output into our ‘iframe’, the <em>“data”</em> folder’s HTML5 target should not load its version of “main.js”.</p>
+
+<h3 id="the-default-interface-template">The Default Interface (Template)</h3>
+
+<p>I briefly went over the template we use, earlier. That’s our frontend, and it’s a separate part of WebCC. The frontend covers the user-interface and plugs into the <em><a href="#source-code-and-setup">components we’ve built</a></em>. In WebCC’s case, the frontend is a proof-of-concept. It doesn’t have a proper text-area for writing code, and it’s certainly not pleasing to the eyes.</p>
+
+<p>WebCC’s target can be <a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey">found here</a>. That target includes the page and source for the demo <a href="#overview-and-explanation">found above</a>, as well as the required files to use it as a target. With WebCC’s frontend, you can add Monkey source files and resources using the “File System” manager, found on the side. If “Multiple Sessions” is checked, resources will be saved locally. Monkey source files are not currently saved between sessions.</p>
+
+<p>Despite having its own target, WebCC is independent of a frontend. The compiler can be executed at the caller’s discretion. This isn’t perfect, but you can supply appropriate application-arguments, and execute the compiler on a normal web page. Just keep the execution environment in mind, as running WebCC will surely pause your webpage otherwise.</p>
+
+<p>Using either <a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey">WebCC’s target</a>, or ‘<a href="https://github.com/Regal-Internet-Brothers/jstool-target-monkey">jstool</a>’, you can execute the compiler with a few function calls.</p>
+
+<hr />
+
+<p></p>
+
+<h1 id="conclusion"><strong>Conclusion</strong></h1>
+
+<p>With all of these steps followed, our final product should run. Obviously, this wasn’t a comprehensive guide, but I hope someone found this interesting.</p>
+
+<p>I wasn’t able to go into as much detail as I wanted, but this article should hopefully convey the goals I had when making this project. This isn’t an official solution, nor is it a serious product. This was a side project of mine, and I’m honestly just glad I got it working. Feedback and pull requests are welcome.</p>
+
+<p>Below you’ll find a list of repositories, and how they’re put together. Additionally, you can find the most recent <a href="https://github.com/Regal-Internet-Brothers/Regal-Internet-Brothers.github.io/tree/master/webcc">generated version here</a>.</p>
+
+<h2 id="source-code-and-setup">Source Code and Setup</h2>
+
+<p><a href="http://regal-internet-brothers.github.io/webcc">WebCC</a> is a conglomeration of several repositories, each holding a relevant piece of the project. Below is a list of repositories containing each component necessary to build WebCC, using any reasonably up-to-date version of <a href="http://www.monkey-x.com/Account/signup.php">Monkey X</a>. For a slightly more detailed explanation, read on.</p>
+
+<ul>
+  <li>‘<a href="https://github.com/Regal-Internet-Brothers/webcc-monkey">webcc-monkey</a>’: This contains a modified version of the original ‘<a href="https://github.com/blitz-research/monkey/tree/develop/src/transcc">transcc</a>’ tool, stripped down for web compilation.</li>
+  <li>‘<a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey">webcc_frontend-target-monkey</a>’: A target containing a proof-of-concept HTML/JS frontend for WebCC. (Used to build the project)</li>
+  <li>
+    <p>‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">regal.virtualos</a>’: This is where the magic happens; the module responsible for the virtual file-system.</p>
+  </li>
+  <li><a href="https://github.com/ImmutableOctet/monkey-tools/blob/master/Virtual_Directory_Generator/Virtual_Directory_Generator.monkey">The “Virtual Directory Generator” Tool</a>: This is used to map out a directory for ‘<a href="https://regal-internet-brothers.github.io/monkey/docs/Modules_os.html#LoadDir">LoadDir</a> compatibility.</li>
+</ul>
+
+<p>The <strong><a href="http://regal-internet-brothers.github.io/webcc">most recent build</a></strong> generated for this website can be <a href="https://github.com/Regal-Internet-Brothers/Regal-Internet-Brothers.github.io/tree/master/webcc">found here</a>.</p>
+
+<hr />
+
+<p>Setting this up is pretty straight forward. Simply download or clone <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey">the “driver” code</a>, and place it where you want.</p>
+
+<p><strong>The ‘os’ module provided with the “driver” is a sub-module.</strong> If you intend to use WebCC’s sandboxed HTML5 target (Web target), you need the ‘os’ module. In this particular case, you will need to download or clone ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">virtualos</a>’, and make a copy of it named “os”. This copy should be placed in the “webcc.data/modules” directory. The next step requires ‘virtualos’ as well, so you will need two copies (Or use a sym-link, if available).</p>
+
+<p>Next, either substitute <a href="https://github.com/blitz-research/monkey/blob/a254ac3682a453a0a03172fb55a0b9afbce6a0a1/modules/trans/trans.monkey#L17">this import in ‘trans’</a> with an import to ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">virtualos</a>.os’. You can install it as either ‘regal.virtualos’ (“regal” parent folder in your module-directory), or simply ‘virtualos’, if you want to place it locally. <a href="https://gist.github.com/ImmutableOctet/5311d90fe8360a77cbd5">Here’s an example</a>. Alternatively, <a href="https://gist.github.com/ImmutableOctet/3191d9a0b6cee2103c8d">you can do what I did</a>, and override ‘os’, so it imports ‘virtualos’ when using HTML5.</p>
+
+<p>The next step is to download or clone <a href="https://github.com/Regal-Internet-Brothers/webcc_frontend-target-monkey">the frontend-target</a>, and place it in your Monkey installation’s “targets” folder. With this done, you can freely build and modify WebCC.</p>
+
+<p>WebCC and its components have been released under two licenses:</p>
+
+<ul>
+  <li>Monkey’s license (zLib / libpng + proprietary): Used for Monkey-derived software. (Only open source components were used)</li>
+  <li>The MIT license: Used for independent software, such as ‘<a href="https://github.com/Regal-Internet-Brothers/virtualos">virtualos</a>’.</li>
+</ul>
+
+<p>These are not restrictive licenses. Credit for my particular software is not necessary, but it’s appreciated.</p>
+
+<p>If you’re looking to add more modules, you may need to add extra entries into <a href="https://github.com/Regal-Internet-Brothers/webcc-monkey/blob/master/webcc.data/webcc_filesystem.txt">this file</a>. If you wish to generate more entries, you can use <a href="https://github.com/ImmutableOctet/monkey-tools/blob/master/Virtual_Directory_Generator/Virtual_Directory_Generator.monkey">this tool</a>. The file provided with that repository contains what is effectively the minimum entries required (Excluding the extra target).</p>
+
+<p>Thank you for reading.</p>
+
+<p><strong><a href="https://github.com/ImmutableOctet"><img src="http://Regal-Internet-Brothers.github.io/assets/immutableoctet/avatar.jpg" alt="Avatar" /> ImmutableOctet</a></strong> (Anthony Diamond)</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">The Regal Internet Brothers</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>The Regal Internet Brothers</li>
+          <li><a href="mailto:"></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/Regal-Internet-Brothers"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">Regal-Internet-Brothers</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/ImmutableOctet"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">ImmutableOctet</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>This is a test website, nothing to see here.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

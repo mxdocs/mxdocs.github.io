@@ -1,4 +1,0 @@
-
-#TARGET_NAME="Html5 Game"
-#TARGET_SYSTEM="html5"
-#TARGET_BUILDER="html5"

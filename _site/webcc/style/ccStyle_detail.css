@@ -13,16 +13,14 @@
 
 div.compiled, iframe
 {
-	width: 40%;
-	height: 300px;
 	max-width: 100%;
 	
 	margin: auto;
 	display: block;
 	resize: both;
-	overflow: auto;
 	
-	box-sizing: border-box;
+	overflow: hidden;
+	/* box-sizing: border-box; */
 }
 
 table
