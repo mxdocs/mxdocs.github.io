@@ -554,10 +554,18 @@ var FILETYPE_DIR = 2;
 var FILETIME_NONE = 0; // -1
 
 // Internal:
+
+// All symbols must start with this prefix.
+var __os_symbol_prefix = "||";
+
+// Accessor symbols:
+var __os_version_symbol = "||__os_version||";
+
 var __os_filesystem_type_symbol = "||__os_filesystem_type||";
 var __os_filesystem_time_map_symbol = "||__os_filesystem_time_map||";
 var __os_filesystem_time_map_toggle_symbol = "||__os_filesystem_time_map_toggle||"
 
+// Content symbols:
 var __os_directory_symbol = "||DIR||"; // "//"
 var __os_emptyFile_symbol = "||EMPTY||"; // "/|E"
 
@@ -579,6 +587,9 @@ var FILESYSTEM_ENCODING_DEFAULT = FILESYSTEM_ENCODING_STRING; // FILESYSTEM_ENCO
 
 // Global variable(s):
 
+// This is used when '__os_getVersion' assigns the internal version. (When one isn't found)
+var __os_default_version = 4;
+
 // This is used to supply arguments to the application.
 var __os_appargs = [];
 
@@ -599,11 +610,11 @@ var __os_storage_all_sources = false; // __os_storage_is_known_source; // true;
 var __os_resources = {};
 
 // If enabled, this will keep track of invalid remote paths.
-var __os_log_failed_remote_paths = true;
+var __os_should_log_remote_file_responses = true;
 
-// This stores failed paths if '__os_log_failed_remote_paths' is enabled.
+// This stores remote file-responses if '__os_should_log_remote_file_responses' is enabled.
 // This has no long-term storage guarantee.
-var __os_failed_remote_paths = [];
+var __os_remote_file_responses = {};
 
 /*
 	A path-map of known file-times.
@@ -619,10 +630,66 @@ var __os_filesystem_time_map = {};
 // This is used to force re-downloads of remote files.
 var __os_badcache = false;
 
+// This is used internally when an unsafe operation is applied.
+// If this is 'false', fallback behavior may be used implicitly.
+var __os_safe = true; // false;
+
 // This is used to generate handles to resources.
 var __os_resource_generator = window.URL || window.webkitURL;
 
 // Functions:
+
+// Meta:
+
+// This retrieves the internal version of this module.
+// If a version number wasn't supplied, one will be assigned.
+// To disable such behavior, set 'force_stop_assignment' to 'true'.
+function __os_getVersion(force_stop_assignment) //force_stop_assignment=false
+{
+	if (__os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return Number(__os_storage[__os_version_symbol]);
+	}
+	
+	if (!force_stop_assignment)
+	{
+		__os_setVersion(__os_default_version, false);
+		
+		return __os_default_version;
+	}
+	
+	return __os_default_version; // OS_VERSION_NOT_FOUND;
+}
+
+// Please do not call this function. It will be handled automatically by '__os_getVersion'.
+// The return value of this function indicates the success of the operation.
+function __os_setVersion(versionNumber, safety) //safety=false
+{
+	if (safety && __os_storage.hasOwnProperty(__os_version_symbol))
+	{
+		return false;
+	}
+	
+	__os_storage[__os_version_symbol] = versionNumber;
+	
+	// Return the default response.
+	return true;
+}
+
+// If '__os_should_log_remote_file_responses' is true,
+// this will mark 'url' with 'value' using '__os_remote_file_responses'.
+function __os_mark_remote_file(url, value)
+{
+	if (__os_should_log_remote_file_responses)
+	{
+		__os_remote_file_responses[url] = value;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
+}
 
 // Conversion and storage semantics:
 
@@ -731,7 +798,7 @@ function __os_load_filesystem_time_map(keepOnFailure)
 	if (entry != null)
 	{
 		__os_filesystem_time_map = JSON.parse(entry);
-		__os_set_log_filesystem_times(true);
+		__os_set_should_log_filesystem_times(true);
 		
 		return true;
 	}
@@ -747,7 +814,7 @@ function __os_load_filesystem_time_map(keepOnFailure)
 // This saves the file-system's file-time data to '__os_storage'.
 function __os_save_filesystem_time_map(clearOnSave) // clearOnSave=false
 {
-	if (__os_filesystem_time_map.length > 0)
+	if (Object.keys(__os_filesystem_time_map).length > 0)
 	{
 		__os_storage[__os_filesystem_time_map_symbol] = JSON.stringify(__os_filesystem_time_map);
 		
@@ -765,7 +832,7 @@ function __os_save_filesystem_time_map(clearOnSave) // clearOnSave=false
 
 function __os_enableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = true;
+	__os_should_log_remote_file_responses = true;
 	
 	if (clear)
 	{
@@ -775,7 +842,7 @@ function __os_enableResponseLogging(clear)
 
 function __os_disableResponseLogging(clear)
 {
-	__os_log_failed_remote_paths = false;
+	__os_should_log_remote_file_responses = false;
 	
 	if (clear)
 	{
@@ -785,7 +852,7 @@ function __os_disableResponseLogging(clear)
 
 function __os_clearLoggedResponses()
 {
-	__os_failed_remote_paths = [];
+	__os_remote_file_responses = {};
 }
 
 // Implementation-level:
@@ -803,7 +870,7 @@ function __os_ArrayBuffer_To_String(rawData, chunk_size)
 		chunk_size = 1024;
 	}
 	
-	var content = new String();
+	var content = ""; // new String();
 	
 	var bytesLeft = rawData.byteLength;
 	var offset = 0;
@@ -921,6 +988,18 @@ function __os_nativeSize(nativeData)
 	}
 }
 
+function __os_nativeEmpty()
+{
+	switch (__os_getFileSystemEncoding())
+	{
+		case FILESYSTEM_ENCODING_ARRAYBUFFER:
+			return null; // new ArrayBuffer();
+		case FILESYSTEM_ENCODING_STRING:
+		case FILESYSTEM_ENCODING_BASE64:
+			return "";
+	}
+}
+
 function __os_Native_To_String(nativeData)
 {
 	switch (__os_getFileSystemEncoding())
@@ -1026,11 +1105,15 @@ function __os_inheritParent()
 	__os_currentdir = parent.__os_currentdir;
 	__os_storage = parent.__os_storage;
 	
+	__os_safe = parent.__os_safe;
+	
 	__os_storage_is_known_source = parent.__os_storage_is_known_source;
 	__os_storage_all_sources = parent.__os_storage_all_sources;
 	
-	__os_log_failed_remote_paths = parent.__os_log_failed_remote_paths;
-	__os_failed_remote_paths = parent.__os_failed_remote_paths;
+	__os_should_log_remote_file_responses = parent.__os_should_log_remote_file_responses;
+	__os_remote_file_responses = parent.__os_remote_file_responses;
+	
+	__os_filesystem_time_map = parent.__os_filesystem_time_map;
 	
 	//__os_resource_generator = parent.__os_resource_generator;
 	//__os_badcache = parent.__os_badcache;
@@ -1055,8 +1138,15 @@ function __os_get_FileTime(realPath)
 }
 
 // This sets the file-time of 'realPath' using 'time'.
+// If the operation could not be performed, and/or
+// 'time' is 'FILETIME_NONE', this will return 'false'.
 function __os_set_FileTime(realPath, time)
 {
+	if (time == FILETIME_NONE)
+	{
+		return false;
+	}
+	
 	/*
 		if (!fileTimesEnabled)
 		{
@@ -1130,20 +1220,20 @@ function __os_download_as_string(url, lastTime, out_ext) // lastTime=null
 
 function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 {
-	if (__os_log_failed_remote_paths)
+	if (__os_should_log_remote_file_responses)
 	{
-		var urlPos = __os_failed_remote_paths.indexOf(url);
-		
-		if (urlPos != -1)
+		if (__os_remote_file_responses.hasOwnProperty(url))
 		{
 			if (__os_badcache)
 			{
-				// Remove this URL from our list.
-				__os_failed_remote_paths.splice(urlPos, 1);
+				delete __os_remote_file_responses[url]
 			}
 			else
 			{
-				return null;
+				if (!__os_remote_file_responses[url])
+				{
+					return null;
+				}
 			}
 		}
 	}
@@ -1158,9 +1248,19 @@ function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 		//xhr.overrideMimeType("application/octet-stream");
 		xhr.overrideMimeType("text/plain ; charset=x-user-defined");
 		
-		if (lastTime !== undefined && lastTime != FILETIME_NONE)
+		if (lastTime != null && lastTime != FILETIME_NONE)
 		{
-			xhr.setRequestHeader("If-Modified-Since", new Date(lastTime));
+			if (isNaN())
+			{
+				xhr.setRequestHeader("If-None-Match", lastTime);
+			}
+			else
+			{
+				var date = new Date(lastTime * 1000); // <-- May or may not actually be needed.
+				var converted_date = date.toString();
+				
+				xhr.setRequestHeader("If-Modified-Since", converted_date);
+			}
 		}
 		else
 		{
@@ -1178,24 +1278,46 @@ function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 		{
 			var lastModified = xhr.getResponseHeader("Last-Modified");
 			
-			var test = xhr.getAllResponseHeaders();
-			
 			if (lastModified)
 			{
 				out_ext[0] = Date.parse(lastModified); // out_ext.push(..);
 			}
 			else
 			{
-				out_ext[0] = FILETIME_NONE; // out_ext.push(..);
+				var eTag = xhr.getResponseHeader("ETag");
+				
+				if (eTag)
+				{
+					var value = eTag.replace(/['"']+/g, "");
+					
+					if (isNaN(value))
+					{
+						out_ext[0] = value;
+					}
+					else
+					{
+						var ivalue = Number(value);
+						
+						out_ext[0] = (ivalue);
+					}
+				}
+				else
+				{
+					out_ext[0] = FILETIME_NONE; // out_ext.push(..);
+				}
 			}
 		}
 		
 		switch (xhr.status)
 		{
 			case 304:
-				break;
+				__os_mark_remote_file(url, true);
+				
+				return null;
 			case 0:
 			case 200:
+				__os_mark_remote_file(url, true);
+				
 				return xhr.responseText; break; // xhr.response;
 		}
 	}
@@ -1204,9 +1326,9 @@ function __os_download_raw(url, lastTime, out_ext) // lastTime=null
 		// Nothing so far.
 	}
 	
-	if (!__os_badcache && __os_log_failed_remote_paths)
+	if (!__os_badcache)
 	{
-		__os_failed_remote_paths.push(url);
+		__os_mark_remote_file(url, false);
 	}
 }
 
@@ -1215,7 +1337,12 @@ function __os_downloadFileUsingRep(storage, url, rep, isEmpty) // isEmpty=false
 {
 	var repValue = storage[rep];
 	
-	if (isEmpty || repValue == null || __os_badcache || repValue == __os_emptyFile_symbol) // === undefined
+	if
+	(
+		(((isEmpty || repValue == __os_emptyFile_symbol) || repValue == null) && __os_should_log_remote_file_responses && !__os_remote_file_responses.hasOwnProperty(url))
+		||
+		(__os_badcache)
+	)
 	{
 		var fileTimesEnabled = __os_get_should_log_filesystem_times();
 		
@@ -1248,10 +1375,11 @@ function __os_downloadFileUsingRep(storage, url, rep, isEmpty) // isEmpty=false
 		if (data != null)
 		{
 			// Build a file-entry for this element.
-			__os_createFileEntryWith(storage, rep, data);
-			
-			// Return the raw data we loaded.
-			return data;
+			if (__os_createFileEntryWith(storage, rep, data, true)) // false
+			{
+				// Return the raw data we loaded.
+				return data;
+			}
 		}
 	}
 	
@@ -1421,14 +1549,24 @@ function __os_storageLookup(realPath)
 	}
 }
 
-function __os_createFileEntryWith(storage, rep, data)
+function __os_createFileEntryWith(storage, rep, data, force) //force=false
 {
-	storage[rep] = data;
+	var currentEntry = storage[rep];
+	
+	if (force || (!__os_safe || currentEntry == null || currentEntry == __os_emptyFile_symbol || currentEntry == __os_nativeEmpty()))
+	{
+		storage[rep] = data;
+		
+		return true;
+	}
+	
+	// Return the default response.
+	return false;
 }
 
-function __os_createFileEntry(rep, data, isDir)
+function __os_createFileEntry(rep, data, isDir, force)
 {
-	__os_createFileEntryWith(__os_storage, rep, data);
+	return __os_createFileEntryWith(__os_storage, rep, data, force);
 }
 
 // This creates a "file link". "File links" are basically 'to-be-loaded'
@@ -1436,7 +1574,7 @@ function __os_createFileEntry(rep, data, isDir)
 // This command is abstract from the underlying storage system.
 function __os_createFileLink(rep)
 {
-	__os_createFileEntry(rep, __os_emptyFile_symbol, false);
+	return __os_createFileEntry(rep, __os_emptyFile_symbol, false);
 }
 
 // This gets a file using 'realPath' from a remote host.
@@ -1524,6 +1662,11 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 			isDir = true;
 		}
 		
+		if (!isDir)
+		{
+			__os_remove_FileTime(realPath);
+		}
+		
 		response = true;
 	}
 	
@@ -1534,7 +1677,6 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 			if (e.indexOf(realPath) == 0)
 			{
 				var lastSlash = e.lastIndexOf("/");
-				var ePath = e.substring(0, lastSlash);
 				
 				// Remove only what we need to: If we're doing this
 				// recursively, delete everything, but if not,
@@ -1552,8 +1694,25 @@ function __os_removeStorageEntry(storage, realPath, isDir, recursive, value) // 
 	return response;
 }
 
+// This removes all elements in 'storage' that start with 'prefix'. (Use at your own risk)
+function __os_eliminateByPrefix(storage, prefix)
+{
+	for (var e in storage)
+	{
+		if (e.indexOf(prefix) == 0)
+		{
+			var lastSlash = e.lastIndexOf("/");
+			
+			if (lastSlash < prefix.length)
+			{
+				__os_removeStorageEntry(storage, e, undefined, true);
+			}
+		}
+	}
+}
+
 // This attempts to produce a valid MIME-type for 'path'.
-function __os_get_MIMEType(realPath) // ext=undefined
+function __os_get_MIMEType(realPath, fallback) //fallback=false
 {
 	var blobType;
 	
@@ -1624,7 +1783,7 @@ function __os_get_MIMEType(realPath) // ext=undefined
 
 // This looks 'realPath' up internally, and if present, generates a URI for that resource.
 // This is useful for frameworks like Mojo, which normally require server-side storage mechanics.
-function __os_allocateResource(realPath, fallback)
+function __os_allocateResource(realPath, fallback) //fallback=false
 {
 	var f = __os_storageLookup(realPath);
 	
@@ -1642,7 +1801,7 @@ function __os_allocateResource(realPath, fallback)
 	var extPos, fullExt, ext;
 	
 	// Build the resource:
-	var blobType = __os_get_MIMEType(realPath);
+	var blobType = __os_get_MIMEType(realPath, fallback);
 	
 	if (blobType == null)
 	{
@@ -1779,7 +1938,7 @@ function RealPath(path)
 }
 
 // This attempts to recognize the "file-type" of 'path'. (Uses supported files)
-function FileType(path)
+function FileType(path, skip_request) //skip_request=false
 {
 	var realPath = RealPath(path);
 	
@@ -1788,14 +1947,17 @@ function FileType(path)
 	
 	var isEmpty;
 	
-	// Check if we don't have an entry to view:
-	if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
+	if (!skip_request)
 	{
-		// Check if we could load this file using the current file-system:
-		if (isEmpty || __os_fileCouldExist(realPath))
+		// Check if we don't have an entry to view:
+		if (file == null || (isEmpty = (file == __os_emptyFile_symbol))) // Set 'isEmpty', and check it.
 		{
-			// Try to load our file from the server.
-			file = __os_getFile(realPath, isEmpty);
+			// Check if we could load this file using the current file-system:
+			if (isEmpty || __os_fileCouldExist(realPath))
+			{
+				// Try to load our file from the server.
+				file = __os_getFile(realPath, isEmpty);
+			}
 		}
 	}
 	
@@ -1847,7 +2009,13 @@ function CopyFile(src, dst)
 	
 	var rdst = RealPath(dst);
 	
-	__os_createFileEntry(rdst, f);
+	if (!__os_createFileEntry(rdst, f))
+	{
+		return false;
+	}
+	
+	// Update this entry's file-time.
+	__os_set_FileTime(rdst, __os_get_FileTime(rsrc));
 	
 	// Return the default response.
 	return true;
@@ -1870,9 +2038,9 @@ function LoadString(path)
 	return "";
 }
 
-function SaveString(str, path)
+function SaveString(str, path, safe) //safe=false
 {
-	__os_createFileEntry(RealPath(path), __os_String_To_Native(str));
+	return __os_createFileEntry(RealPath(path), __os_String_To_Native(str), false, !safe);
 }
 
 // This loads all files and folders in 'realPath' specifically.
@@ -1926,11 +2094,14 @@ function LoadDir(path)
 	return [];
 }
 
+function CreateFile(path)
+{
+	return __os_createFileEntry(RealPath(path), __os_nativeEmpty());
+}
+
 function CreateDir(path)
 {
-	__os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
-	
-	return true;
+	return __os_createFileEntry(RealPath(path), __os_directory_symbol, true); // <-- Prefix added for debugging purposes.
 }
 
 function DeleteDir(path, recursive) // recursive=false
@@ -2001,6 +2172,10 @@ function ExitApp(retCode)
 	
 	throw null;
 }
+
+
+// Global variable(s):
+var __monkey_DirectoryLoaded = false;
 
 function c_WebCC(){
 	Object.call(this);
@@ -2365,7 +2540,6 @@ c_WebCC.prototype.p_Execute=function(t_cmd,t_failHard){
 	}
 	return false;
 }
-var bb_webcc___Monkey_DirectoryLoaded=false;
 function c_DataBuffer(){
 	BBDataBuffer.call(this);
 }
@@ -6122,7 +6296,6 @@ c_Parser.prototype.p_ParseIdent=function(){
 		if(t_3=="object" || t_3=="throwable"){
 		}else{
 			if(this.m__tokeType!=2){
-				debugStop();
 				bb_config_Err("Syntax error - expecting identifier.");
 			}
 		}
@@ -11332,10 +11505,8 @@ function bb_preprocessor_PreProcess(t_path,t_mdecl){
 	}else{
 		bb_config_SetConfigVar2("MODPATH","");
 	}
-	var t_x=LoadString(t_path);
-	var t_toker=c_Toker.m_new.call(new c_Toker,t_path,t_x);
+	var t_toker=c_Toker.m_new.call(new c_Toker,t_path,LoadString(t_path));
 	t_toker.p_NextToke();
-	print("FILE ["+t_path+"] ("+String(t_x.length)+")");
 	var t_attrs=0;
 	do{
 		if((t_line)!=0){
@@ -12944,9 +13115,9 @@ function bb_virtualos_CopyDir(t_SourcePath,t_DestinationPath,t_Recursive,t_Hidde
 }
 function bbMain(){
 	var t_CC=c_WebCC.m_new.call(new c_WebCC);
-	if(!bb_webcc___Monkey_DirectoryLoaded){
+	if(!__monkey_DirectoryLoaded){
 		bb_virtualos___OS_AddFileSystem(__os_toRemotePath(RealPath("data/webcc_filesystem.txt")));
-		bb_webcc___Monkey_DirectoryLoaded=true;
+		__monkey_DirectoryLoaded=true;
 	}
 	t_CC.p_Run(AppArgs());
 	return 0;
@@ -15255,7 +15426,6 @@ c_Enumerator8.prototype.p_NextObject=function(){
 	return t_data;
 }
 function bbInit(){
-	bb_webcc___Monkey_DirectoryLoaded=false;
 	c_Stack2.m_NIL=null;
 	c_Stack.m_NIL="";
 	c_Stream.m__tmp=c_DataBuffer.m_new.call(new c_DataBuffer,4096,false);

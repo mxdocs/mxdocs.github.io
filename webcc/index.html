@@ -193,7 +193,7 @@ End
 		var location = stripQuotes(args[args.length-1]);
 
 		// Create/update our file entry.
-		__os_createFileEntry(RealPath(location), __os_String_To_Native(input.value));
+		__os_createFileEntry(RealPath(location), __os_String_To_Native(input.value), false, true);
 
 		// Build the code.
 		executeMonkey(args);

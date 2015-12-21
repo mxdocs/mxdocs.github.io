@@ -105,6 +105,14 @@ function initializeFileSystem()
 		return;
 	}
 	
+	// Check for a version mismatch:
+	if (__os_getVersion() != __os_default_version)
+	{
+		// Safely remove the file-system instance (Including meta-symbols):
+		__os_eliminateByPrefix(__os_storage, RealPath(""));
+		__os_eliminateByPrefix(__os_storage, __os_symbol_prefix);
+	}
+	
 	// Initialize the file-system:
 	if (!__os_hasFileSystemEncoding())
 	{
@@ -120,11 +128,11 @@ function initializeFileSystem()
 	
 	var resourceTableId = "__monkey_resource_table";
 	
-	if (FileType(primary) == FILETYPE_NONE)
+	if (FileType(primary, true) == FILETYPE_NONE)
 	{
 		CreateDir(primary);
 		
-		if (FileType(secondary) == FILETYPE_NONE)
+		if (FileType(secondary, true) == FILETYPE_NONE)
 		{
 			CreateDir(secondary);
 		}
@@ -161,9 +169,6 @@ function deinitializeFileSystem()
 	
 	// Deinitialize the file-system:
 	
-	// Formally save the file-system's time-data.
-	__os_save_filesystem_time_map();
-	
 	// Delete the temporary file-structure:
 	var primary = __monkey_user_content_dir;
 	var secondary = __monkey_user_data_dir;
@@ -177,6 +182,12 @@ function deinitializeFileSystem()
 	{
 		DeleteDir(primary, false);
 	}
+	
+	// Make sure we don't have any build folders left over. (Extension)
+	__os_eliminateByPrefix(__os_storage, RealPath(__monkey_user_content_dir + "/" + __monkey_user_file_name + ".build"));
+	
+	// Formally save the file-system's time-data.
+	__os_save_filesystem_time_map();
 	
 	__monkey_fileSystemInitialized = false;
 }

@@ -24,7 +24,19 @@ function boot(build_dir, filename)
 
 	var content = document.getElementById("compiled");
 	var programs = content.getElementsByTagName("iframe");
-
+	
+	var hasFirstFrame, fWidth, fHeight;
+	
+	hasFirstFrame = (programs.length == 1);
+	
+	if (hasFirstFrame)
+	{
+		var first = programs[0];
+		
+		fWidth = first.style.width;
+		fHeight = first.style.height;
+	}
+	
 	if (!document.getElementById("__monkey_releaseFrames").checked)
 	{
 		// Just to be safe, release any resources attatched to 'programs':
@@ -40,22 +52,43 @@ function boot(build_dir, filename)
 		
 		content.innerHTML = "";
 	}
-
+	
 	// Allocate an iframe for sandboxing the user's application.
 	var frame = document.createElement("iframe");
+	
+	// Set the frame's size once it's been loaded:
+	var baseWidth = "652px"; // 640px // "50%";
+	var baseHeight = "480px";
+	
+	frame.onload = function(e)
+	{
+		if (hasFirstFrame)
+		{
+			frame.style.width = fWidth;
+			frame.style.height = fHeight;
+		}
+		else
+		{
+			frame.style.width = baseWidth;
+			frame.style.height = baseHeight;
+		}
+		
+		frame.style.minWidth = baseWidth;
+		frame.style.minHeight = baseHeight;
+	}
 	
 	// At this frame to this document before doing anything else.
 	content.appendChild(frame);
 
 	// Load the user's HTML data into our frame.
 	frame.contentWindow.document.write(LoadString(build_dir + __monkey_compiled_exec_file)); // RealPath(..);
-
+	
 	// Load the user's main script as a string.
 	var data = LoadString(location);
 
 	// Attach the loaded script to our frame.
 	attachUserScript(frame, data, __monkey_user_main_file + "_" + programs.length + ".js");
-
+	
 	// Prepare the frame for execution:
 
 	// Check if our frame needs 'os', and if so, have it inherit its parent's behavior:
@@ -81,7 +114,7 @@ function attachUserScript(frame, data, debugName)
 	script.type = "text/javascript";
 
 	// Set the script's content to our file-data, with a Chromium debug-header.
-	script.text = "//@ sourceURL=" + debugName + "\n" + data;
+	script.text = "//# sourceURL=" + debugName + "\n" + data; // "//@"
 
 	// Attach the script to our 'frame' object.
 	frame.contentWindow.document.body.appendChild(script);
