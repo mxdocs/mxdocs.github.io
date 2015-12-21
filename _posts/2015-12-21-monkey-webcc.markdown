@@ -23,8 +23,8 @@ So, what is Monkey-WebCC? WebCC was started as a side project of mine, meant to 
 
 <center>
 
-<p><b><i><a href="http://regal-internet-brothers.github.io/webcc">Try it out yourself</a></i></b></p>
-<iframe src="/webcc" style="width: 100%; height: 480px;"></iframe>
+<p><b><i><a href="https://regal-internet-brothers.github.io/webcc">Try it out yourself</a></i></b></p>
+<iframe src="//regal-internet-brothers.github.io/webcc" style="width: 100%; height: 480px;"></iframe>
 
 </center>
 
