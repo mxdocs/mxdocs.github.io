@@ -574,15 +574,15 @@ A <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>
 	<p>
 A <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> acts as your connection or "node" in the network. At present, a <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> can be a client or a host. These documents regard "nodes" as abstract entry-points to the network. In other words, clients or hosts, or potentially actual nodes (Peer-to-peer will eventually be looked into).
 </p>
-
+<p>
 <p>
 <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects handle incoming and outgoing messages, client connections, notifications via the "NetworkListener" interfaces, just the protocol in general. They require your application to continually use the official asynchronous call-back routine, <a href="Modules_brl.asyncevent.html#UpdateAsyncEvents">UpdateAsyncEvents</a>. The entire framework works using asynchrnous routines, meaning it's portable across targets. There are several situations where asynchronous techniques can be user-defined, but this framework reserves the right to ignore these requests if necessary.
 </p>
-
+<p>
 <p>
 <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a> objects handle the vast majority of what goes on behind the scenes, and they are responsible for the objects they emit. That being said, if an object is allocated via a pool, or similar system, it's up to the user to return the object(s) provided.
 </p>
-
+<p>
 <p>
 Though undocumented, most <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">BRL Socket</a> asynchronous callbacks are implemented, and can be extended when extending this framework.
 That being said, this framework reserves the right to resolve "Socket" as any type it sees fit. The documentation currently only reflects the <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">BRL implementation</a>.
@@ -624,7 +624,7 @@ That being said, this framework reserves the right to resolve "Socket" as any ty
 A collection of connected <a href="Modules_regal.networking.client_Client.html">Client</a> handles.
 For clients, the first entry is <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a>.
 </p>
-
+<p>
 <p><b>This field is protected.</b></p></p>
 					
 					
@@ -640,7 +640,7 @@ This acts as the primary connection-socket.
 This is what all network operations are done with when using UDP; 
 and what client acceptance is done with when using TCP.
 </p>
-
+<p>
 <p><b>This field is protected.</b> To access this externally, use <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a> (Use at your own risk).</p></p>
 					
 					
@@ -665,7 +665,7 @@ and what client acceptance is done with when using TCP.
 This represents the maximum number of "mega-packet" chunks allowed.
 Chunk sizes depend on 'PacketSize' on the other end.
 </p>
-
+<p>
 <p>In other words, this is variable, but it should never be larger than the other side's <a href="Modules_regal.networking.engine_NetworkEngine.html#PacketSize">PacketSize</a>.</p></p>
 					
 					
@@ -759,10 +759,10 @@ Chunk sizes depend on 'PacketSize' on the other end.
 				<div class="description">
 					<p><p>
 This is a container representing reliable packets in transit.
-
+<p>
 For more information on reliable packets, and how they work, see <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateReliablePacket">AllocateReliablePacket</a> and <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>.
 </p>
-
+<p>
 <p><b>This field is protected.</b></p></p>
 					
 					
@@ -775,10 +775,10 @@ For more information on reliable packets, and how they work, see <a href="Module
 				<div class="description">
 					<p></p>
 This is a container of packets allocated to the internal system.
-
+<p>
 For more information on "system packets", see <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a>.
 <p>
-
+<p>
 <p><b>This field is protected.</b></p></p>
 					
 					
@@ -799,14 +799,14 @@ For more information on "system packets", see <a href="Modules_regal.networking.
 				<a name='New'></a>
 				<div class="well well-small name"><b>Method New ( PacketSize:Int=default_packetsize, PacketPoolSize:Int=default_packetpoolsize, FixByteOrder:Bool=default_fixbyteorder, PingFrequency:Duration=default_pingfrequency, MaxPing:<a href="Modules_regal.networking.serial_NetworkPing.html">NetworkPing</a>=default_maxping, MaxChunksPerMegaPacket:Int=default_maxchunkspermegapacket, PacketReleaseTime:Duration=default_packetreleasetime, PacketResendTime:Duration=default_packetresendtime, MegaPacketTimeout:Duration=default_megapackettimeout )</b></div>
 				<div class="description">
-					<p><ul><li>The <b>PacketSize</b> argument specifies the size used for all internally allocated packets.</li>
-<li>The <b>PacketPoolSize</b> argument is used to generate initial packet-objects.</li>
-<li>The <b>FixByteOrder</b> argument toggles network byte-order for internally generated packets.</li>
-<li>The <b>PingFrequency</b> argument is used to determine how much time it takes between ping calculations.</li>
-<li>The <b>MaxPing</b> argument is used when determining if a <a href="Modules_regal.networking.client_Client.html">Client</a> has timed out.</li>
-<li>The <b>MaxChunksPerMegaPacket</b> argument is used to limit the number of <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects an incoming <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> can be initialized with.</li>
-<li>The <b>PacketReleaseTime</b> argument is used to describe how long it takes for a <a href="Modules_regal.networking.client_Client.html">Client</a> to remove the next reliable packet's <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>. (UDP / unreliable transport protocols)</li>
-<li>The <b>PacketResendTime</b> argument specifies how long it takes for this network to <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">resend</a> a <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>.</li>
+					<p><ul><li>The <b>PacketSize</b> argument specifies the size used for all internally allocated packets.</li>
+<li>The <b>PacketPoolSize</b> argument is used to generate initial packet-objects.</li>
+<li>The <b>FixByteOrder</b> argument toggles network byte-order for internally generated packets.</li>
+<li>The <b>PingFrequency</b> argument is used to determine how much time it takes between ping calculations.</li>
+<li>The <b>MaxPing</b> argument is used when determining if a <a href="Modules_regal.networking.client_Client.html">Client</a> has timed out.</li>
+<li>The <b>MaxChunksPerMegaPacket</b> argument is used to limit the number of <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects an incoming <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> can be initialized with.</li>
+<li>The <b>PacketReleaseTime</b> argument is used to describe how long it takes for a <a href="Modules_regal.networking.client_Client.html">Client</a> to remove the next reliable packet's <a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>. (UDP / unreliable transport protocols)</li>
+<li>The <b>PacketResendTime</b> argument specifies how long it takes for this network to <a href="Modules_regal.networking.packet_ReliablePacket.html#Resend">resend</a> a <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>.</li>
 <li>The <b>MegaPacketTimeout</b> argument states how long a remote <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> handle can idle before being terminated.</li></ul></p>
 					
 					
@@ -839,7 +839,7 @@ For more information on "system packets", see <a href="Modules_regal.networking.
 This states if <a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>/<a href="Modules_regal.networking.engine_NetworkEngine.html#Connection">Connection</a> has been bound.
 If the network is <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">closed</a>, this will always return <a href="Programming_Keywords_False.html">False</a>.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Closed</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a></p>
 					
 					
@@ -861,13 +861,13 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Cl
 				<div class="well well-small name"><b>Method Closed : Bool () Property</b></div>
 				<div class="description">
 					<p><p>This states if the network is closed.</p>
-
+<p>
 <p>
 Please check for open-status with <a href="Modules_regal.networking.engine_NetworkEngine.html#Open">Open</a> instead of this.
 Opening networks aren't closed, but they aren't open either.
 And <a href="Modules_regal.networking.engine_NetworkEngine.html#Terminating">closing/terminating</a> networks are open, but they aren't closed yet.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Open">Open</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
@@ -888,7 +888,8 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Open">Open
 				<a name='HasClient'></a>
 				<div class="well well-small name"><b>Method HasClient : Bool () Property</b></div>
 				<div class="description">
-					<p><p>This indicates if there is at least one <a href="Modules_regal.networking.client_Client.html">Client</a> in this network that is <i><b>not</b></i> <a href="Modules_regal.networking.client_Client.html#Closing">closing/disconnecting</a>.</p></p>
+					<p><p>This indicates if there is at least one <a href="Modules_regal.networking.client_Client.html">Client</a> in this network that is <i><b>not</b></i> <a href="Modules_regal.networking.client_Client.html#Closing">closing/disconnecting</a>.</p>
+<p>This always reports <a href="Programming_Keywords_True.html">True</a> for clients, as <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a> will report a <a href="Modules_regal.networking.client_Client.html">Client</a> representing the remote host.</p></p>
 					
 					
 				</div>
@@ -963,7 +964,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Open">Open
 This corresponds with the constructor argument of the same name.
 Basically, this dictates whether more than one (Client) connection is allowed.
 </p>
-
+<p>
 <p>This property has protected assignment-access.</p></p>
 					
 					
@@ -975,7 +976,7 @@ Basically, this dictates whether more than one (Client) connection is allowed.
 				<div class="well well-small name"><b>Method Open : Bool () Property</b></div>
 				<div class="description">
 					<p><p>This will return <a href="Programming_Keywords_True.html">True</a> if <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Closed</a> is <a href="Programming_Keywords_False.html">False</a>, and <a href="Modules_regal.networking.engine_NetworkEngine.html#Connection">Connection</a>/<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a> is <a href="Modules_regal.networking.engine_NetworkEngine.html#Bound">bound</a>.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Closed</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">Connect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
@@ -1007,11 +1008,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Closed">Cl
 				<div class="well well-small name"><b>Method Remote : <a href="Modules_regal.networking.client_Client.html">Client</a> () Property</b></div>
 				<div class="description">
 					<p><p>
-This represents the remote host-node for clients.
+This represents the remote 'host-node' for clients.
 For hosts, this always reports <a href="Programming_Keywords_Null.html">Null</a>.
-</p>
-
-<p><b>This property is protected.</b></p></p>
+</p></p>
 					
 					
 				</div>
@@ -1026,7 +1025,7 @@ This is used to delegate the <a href="Modules_regal.networking.engine_NetworkEng
 When writing code to extend an engine, don't use this property.
 Everywhere else (External systems / public extension), use this.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connection">Connection</a></p>
 					
 					
@@ -1039,7 +1038,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connection
 				<div class="description">
 					<p><p>This represents the transport protocol used by the network.</p>
 <p>This property has protected assignment-access.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ProtocolToString">ProtocolToString</a></p>
 					
 					
@@ -1089,10 +1088,10 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ProtocolTo
 				<a name='AbortMegaPacket'></a>
 				<div class="well well-small name"><b>Method AbortMegaPacket : Void ( C:<a href="Modules_regal.networking.client_Client.html">Client</a>, ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>, Reason:<a href="Modules_regal.networking.serial_PacketExtResponse.html">PacketExtResponse</a>=mega_packet_response_abort )</b></div>
 				<div class="description">
-					<p><p>This sends a rejection message regarding a remote <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> with @<a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>, to <b>C</b> with <b>Reason</b>.</p>
+					<p><p>This sends a rejection message regarding a remote <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> with <a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>, to <b>C</b> with <b>Reason</b>.</p>
 <p>In addition to rejecting the <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, this will call <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a> on <b>C</b>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPacketRejection">SendMegaPacketRejection</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#GetWaitingMegaPacket">GetWaitingMegaPacket</a></p>
 					
 					
@@ -1106,7 +1105,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPa
 					<p><p>This aborts a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, either through a <a href="Modules_regal.networking.client_Client.html">Client</a>, or locally via <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>.</p>
 <p>This depends on the <b>FromClient</b> argument, which is used for the protocol, and for proper cleanup.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPacketRejection">SendMegaPacketRejection</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#GetWaitingMegaPacket">GetWaitingMegaPacket</a></p>
 					
 					
@@ -1121,9 +1120,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPa
 This adds <b>MP</b> as a local <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> internally.
 Basically, <b>MP</b> will be held in a container, so it can be referenced by the receiving end using its <a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#GetPendingMegaPacket">GetPendingMegaPacket</a></p>
 					
 					
@@ -1143,10 +1142,10 @@ attainment when <a href="Modules_regal.networking.engine_NetworkEngine.html#Retr
 For example, the packet-less overloads for the "LaunchAsync"
 and "AutoLaunch" internal methods <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateSystemPacket">allocate</a> system packets.
 </p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateSystemPacket">AllocateSystemPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateSystemPacket">DeallocateSystemPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemoveSystemPacket">RemoveSystemPacket</a></p>
 					
 					
@@ -1173,7 +1172,7 @@ When finished with this object, please call <a href="Modules_regal.networking.en
 				<div class="description">
 					<p><p>This allocates and initializes a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> object for general use, usually from a pool.</p>
 <p>This object can be used to read (Requires extension) or write messages. Once finished, you can call <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, or <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, depending on your use-case.<p>
-
+<p>
 Because this is likely from a pool, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a> when finished with the <a href="Modules_regal.networking.packet_Packet.html">Packet</a> object you get from this.</p>
 					
 					
@@ -1187,10 +1186,10 @@ Because this is likely from a pool, please call <a href="Modules_regal.networkin
 					<p><p>This allocates an internal <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> object as a "system packet".</p>
 <p>This is used internally, and should only be messed with if you completely understand it.</p>
 <p><a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> objects are not relevant to reliable transport protocols, like TCP.</p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateReliablePacket">DeallocateReliablePacket</a></p>
 					
 					
@@ -1203,10 +1202,10 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Deallocate
 				<div class="description">
 					<p><p>Like the <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateReliablePacket">main overload</a>, this will allocate a <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> as a "system packet".</p>
 <p>Unlike that overload, this will call <a href="Modules_regal.networking.engine_NetworkEngine.html#GetNextReliablePacketID">GetNextReliablePacketID</a> for the packet's reliable identifier (<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a>).
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateReliablePacket">DeallocateReliablePacket</a></p>
 					
 					
@@ -1219,7 +1218,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Deallocate
 				<div class="description">
 					<p><p>This allocates a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object for remote representation.</p>
 <p>This does not hold the returned object internally, please call <a href="Modules_regal.networking.client_Client.html#AddWaitingMegaPacket">AddWaitingMegaPacket</a></p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -1232,10 +1231,10 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Deallocate
 				<div class="description">
 					<p><p>
 This is used to allocate a "system packet".
-
+<p>
 Basically, this will call <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a>, then add it as a "system packet" using <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a>.
 </p>
-
+<p>
 <p>For details on "system packets", please view the <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a> method's documentation.</p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p></p>
@@ -1249,12 +1248,12 @@ Basically, this will call <a href="Modules_regal.networking.engine_NetworkEngine
 				<div class="well well-small name"><b>Method AutoLaunchReceive : Void ( S:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Force:Bool=false )</b></div>
 				<div class="description">
 					<p><p>This is used to launch a technology-independent receival thread/operation, asynchronously. (Depends on underlying socket behavior)</p>
-
+<p>
 <p>
 <b>S</b> and <b>P</b> are used to perform this operation, and <b>P</b> will likely be reintegrated into this engine when operations are all finished.
 In other words, assume <b>P</b> is the property of this network.
 </p>
-
+<p>
 <p><i>Assume <b>Force</b> as an unsafe argument; used internally.</i></p>
 <p><b>This method is protected.</b></p></p>
 					
@@ -1270,7 +1269,7 @@ In other words, assume <b>P</b> is the property of this network.
 This works like the <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">main implementation</a>. The only difference being, this will
 allocate a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> object automatically, and handle its deconstruction/storage.
 </p>
-
+<p>
 <p><i>Assume <b>Force</b> as an unsafe argument; used internally.</i></p>
 <p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p></p>
@@ -1285,9 +1284,9 @@ allocate a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> obje
 				<div class="description">
 					<p><p>This calls <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseWaitingMegaPacket">ReleaseWaitingMegaPacket</a> with <b>MP</b>, and uses its <a href="Modules_regal.networking.megapacket_MegaPacket.html#Destination">Destination</a> <i>instead</i> of an exact <a href="Modules_regal.networking.client_Client.html">Client</a> object provided by the user.</p>
 <p><i>For details on method-behavior, please <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseWaitingMegaPacket">view that implementation's documentation</a>.</i></p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMegaPacket">AllocateMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseWaitingMegaPacket">ReleaseWaitingMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a>,  <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseInternalMegaPacket">ReleaseInternalMegaPacket</a></p>
 					
 					
@@ -1299,13 +1298,13 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMe
 				<div class="well well-small name"><b>Method AutoSendRaw : Void ( RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Async:Bool=true )</b></div>
 				<div class="description">
 					<p><b>Use</b> <b>this</b> <b>method</b> <b>at</b> <b>your</b> <b>own</b> <b>risk</b>.
-
+<p>
 <p>
 This is used to send a raw packet, unlike <b>Send</b>, which builds a formatted raw packet around the described packet.
 This doesn't handle formats, it simply sends <b>RawPacket</b> to the default destination. (Clients to host, host to clients)
 The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -1317,13 +1316,13 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 				<div class="well well-small name"><b>Method AutoSendRaw : Void ( RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a>, Async:Bool=true )</b></div>
 				<div class="description">
 					<p><b>Use</b> <b>this</b> <b>method</b> <b>at</b> <b>your</b> <b>own</b> <b>risk</b>.
-
+<p>
 <p>
 This is used to send a raw packet, unlike <b>Send</b>, which builds a formatted raw packet around the described packet.
 This doesn't handle formats, it simply sends <b>RawPacket</b> to the described destination (<b>C</b>). (Clients must send to hosts, hosts can send to any client)
 The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -1338,9 +1337,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 <p>If <b>Async</b> is disabled, this will return whether the bind operation was successful.</p>
 <p>If enabled, this will only return <a href="Programming_Keywords_False.html">False</a> when an internal error occurs.</p>
 <p>Binding is done for UDP hosts, mainly. TCP and UDP clients use "automated connection". This can be done with <a href="Modules_regal.networking.engine_NetworkEngine.html#RawConnect">RawConnect</a>.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RawConnect">RawConnect</a></p>
 					
 					
@@ -1354,7 +1353,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host
 					<p><p>This will use the internal socket to perform a bind operation.</p>
 <p>This is used for UDP hosts. For details, see the <a href="Modules_regal.networking.engine_NetworkEngine.html#Bind">main overload</a>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RawConnect">RawConnect</a></p>
 					
 					
@@ -1366,13 +1365,13 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host
 				<div class="well well-small name"><b>Method BuildOutputMessage : <a href="Modules_regal.networking.packet_Packet.html">Packet</a> ( P:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, ExtendedPacket:Bool=false, DefaultSize:Int=0 )</b></div>
 				<div class="description">
 					<p><p>Used internally; use at your own risk.</p>
-
+<p>
 <p>
 This command produces a packet in the appropriate format.
 This will generate a "system packet", which is handled internally.
 For details on the <b>DefaultSize</b>' argument, please see <a href="Modules_regal.networking.engine_NetworkEngine.html#WriteMessage">WriteMessage</a>.
 </p>
-
+<p>
 <p>
 Internal messages do not serialize their data-segments' lengths.
 </p></p>
@@ -1386,14 +1385,14 @@ Internal messages do not serialize their data-segments' lengths.
 				<div class="well well-small name"><b>Method BuildReliableMessage : Void ( Data:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, RP:<a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>, ExtendedPacket:Bool=false )</b></div>
 				<div class="description">
 					<p><p>Used internally; use at your own risk.</p>
-
+<p>
 <p>
 This will take the contents of <b>Data</b>, transfer it to <b>RP</b>, as well as write any needed formatting.
 This allows you to use <b>RP</b> as a normal system-managed packet.
 </p>
-
+<p>
 <p><a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> objects should not be used by TCP networks.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutputMessage">BuildOutputMessage</a></p>
 					
 					
@@ -1405,7 +1404,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutpu
 				<div class="well well-small name"><b>Method BuildReliableMessage : <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> ( Data:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, C:<a href="Modules_regal.networking.client_Client.html">Client</a>, ExtendedPacket:Bool=false )</b></div>
 				<div class="description">
 					<p><p>This will generate a <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> automatically, then call the primary implementation; the same restrictions apply.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutputMessage">BuildOutputMessage</a></p>
 					
 					
@@ -1417,15 +1416,15 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutpu
 				<div class="well well-small name"><b>Method Close : Void ()</b></div>
 				<div class="description">
 					<p>This command manually closes this network.
-
+<p>
 The network will automatically send remote connections a final unreliable message describing this action.
 In the case of TCP (Or similar; reliable transport), this will very likely make it to the other end, disconnecting very gracefully.
-
+<p>
 When using UDP, this message is somewhat unlikely to make it to the destination(s).
-
+<p>
 If this description message (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_DISCONNECT">INTERNAL_MSG_DISCONNECT</a>) is not received, this client/host will timeout on the other end(s).
 This means that disconnection will happen regardless, but the elegance of this action is unlikely to be preserved. (Transport differences aside)
-
+<p>
 To disconnect via a request, and in worst case scenarios, a timeout, use <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a>. (Ideal)</p>
 					
 					
@@ -1438,11 +1437,11 @@ To disconnect via a request, and in worst case scenarios, a timeout, use <a href
 				<div class="description">
 					<p>This command provides a means of gracefully disconnecting from a remote network.
 To manually disconnect from a network, use <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>.
-
+<p>
 For clients, this is done through a reliable disconnection notice (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_REQUEST_DISCONNECTION">INTERNAL_MSG_REQUEST_DISCONNECTION</a>), and assuming closing status.
 The notice will be sent, then the usual behavior of <a href="Modules_regal.networking.client_Client.html#Closing">Closing</a> will be applied; limited message acceptance, eventual timeout/disconnection, etc.
 Ideally, we'd get a message back, and from there, automatically call <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>.
-
+<p>
 For hosts, this will disconnect every client formally. It will then use the <a href="Modules_regal.networking.engine_NetworkEngine.html#Terminating">Terminating</a> flag to check if all clients have disconnected.
 Once they have, the <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a> command will be called automatically.</p>
 					
@@ -1458,7 +1457,7 @@ Once they have, the <a href="Modules_regal.networking.engine_NetworkEngine.html#
 This is used internally to automate the process of confirming a reliable packet.
 This routine is only valid when using unreliable transport protocols, like UDP.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -1472,12 +1471,12 @@ This routine is only valid when using unreliable transport protocols, like UDP.
 					<p>This is used to create a client network using <b>Address</b> with <b>Protocol</b>.
 Once a connection has been established, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Update">Update</a> regularly.
 When you intend to end the network-session, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a> or <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a>.
-
-<ul><li>The <b>Address</b> argument is used to connect to a remote <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>.</li>
-<li>The <b>Async</b> argument specifies if connection should be done asynchronously. (May be required on some targets)</li>
-<li>The @<a href="Modules_regal.networking.engine_NetworkEngine.html#SocketType">Protocol</a> argument describes the desired transport protocol.</li>
-</ul>
-See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
+<p>
+<ul><li>The <b>Address</b> argument is used to connect to a remote <a href="Modules_regal.networking.engine_NetworkEngine.html">NetworkEngine</a>.</li>
+<li>The <b>Async</b> argument specifies if connection should be done asynchronously. (May be required on some targets)</li>
+<li>The <a href="Modules_regal.networking.engine_NetworkEngine.html#SocketType"><b>Protocol</b></a> argument describes the desired transport protocol.</li>
+<p>
+</ul>See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
 				</div>
@@ -1488,7 +1487,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host
 				<div class="well well-small name"><b>Method Connect : Bool ( Host:String, Port:Int, Async:Bool=false, Protocol:<a href="Modules_regal.networking.engine_ProtocolType.html">ProtocolType</a>=socket_type_udp )</b></div>
 				<div class="description">
 					<p>This generates a <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> object from <b>Host</b> and <b>Port</b>, then calls the <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">main implementation</a> using the arguments specified.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
@@ -1501,7 +1500,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host
 				<div class="description">
 					<p><p>This returns <a href="Programming_Keywords_True.html">True</a> if a <a href="Modules_regal.networking.client_Client.html">Client</a> with <b>S</b> as its <a href="Modules_regal.networking.client_Client.html#Connection">socket</a> was found.</p>
 <p>This is only useful for TCP; UDP always returns <a href="Programming_Keywords_False.html">False</a>.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient">GetClient</a></p>
 					
 					
@@ -1513,7 +1512,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient"
 				<div class="well well-small name"><b>Method Connected : Bool ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>This returns <a href="Programming_Keywords_True.html">True</a> if a <a href="Modules_regal.networking.client_Client.html">Client</a> with <b>Address</b> as its <a href="Modules_regal.networking.client_Client.html#Address">Address</a> was found.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient">GetClient</a></p>
 					
 					
@@ -1531,10 +1530,10 @@ In this situation, ignore <b>RP</b>, as it isn't relevant to your code anymore.
 </p>
 <p><b>RP</b> should only be an object previously allocated with <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateReliablePacket">AllocateReliablePacket</a>.</p>
 <p>For details, view the documentation for <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateReliablePacket">that method</a>, and <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a>.</p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateReliablePacket">AllocateReliablePacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseReliablePacket">ReleaseReliablePacket</a></p>
 					
 					
@@ -1549,12 +1548,12 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateRe
 This will remove all traces of a "system packet" allocated as one.
 In addition, this will handle reliable packet symantics if necessary.
 </p>
-
+<p>
 <p>
 The return-value of this command specifies if <b>P</b> is no longer in use, and has been removed.
 (<a href="Programming_Keywords_True.html">True</a> if everything worked, and it's now in the main "packet pool")
 </p>
-
+<p>
 <p>For details on "system packets", please view the <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a> and <a href="Modules_regal.networking.engine_NetworkEngine.html#RemoveSystemPacket">RemoveSystemPacket</a> methods' documentation.</p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p></p>
@@ -1568,9 +1567,9 @@ The return-value of this command specifies if <b>P</b> is no longer in use, and 
 				<div class="well well-small name"><b>Method DeinitMegaPackets : Void ()</b></div>
 				<div class="description">
 					<p>This deinitializes mega-packet functionality.
-
+<p>
 <p>This destructor is protected.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#InitMegaPackets">InitMegaPackets</a></p>
 					
 					
@@ -1582,9 +1581,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#InitMegaPa
 				<div class="well well-small name"><b>Method DeinitReliablePackets : Void ()</b></div>
 				<div class="description">
 					<p>This deinitializes reliable-packet functionality.
-
+<p>
 <p>This destructor is protected.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#InitReliablePackets">InitReliablePackets</a></p>
 					
 					
@@ -1596,7 +1595,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#InitReliab
 				<div class="well well-small name"><b>Method Disconnect : Void ( C:<a href="Modules_regal.networking.client_Client.html">Client</a> )</b></div>
 				<div class="description">
 					<p>This sends a reliable disconnection message to <b>C</b>, then marks <b>C</b> as <a href="Modules_regal.networking.client_Client.html#Closing">Closing</a>.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a></p>
 					
 					
@@ -1608,7 +1607,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 				<div class="well well-small name"><b>Method DisconnectAll : Void ()</b></div>
 				<div class="description">
 					<p>This disconnects every connected client from a host.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a></p>
 					
 					
@@ -1630,7 +1629,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 				<div class="well well-small name"><b>Method GenerateNativeSocket : Void ( ProtocolString:String="stream" )</b></div>
 				<div class="description">
 					<p>This is used internally to generate the internal connection-socket, and close if necessary.
-
+<p>
 This constructor is protected.</p>
 					
 					
@@ -1642,9 +1641,9 @@ This constructor is protected.</p>
 				<div class="well well-small name"><b>Method GetClient : <a href="Modules_regal.networking.client_Client.html">Client</a> ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p>This is used to retrieve a <a href="Modules_regal.networking.client_Client.html">Client</a> object using its address.
-
+<p>
 <p>Do not keep a long-term handle to this object unless you intend to accept <a href="Modules_regal.networking.engine_ClientNetworkListener.html#OnClientDisconnected">OnClientDisconnected</a> notifications.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ObjectEnumerator">ObjectEnumerator</a></p>
 					
 					
@@ -1659,9 +1658,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ObjectEnum
 Generally speaking, this should only be called when using TCP; for a general
 purpose routine, please use the <a href="Modules_regal.networking.engine_NetworkEngine.html#GetClient">overload</a> accepting a <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>.
 </p>
-
+<p>
 <p>This retrieves a <a href="Modules_regal.networking.client_Client.html">Client</a> object using its socket. (Not recommended)</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ObjectEnumerator">ObjectEnumerator</a></p>
 					
 					
@@ -1676,7 +1675,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ObjectEnum
 This may be used to retrieve the next mega-packet identifier.
 This will increment an internal ID-counter; use with caution.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -1691,7 +1690,7 @@ This will increment an internal ID-counter; use with caution.
 This may be used to retrieve the next reliable-packet identifier.
 This will increment an internal ID-counter; use with caution.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -1702,10 +1701,10 @@ This will increment an internal ID-counter; use with caution.
 				<a name='GetPendingMegaPacket'></a>
 				<div class="well well-small name"><b>Method GetPendingMegaPacket : <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
 				<div class="description">
-					<p><p>This retrieves the <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object with @<a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>, previously added with <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>.</p>
+					<p><p>This retrieves the <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object with <a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>, previously added with <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>.</p>
 <p>If a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> couldn't be found, this will return <a href="Programming_Keywords_Null.html">Null</a>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a></p>
 					
 					
@@ -1717,7 +1716,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPending
 				<div class="well well-small name"><b>Method GetReliableHandle : <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> ( RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a> )</b></div>
 				<div class="description">
 					<p><p>This looks through our <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> objects still in play, and checks if one of them is actually <b>RawPacket</b>.</p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p></p>
 					
@@ -1729,9 +1728,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPending
 				<a name='HasPendingMegaPacket'></a>
 				<div class="well well-small name"><b>Method HasPendingMegaPacket : Bool ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
 				<div class="description">
-					<p><p>This returns <a href="Programming_Keywords_True.html">True</a> if a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> with the @<a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a> specified was found.</p>
+					<p><p>This returns <a href="Programming_Keywords_True.html">True</a> if a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> with the <a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a> specified was found.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#GetPendingMegaPacket">GetPendingMegaPacket</a></p>
 					
 					
@@ -1745,17 +1744,17 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPending
 					<p>This is used to host a network on <b>Port</b> using <b>Protocol</b>.
 Once hosting has started, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Update">Update</a> regularly.
 When finished hosting, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a> or <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a>.
-
-<ul><li>The <b>Port</b> argument is used to bind the network-socket using <b>Hostname</b>.</li>
-<li>The <b>Async</b> argument specifies if binding should be done asynchronously. (May be required on some targets)</li>
-<li>The <b>Protocol</b> argument describes the desired transport protocol.</li>
-<li>The <b>MultiConnection</b> argument dictates whether more than one connection is allowed.</li>
-<li>The <b>Hostname</b> argument is used when binding the internal socket. (If unsure, do not specify)</li>
-</ul>
-The return value of this method states if hosting was successful.
+<p>
+<ul><li>The <b>Port</b> argument is used to bind the network-socket using <b>Hostname</b>.</li>
+<li>The <b>Async</b> argument specifies if binding should be done asynchronously. (May be required on some targets)</li>
+<li>The <b>Protocol</b> argument describes the desired transport protocol.</li>
+<li>The <b>MultiConnection</b> argument dictates whether more than one connection is allowed.</li>
+<li>The <b>Hostname</b> argument is used when binding the internal socket. (If unsure, do not specify)</li>
+<p>
+</ul>The return value of this method states if hosting was successful.
 If <b>Async</b> is enabled, the return value will not indicate success, only initial failure.
 Success would be determined using <a href="Modules_regal.networking.engine_CoreNetworkListener.html#OnNetworkBind">OnNetworkBind</a>.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">Connect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
@@ -1768,7 +1767,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">C
 				<div class="description">
 					<p>This is a common internal "startup constructor", called whenever <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">Connect</a> or <a href="Modules_regal.networking.engine_NetworkEngine.html#Host">Host</a> is called.
 This generates the internal socket via <a href="Modules_regal.networking.engine_NetworkEngine.html#GenerateNativeSocket">GenerateNativeSocket</a>.
-
+<p>
 This constructor is protected.</p>
 					
 					
@@ -1780,9 +1779,9 @@ This constructor is protected.</p>
 				<div class="well well-small name"><b>Method InitMegaPackets : Void ()</b></div>
 				<div class="description">
 					<p>This initializes mega-packet functionality.
-
+<p>
 This constructor is protected.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeinitMegaPackets">DeinitMegaPackets</a></p>
 					
 					
@@ -1794,9 +1793,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeinitMega
 				<div class="well well-small name"><b>Method InitReliablePackets : Void ()</b></div>
 				<div class="description">
 					<p>This initializes reliable-packet functionality. (Pooling, management, etc)
-
+<p>
 This constructor is protected.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeinitReliablePackets">DeinitReliablePackets</a></p>
 					
 					
@@ -1832,7 +1831,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#DeinitReli
 <p><b>This is a specialized version of <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, please use that instead.</b></p>
 <p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceiveFrom">LaunchAsyncReceiveFrom</a></p>
 					
 					
@@ -1850,7 +1849,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunch
 <br>
 <p><b>This is a specialized version of <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, please use that instead.</b></p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceive">LaunchAsyncReceive</a></p>
 					
 					
@@ -1865,10 +1864,10 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunch
 This will generate a new <a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a>, then call the <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceiveFrom">main implementation</a>.
 For details, please view that overload's documentation.
 </p>
-
+<p>
 <p>This routine does not work with WebSockets.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunchReceive">AutoLaunchReceive</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#LaunchAsyncReceive">LaunchAsyncReceive</a></p>
 					
 					
@@ -1880,7 +1879,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoLaunch
 				<div class="well well-small name"><b>Method ObjectEnumerator : list.Enumerator&lt;<a href="Modules_regal.networking.client_Client.html">Client</a>&gt; ()</b></div>
 				<div class="description">
 					<p>This allows you to enumerate the connected <a href="Modules_regal.networking.client_Client.html">Client</a>s in this network.
-
+<p>
 For clients, this will only supply <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a>, for hosts, this provides all connected <a href="Modules_regal.networking.client_Client.html">Client</a> handles.</p>
 					
 					
@@ -1895,7 +1894,7 @@ For clients, this will only supply <a href="Modules_regal.networking.engine_Netw
 <p>If <b>Async</b> is disabled, this will return whether the connection operation was successful.</p>
 <p>Raw connections allow us to establish a transport-level connection, which then means we can apply normal authentication atop it.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">Connect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Bind">Bind</a></p>
 					
 					
@@ -1909,7 +1908,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">C
 					<p><p>This will use the internal socket to perform a raw connection operation.</p>
 <p>This is used by both TCP and UDP clients (Currently). For details, see the <a href="Modules_regal.networking.engine_NetworkEngine.html#RawConnect">main overload</a>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">Connect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Bind">Bind</a></p>
 					
 					
@@ -1921,19 +1920,19 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Connect">C
 				<div class="well well-small name"><b>Method RawSend : Void ( Connection:<a href="Modules_regal.networking.engine_NetworkEngine.html#Socket">Socket</a>, RawPacket:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Async:Bool=true )</b></div>
 				<div class="description">
 					<p><p>This command is used to send <i>completely raw</i> data (<b>RawPacket</b>) when using a <i>connected</i> socket (<b>Connection</b>).</p>
-
+<p>
 <p>
 This can be useful, as you can generate an output packet yourself,
 then send it as you see fit. Use these commands with caution.
 </p>
-
+<p>
 <p>
 In general, you should avoid using this command directly, and instead
 use <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, as it covers output semantics properly.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RawSendToAll">RawSendToAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -1948,15 +1947,15 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRa
 This sends a <i>completely raw</i> packet (<b>RawPacket</b>) to <b>Address</b>, assuming the underlying transport method supports this.
 This works for (UDP) clients when <b>Address</b> is the same as <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a>'s <a href="Modules_regal.networking.client_Client.html#Address">Address</a>.
 </p>
-
+<p>
 <p>
 In general, you should avoid using this command directly, and instead
 use <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, as it covers output semantics properly.
 </p>
-
+<p>
 <p><b>This only works properly with UDP sockets.</b></p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RawSendToAll">RawSendToAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -1969,14 +1968,14 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRa
 				<div class="description">
 					<p><p>This command is used to send <i>completely raw</i> data (<b>RawPacket</b>) to every connected <a href="Modules_regal.networking.client_Client.html">Client</a>.</p>
 <p>This is only especially useful for hosts; clients will send normally.</p>
-
+<p>
 <p>
 In general, you should avoid using this command directly, and instead
 use <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, as it covers output semantics properly.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RawSend">RawSend</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -1990,7 +1989,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRa
 					<p><p>This is used internally to receive chunks from "extended packets" (<a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>).</p>
 <p>This is usually called by <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessage">ReadMessage</a>, and will call <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessageBody">ReadMessageBody</a> when the message is finished.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessage">ReadMessage</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessageBody">ReadMessageBody</a></p>
 					
 					
@@ -2007,17 +2006,17 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessag
 Basically, this handles everything but handling the standard data-segment of user-level packets.
 So, any "internal messages" we receive will be read and managed through this method.
 </p>
-
 <p>
-<ul><li>The <b>P</b> argument represents the raw <a href="Modules_brl.stream_Stream.html">input stream</a> of the other end's data.</li>
-<li>The <b>Address</b> argument describes the address of the sender.</li>
-<li>The <b>Source</b> argument represents the socket used to receive this message.</li>
+<p>
+<ul><li>The <b>P</b> argument represents the raw <a href="Modules_brl.stream_Stream.html">input stream</a> of the other end's data.</li>
+<li>The <b>Address</b> argument describes the address of the sender.</li>
+<li>The <b>Source</b> argument represents the socket used to receive this message.</li>
 </ul></p>
-
+<p>
 <p>If you are using TCP as your underlying protocol, then <b>Source</b> will always be available.</p>
 <p>This will catch any <a href="Modules_brl.stream_StreamError.html">StreamError</a> thrown by this routine, and any sub routines, unless running in a debug configuration.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessageBody">ReadMessageBody</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadExtendedPacketChunk">ReadExtendedPacketChunk</a></p>
 					
 					
@@ -2030,15 +2029,15 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessag
 				<div class="description">
 					<p><p>This routine handles safety and callbacks for packet data-segments.</p>
 <p>
-<ul><li>The <b>P</b> argument should be a safe-to-use <a href="Modules_brl.stream_Stream.html">Stream</a> containing the data-segment of a raw packet, as described before being sent over with <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a> (Or similar).</li>
-<li>The <b>C</b> argument should be a handle to the client responsible for this message (Sending end).</li>
-<li>The <b>Type</b> argument should specify a correct user-level type, as described by the other end's usage of <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a> (Or similar).</li>
-<li>The <b>DataSize</b> argument should describe the length of the data-segment the <a href="Modules_regal.networking.engine_MetaNetworkListener.html">user will be reading</a>.</li>
-<li>The <b>Address</b> argument should provide the address of <b>C</b> (Or similar).</li>
+<ul><li>The <b>P</b> argument should be a safe-to-use <a href="Modules_brl.stream_Stream.html">Stream</a> containing the data-segment of a raw packet, as described before being sent over with <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a> (Or similar).</li>
+<li>The <b>C</b> argument should be a handle to the client responsible for this message (Sending end).</li>
+<li>The <b>Type</b> argument should specify a correct user-level type, as described by the other end's usage of <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a> (Or similar).</li>
+<li>The <b>DataSize</b> argument should describe the length of the data-segment the <a href="Modules_regal.networking.engine_MetaNetworkListener.html">user will be reading</a>.</li>
+<li>The <b>Address</b> argument should provide the address of <b>C</b> (Or similar).</li>
 </ul></p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessage">ReadMessage</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadExtendedPacketChunk">ReadExtendedPacketChunk</a></p>
 					
 					
@@ -2062,9 +2061,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ReadMessag
 				<div class="description">
 					<p><p>This is used to manually release a <a href="Modules_regal.networking.client_Client.html">Client</a> from this network.</p>
 <p>This will not disconnect the client, only call <a href="Modules_regal.networking.engine_ClientNetworkListener.html#OnClientDisconnected">OnClientDisconnected</a>, and remote it internally if <b>RemoveInternally</b> is enabled.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a></p>
 					
 					
@@ -2078,9 +2077,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 					<p><p>This should only be called when using TCP.</p>
 <p>In addition, the <b>S</b> must be held by a <a href="Modules_regal.networking.client_Client.html">Client</a>.</p>
 <p>This calls the <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseClient">main overload</a> with a <a href="Modules_regal.networking.client_Client.html">Client</a> object holding <b>S</b>.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a></p>
 					
 					
@@ -2095,9 +2094,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 <p>The return-value of this command dictates the release-status of <b>MP</b>.</p>
 <p>This should only be called on an object allocated with <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMegaPacket">AllocateMegaPacket</a>.</p>
 <p>This does not remove any references to <b>MP</b>.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMegaPacket">AllocateMegaPacket</a></p>
 					
 					
@@ -2123,7 +2122,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMe
 					<p><p>This releases a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> object allocated from <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a>.</p>
 <p>Passing an object that was not from <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a> is considered "unsafe", and will result in undefined behavior.</p>
 <p>The return-value of this method indicates if the object was accepted. For most cases, just call this without worrying about the return-value.</p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a></p>
 					
 					
@@ -2136,9 +2135,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePa
 				<div class="description">
 					<p><p>This removes <b>MP</b> (A pending/local <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>) from an internal container, then releases it.</p>
 <p><b>This automatically calls <i><a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a></i> and <i><a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseInternalMegaPacket">ReleaseInternalMegaPacket</a></i></b></p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMegaPacket">AllocateMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">RemovePendingMegaPacket</a>,  <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseInternalMegaPacket">ReleaseInternalMegaPacket</a></p>
 					
 					
@@ -2154,7 +2153,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMe
 Calling this is considered unsafe; use at your own risk.
 This will result in timeouts on receiving ends.
 </p>
-
+<p>
 <p>This destructor is protected.</p></p>
 					
 					
@@ -2167,7 +2166,7 @@ This will result in timeouts on receiving ends.
 				<div class="description">
 					<p><p>This <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateReliablePacket">deallocates</a> the <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> with the identifier specified (<b>ID</b>).</p>
 <p>For details, view the <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateReliablePacket">DeallocateReliablePacket</a> method's documentation.</p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p></p>
 					
@@ -2181,9 +2180,9 @@ This will result in timeouts on receiving ends.
 				<div class="description">
 					<p><p>This removes <b>MP</b> (A remote <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>) from an internal container in <b>C</b>, then releases it.</p>
 <p><b>This automatically calls <i><a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a></i> and <i><a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseInternalMegaPacket">ReleaseInternalMegaPacket</a></i></b></p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMegaPacket">AllocateMegaPacket</a>, <a href="Modules_regal.networking.client_Client.html#RemoveWaitingMegaPacket">RemoveWaitingMegaPacket</a>,  <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseInternalMegaPacket">ReleaseInternalMegaPacket</a></p>
 					
 					
@@ -2196,9 +2195,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateMe
 				<div class="description">
 					<p><p>This is used to remove one of our pending <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects.</p>
 <p>For more information, view the <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a> command.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#GetPendingMegaPacket">GetPendingMegaPacket</a></p>
 					
 					
@@ -2209,11 +2208,11 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPending
 				<a name='RemovePendingMegaPacket(2)'></a>
 				<div class="well well-small name"><b>Method RemovePendingMegaPacket : Void ( ID:<a href="Modules_regal.networking.serial_PacketID.html">PacketID</a> )</b></div>
 				<div class="description">
-					<p><p>This is used to remove one of our pending <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects using its @<a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>.</p>
+					<p><p>This is used to remove one of our pending <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects using its <a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>.</p>
 <p>For more information, view the <a href="Modules_regal.networking.engine_NetworkEngine.html#RemovePendingMegaPacket">main overload</a>, and the <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a> command.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPendingMegaPacket">AddPendingMegaPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#GetPendingMegaPacket">GetPendingMegaPacket</a></p>
 					
 					
@@ -2226,7 +2225,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddPending
 				<div class="description">
 					<p><p>
 This is called internally to remove a <a href="Modules_regal.networking.packet_Packet.html">Packet</a> handle previously given to <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a>.
-
+<p>
 For details on "system packets", please view <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">that method's documentation</a>.
 </p>
 <p>
@@ -2236,10 +2235,10 @@ of <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateSystemP
 <p>
 Or, in the case of custom <a href="Modules_regal.networking.packet_Packet.html">Packet</a> objects, this provides removal without pooling.
 </p>
-
+<p>
 <p>If unsure, don't mess with this.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemPacket">AddSystemPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocateSystemPacket">AllocateSystemPacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DeallocateSystemPacket">DeallocateSystemPacket</a></p>
 					
 					
@@ -2276,10 +2275,10 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#AddSystemP
 				<div class="well well-small name"><b>Method Send : Void ( RP:<a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>, Async:Bool=false )</b></div>
 				<div class="description">
 					<p>This sends a pre-serialized <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a> object.
-
+<p>
 <b>NOTE</b>: This overload only applies to unreliable transport. (UDP, for example)
 Transport protocols like TCP do not support this kind of operation, and usage will result in undefined behavior.
-
+<p>
 All <a href="Modules_regal.networking.packet_ReliablePacket.html">ReliablePacket</a>s should contain the entire raw message, including the reliable packet meta-data.
 This will send <b>RP</b> as a raw packet using its <a href="Modules_regal.networking.packet_ReliablePacket.html#Destination">Destination</a> property.</p>
 					
@@ -2293,15 +2292,15 @@ This will send <b>RP</b> as a raw packet using its <a href="Modules_regal.networ
 				<div class="description">
 					<p>This builds and sends a packet of <b>Type</b> using <b>P</b> as the data-segment, and sends to every connected <a href="Modules_regal.networking.client_Client.html">Client</a>.
 For hosts, this sends to clients, for clients, this sends to the host.
-
+<p>
 Please enable <b>Reliable</b> if you intend for the message to always be received, even when using reliable transport.
-
-<ul><li>The <b>P</b> argument represents the data you would like to send. (Packet formatting handled behind the scenes)</li>
-<li>The <b>Type</b> argument specifies a user-level type defined by your application. (Must be <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_CUSTOM">MSG_TYPE_CUSTOM</a> or above; non-zero currently)</li>
-<li>The <b>Reliable</b> argument is used to ensure this packet makes it to its destinations. Packet ordering is not guaranteed; transport dependent.</li>
-<li>The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.</li>
-</ul>
-<ul><li>The <b>ExtendedPacket</b> argument is used internally to send packet chunks for <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects. Unless you're extending the framework, <b>DO</b> <b>NOT</b> change this argument.</li></ul></p>
+<p>
+<ul><li>The <b>P</b> argument represents the data you would like to send. (Packet formatting handled behind the scenes)</li>
+<li>The <b>Type</b> argument specifies a user-level type defined by your application. (Must be <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_CUSTOM">MSG_TYPE_CUSTOM</a> or above; non-zero currently)</li>
+<li>The <b>Reliable</b> argument is used to ensure this packet makes it to its destinations. Packet ordering is not guaranteed; transport dependent.</li>
+<li>The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.</li>
+<p>
+<li>The <b>ExtendedPacket</b> argument is used internally to send packet chunks for <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects. Unless you're extending the framework, <b>DO</b> <b>NOT</b> change this argument.</li></ul></p>
 					
 					
 				</div>
@@ -2313,13 +2312,13 @@ Please enable <b>Reliable</b> if you intend for the message to always be receive
 				<div class="description">
 					<p>This builds and sends a packet of <b>Type</b> using <b>P</b> as the data-segment, and sends to <b>C</b>.
 For hosts, this sends to <b>C</b>, for clients, this will only send to <b>C</b> if it is <a href="Modules_regal.networking.engine_NetworkEngine.html#Remote">Remote</a>.
-
-<ul><li>The <b>P</b> argument represents the data you would like to send. (Packet formatting handled behind the scenes)</li>
-<li>The <b>Type</b> argument specifies a user-level type defined by your application. (Must be <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_CUSTOM">MSG_TYPE_CUSTOM</a> or above)</li>
-<li>The <b>Reliable</b> argument is used to ensure this packet makes it to its destinations. Packet ordering is not guaranteed; transport dependent.</li>
-<li>The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.</li>
-</ul>
-<ul><li>The <b>ExtendedPacket</b> argument is used internally to send packet chunks for <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects. Unless you're extending the framework, <b>DO</b> <b>NOT</b> change this argument.</li></ul></p>
+<p>
+<ul><li>The <b>P</b> argument represents the data you would like to send. (Packet formatting handled behind the scenes)</li>
+<li>The <b>Type</b> argument specifies a user-level type defined by your application. (Must be <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_CUSTOM">MSG_TYPE_CUSTOM</a> or above)</li>
+<li>The <b>Reliable</b> argument is used to ensure this packet makes it to its destinations. Packet ordering is not guaranteed; transport dependent.</li>
+<li>The <b>Async</b> argument is used to toggle asynchronous output; queued, could be slower.</li>
+<p>
+<li>The <b>ExtendedPacket</b> argument is used internally to send packet chunks for <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects. Unless you're extending the framework, <b>DO</b> <b>NOT</b> change this argument.</li></ul></p>
 					
 					
 				</div>
@@ -2331,9 +2330,9 @@ For hosts, this sends to <b>C</b>, for clients, this will only send to <b>C</b> 
 				<div class="description">
 					<p>This overload provides an easy to use interface for sending <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects. <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> messages are always reliable.
 When this message is received on the other end, it will be done as a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, and passed to your application as a <a href="Modules_brl.stream_Stream.html">Stream</a>.
-
-<ul><li>The <b>MP</b> argument represents the auto-formatted user-level data you'd like to send.</li>
-<li>The <b>C</b> argument acts as the destination we'll be sending to. (Follows the usual <a href="Modules_regal.networking.client_Client.html">Client</a> output rules)</li>
+<p>
+<ul><li>The <b>MP</b> argument represents the auto-formatted user-level data you'd like to send.</li>
+<li>The <b>C</b> argument acts as the destination we'll be sending to. (Follows the usual <a href="Modules_regal.networking.client_Client.html">Client</a> output rules)</li>
 <li>The <b>Type</b> argument specifies a user-level type defined by your application. (Must be <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_CUSTOM">MSG_TYPE_CUSTOM</a> or above)</li></ul></p>
 					
 					
@@ -2348,9 +2347,9 @@ When this message is received on the other end, it will be done as a <a href="Mo
 This sends a connection message (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_CONNECT">INTERNAL_MSG_CONNECT</a>) to the default destination (Host).
 Basically, this is what a client uses to connect to a host network.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a></p>
 					
 					
@@ -2362,12 +2361,12 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 				<div class="well well-small name"><b>Method SendDisconnect : Void ( C:<a href="Modules_regal.networking.client_Client.html">Client</a> )</b></div>
 				<div class="description">
 					<p><b>ATTENTION</b>: This routine does not perfectly disconnect <a href="Modules_regal.networking.engine_NetworkEngine.html#Clients">Clients</a> objects on its own.
-
+<p>
 <p>
 This command should only be called by users for debugging purposes,
 or in the case of lax disconnection environments.
 </p>
-
+<p>
 <p>
 This is used internally by DisconnectClient, which is
 the proper way to disconnect a <a href="Modules_regal.networking.client_Client.html">Client</a> from this network.
@@ -2383,7 +2382,7 @@ the proper way to disconnect a <a href="Modules_regal.networking.client_Client.h
 				<div class="description">
 					<p>This will send reliable disconnection messages to all connected clients.
 The rules applied to <a href="Modules_regal.networking.engine_NetworkEngine.html#SendDisconnect">SendDisconnect</a> apply here, the difference being that this should only be called by hosts.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendDisconnect">SendDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendForceDisconnect">SendForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendDisconnectionNotice">SendDisconnectionNotice</a></p>
 					
 					
@@ -2395,22 +2394,22 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisco
 				<div class="well well-small name"><b>Method SendDisconnectionNotice : Void ( Reliable:Bool=false, Async:Bool=false )</b></div>
 				<div class="description">
 					<p>This overload uses automated destination resolution.
-
+<p>
 <p>
 To put it simply, this will send to the host for
 clients, and send to every client for a server.
 </p>
-
+<p>
 <p>
 By default, like <a href="Modules_regal.networking.engine_NetworkEngine.html#SendForceDisconnect">SendForceDisconnect</a>, this is not a reliable message,
 and may need further management after calling.
 </p>
-
+<p>
 <p>
 If <b>Reliable</b> is enabled, this will send a <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_REQUEST_DISCONNECTION">INTERNAL_MSG_REQUEST_DISCONNECTION</a> message.
 If it's disabled, <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_DISCONNECT">INTERNAL_MSG_DISCONNECT</a> will be sent.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendDisconnect">SendDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendForceDisconnect">SendForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SendDisconnectToAll">SendDisconnectToAll</a></p>
 					
 					
@@ -2422,27 +2421,27 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisco
 				<div class="well well-small name"><b>Method SendForceDisconnect : Void ( C:<a href="Modules_regal.networking.client_Client.html">Client</a>, Reliable:Bool=false, Async:Bool=false )</b></div>
 				<div class="description">
 					<p><b>ATTENTION</b>: Use <b>ForceDisconnect</b> instead. The only exception is if you intend to manage <b>C</b> yourself. (Use at your own risk)
-
+<p>
 <p>
 The <a href="Modules_regal.networking.client_Client.html">Client</a> specified (<b>C</b>) will be in its original state after calling this.
 However, this will send an unreliable disconnection-notice to <b>C</b>.
 Because of this, it is a bad idea to call this and not claim <b>C</b> as closing (Manually).
 This is completely unmanaged, so it's up to the caller to handle <b>C</b> properly.
 </p>
-
+<p>
 <p>
 Technically, a "force disconnect" is unmanaged, so the best course of action would be to ignore the client everywhere.
 </p>
-
+<p>
 <p>
 There's two ways of doing this, the safe way, and the unsafe way:
-
-<ul><li>The safe way is considered best practice. After calling this command, manually call <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseClient">ReleaseClient</a>. This will result in a proper disconnection from the host's perspective.</li>
-<li>The unsafe way would be to set the <b>C</b> argument's <a href="Modules_regal.networking.client_Client.html#Closing">Closing</a> flag. Doing this is a bad idea for forced disconnections, as internal messages will still be accepted.</li>
-</ul>
-And, if <a href="Modules_regal.networking.engine_NetworkEngine.html#ClientMessagesAfterDisconnect">ClientMessagesAfterDisconnect</a> is on, normal messages will work, too.
+<p>
+<ul><li>The safe way is considered best practice. After calling this command, manually call <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleaseClient">ReleaseClient</a>. This will result in a proper disconnection from the host's perspective.</li>
+<li>The unsafe way would be to set the <b>C</b> argument's <a href="Modules_regal.networking.client_Client.html#Closing">Closing</a> flag. Doing this is a bad idea for forced disconnections, as internal messages will still be accepted.</li>
+<p>
+</ul>And, if <a href="Modules_regal.networking.engine_NetworkEngine.html#ClientMessagesAfterDisconnect">ClientMessagesAfterDisconnect</a> is on, normal messages will work, too.
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a></p>
 					
 					
@@ -2457,7 +2456,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisco
 This acts like the <a href="Modules_regal.networking.engine_NetworkEngine.html#SendForceDisconnect">other overload</a>, only it sends to the default destination.
 This is used internally, and should be avoided by normal users. (Use at your own risk)
 </p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#DisconnectAll">DisconnectAll</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a></p>
 					
 					
@@ -2469,23 +2468,23 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisco
 				<div class="well well-small name"><b>Method SendForceDisconnect : Void ( Address:<a href="Modules_regal.networking.socket_NetworkAddress.html">NetworkAddress</a> )</b></div>
 				<div class="description">
 					<p><p>ATTENTION: This overload is UDP-only; use at your own risk.</p>
-
+<p>
 <p>
 This will send a disconnection message to the address specified. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_DISCONNECT">INTERNAL_MSG_DISCONNECT</a>)
 Since this doesn't rely on <a href="Modules_regal.networking.client_Client.html">Client</a> objects, such behavior is unrelated.
 If you're using a <a href="Modules_regal.networking.client_Client.html">Client</a> object's address for this, you're "doing it wrong".
 You should use <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, or <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a> instead.
 </p>
-
+<p>
 <p>Though less ideal, but still a better option than this, is the other overload(s) for this command.</p>
-
+<p>
 <p>
 Calling this on a <a href="Modules_regal.networking.client_Client.html">Client</a> object's address will result in partially undefined behavior.
 The likely outcome is a connection time-out.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect">Disconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ForceDisconnect">ForceDisconnect</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Close">Close</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#CloseAsync">CloseAsync</a></p>
 					
 					
@@ -2498,7 +2497,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 				<div class="description">
 					<p><p>This acts as a semi-automated send-routine for MessagePacket "chunks". (Sending end only)</p>
 <p>This will send <b>P</b> using <b>MP</b>'s meta-data.</p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2511,7 +2510,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 				<div class="description">
 					<p><p>This is used to request that the remote end handles the chunks described by <b>MP</b>. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_ACTION">INTERNAL_MSG_MEGA_PACKET_ACTION</a>; <a href="Modules_regal.networking.serial_NetworkSerial.html#MEGA_PACKET_ACTION_REQUEST_CHUNK_LOAD">MEGA_PACKET_ACTION_REQUEST_CHUNK_LOAD</a>)</p>
 <p>The <b>IsTheirPacket</b> argument specifies if this was started as their <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> or ours.</p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2526,7 +2525,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Disconnect
 This is used to request a "chunk" from a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> established on the other end (<b>MP</b>'s <a href="Modules_regal.networking.megapacket_MegaPacket.html#Destination">Destination</a>).
 The <b>Link</b> argument specifies the "link" (Chunk) of <b>MP</b> to send. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_ACTION">INTERNAL_MSG_MEGA_PACKET_ACTION</a>; <a href="Modules_regal.networking.serial_NetworkSerial.html#MEGA_PACKET_ACTION_REQUEST_CHUNK">MEGA_PACKET_ACTION_REQUEST_CHUNK</a>)
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2542,14 +2541,14 @@ This acts as an automated version of the <a href="Modules_regal.networking.engin
 uses the internal link-position to keep track of chunks. (Modifies <b>MP</b> by changing the current link)
 - (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_ACTION">INTERNAL_MSG_MEGA_PACKET_ACTION</a>; <a href="Modules_regal.networking.serial_NetworkSerial.html#MEGA_PACKET_ACTION_REQUEST_CHUNK">MEGA_PACKET_ACTION_REQUEST_CHUNK</a>)
 </p>
-
+<p>
 <p>
 If MegaPacket.OnFinalLink reports <a href="Programming_Keywords_True.html">True</a> before sending, this will still
 send the final chunk request, but when finishing, it will return <a href="Programming_Keywords_False.html">False</a>.
-
+<p>
 This indicates that we have finished sending requests.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2573,7 +2572,7 @@ This indicates that we have finished sending requests.
 				<div class="description">
 					<p><p>This is used to close a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> (<b>MP</b>). (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_RESPONSE">INTERNAL_MSG_MEGA_PACKET_RESPONSE</a>; <a href="Modules_regal.networking.serial_NetworkSerial.html#MEGA_PACKET_RESPONSE_CLOSE">MEGA_PACKET_RESPONSE_CLOSE</a>)</p>
 <p>The <b>IsTheirPacket</b> argument specifies if we're closing one of their <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>, or one of ours.</p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2586,7 +2585,7 @@ This indicates that we have finished sending requests.
 				<div class="description">
 					<p><p>This is used to confirm a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> (<b>MP</b>). (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_RESPONSE">INTERNAL_MSG_MEGA_PACKET_RESPONSE</a>; <a href="Modules_regal.networking.serial_NetworkSerial.html#MEGA_PACKET_RESPONSE_ACCEPT">MEGA_PACKET_RESPONSE_ACCEPT</a>)</p>
 <p>(Not to be confused with <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPacketRequest">requesting</a>)</p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2601,12 +2600,12 @@ This indicates that we have finished sending requests.
 This is used to reject a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> object. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_RESPONSE">INTERNAL_MSG_MEGA_PACKET_RESPONSE</a>)
 Basically, this handles network-output for <a href="Modules_regal.networking.engine_NetworkEngine.html#AbortMegaPacket">AbortMegaPacket</a>.
 </p>
-
+<p>
 <p>
 The <b>IsTheirPacket</b> argument specifies if this is an anouncement of one of
 our <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a> being closed prematurely, or one of theirs.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2621,7 +2620,7 @@ our <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a
 This works like the <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPacketRejection">main overload</a>, only this one takes a
 <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>, and uses its meta-data (<a href="Modules_regal.networking.megapacket_MegaPacket.html#ID">ID</a>). (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_RESPONSE">INTERNAL_MSG_MEGA_PACKET_RESPONSE</a>)
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2634,7 +2633,7 @@ This works like the <a href="Modules_regal.networking.engine_NetworkEngine.html#
 				<div class="description">
 					<p><p>This is used to initiate sending a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> (<b>MP</b>) to <b>C</b>. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_REQUEST_MEGA_PACKET">INTERNAL_MSG_REQUEST_MEGA_PACKET</a>)</p>
 <p>(Not to be confused with <a href="Modules_regal.networking.engine_NetworkEngine.html#SendMegaPacketConfirmation">confirmation</a>)</p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2658,7 +2657,7 @@ This works like the <a href="Modules_regal.networking.engine_NetworkEngine.html#
 				<div class="description">
 					<p><p>This sends an <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_PING">INTERNAL_MSG_PING</a> <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">"title message"</a> to <b>C</b>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPong">SendPong</a></p>
 					
 					
@@ -2672,7 +2671,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPong">
 					<p><p>This sends an <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_PING">INTERNAL_MSG_PING</a> <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">"title message"</a> to the default destination.</p>
 <p>This overload is primarily for hosts; use at your own risk.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPong">SendPong</a></p>
 					
 					
@@ -2685,7 +2684,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPong">
 				<div class="description">
 					<p><p>This sends an <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_PONG">INTERNAL_MSG_PONG</a> <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">"title message"</a> to <b>C</b>.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPing">SendPing</a></p>
 					
 					
@@ -2699,7 +2698,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPing">
 					<p><p>This sends an <a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_PONG">INTERNAL_MSG_PONG</a> <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">"title message"</a> to the default destination.</p>
 <p>This overload is primarily for clients; use at your own risk.</p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPing">SendPing</a></p>
 					
 					
@@ -2714,7 +2713,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SendPing">
 This should only be used for standalone <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> actions. (<a href="Modules_regal.networking.serial_NetworkSerial.html#INTERNAL_MSG_MEGA_PACKET_ACTION">INTERNAL_MSG_MEGA_PACKET_ACTION</a>)
 Actions may only be performed on previously established <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a>.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p></p>
 					
 					
@@ -2730,9 +2729,9 @@ This sends an internal message in name only. This overload uses the default dest
 A "title message" is an internal message that only consists of the message's title/internal-type.
 This is useful for basic messages like connection pings, connections/disconnections, etc.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a></p>
 					
 					
@@ -2745,9 +2744,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 				<div class="description">
 					<p><p>This sends a "title message" to <b>C</b>. <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Normal sending behavior</a> applies here.</p>
 <p>For details on "title messages", view the <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">main overload's documentation</a>.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a></p>
 					
 					
@@ -2760,9 +2759,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 				<div class="description">
 					<p><p>This sends a "title message" to <b>Address</b>. This only really works for UDP hosts (Or similar).</p>
 <p>For details on "title messages", view the <a href="Modules_regal.networking.engine_NetworkEngine.html#SendTitleMessage">main overload's documentation</a>.</p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a></p>
 					
 					
@@ -2778,9 +2777,9 @@ This sends a warning message (<a href="Modules_regal.networking.serial_NetworkSe
 Basically, this is a way for a remote node to tell you that a message was used improperly.
 For now, these messages are internal, and don't do much. They're mainly a debugging tool.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AutoSendRaw">AutoSendRaw</a></p>
 					
 					
@@ -2796,20 +2795,20 @@ This sends <b>Data</b> using the information provided (<b>Info</b>).
 This is used to automate destination management for <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a> objects.
 This should only be called with <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPackets</a> that have appropriate meta-data.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>
-
+<p>
 @ Method SendWithMegaPacket:Void(Data:Packet, Info:MegaPacket, Type:MessageType, Reliable:Bool=True, Async:Bool=False, Extended:Bool=False)
-
+<p>
 <p>
 Like the main overload, this sends <b>Data</b> using its <a href="Modules_regal.networking.megapacket_MegaPacket.html#Destination">destination</a>.
 However, if no destination is supplied, this will send without one.
 </p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a></p>
 					
 					
@@ -2821,7 +2820,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send
 				<div class="well well-small name"><b>Method SetCallback : Void ( Callback:<a href="Modules_regal.networking.engine_NetworkListener.html">NetworkListener</a> )</b></div>
 				<div class="description">
 					<p>This sets every callback handle to <b>Callback</b>.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SetCoreCallback">SetCoreCallback</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SetMetaCallback">SetMetaCallback</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SetClientCallback">SetClientCallback</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#SetMegaPacketCallback">SetMegaPacketCallback</a></p>
 					
 					
@@ -2884,9 +2883,9 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#SetCoreCal
 				<div class="description">
 					<p>Call this every time when you intend to update details of the network.
 For example, this routine calls <a href="Modules_regal.networking.engine_NetworkEngine.html#UpdateClients">UpdateClients</a>, which handles timeouts.
-
+<p>
 If the network has yet to be opened, this will do nothing. (Always safe)
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#UpdateClients">UpdateClients</a></p>
 					
 					
@@ -2899,7 +2898,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#UpdateClie
 				<div class="description">
 					<p>This routine handles all connected clients and their <a href="Modules_regal.networking.client_Client.html">handles</a>.
 This includes things like reliable-packet routines / calling the <a href="Modules_regal.networking.client_Client.html">Client</a> class's <a href="Modules_regal.networking.client_Client.html#Update">Update</a> method, checking for timeouts, etc.
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Update">Update</a></p>
 					
 					
@@ -2911,7 +2910,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#Update">Up
 				<div class="well well-small name"><b>Method WriteMessage : Void ( Output:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>, Type:<a href="Modules_regal.networking.serial_MessageType.html">MessageType</a>, Input:<a href="Modules_regal.networking.packet_Packet.html">Packet</a>=null, ExtendedPacket:Bool=false, DefaultSize:Int=0 )</b></div>
 				<div class="description">
 					<p><p><b>This method's prototype may change at a later date.</b></p>
-
+<p>
 <p>
 This writes a message into <b>Output</b> using <b>Input</b> with <b>Type</b>.
 When writing raw packets, please call <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutputMessage">BuildOutputMessage</a> or <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildReliableMessage">BuildReliableMessage</a>, instead of calling this directly.
@@ -2919,19 +2918,19 @@ This message does not handle the "reliable packet boolean", before this part of 
 That reliable message "header" is expected on some transport protocols, such as UDP.
 Because of this, please call the proper "build" commands.
 </p>
-
-<p>If your intent is to write or send a normal user-level packet, use <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, and finally <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a></p>
-
 <p>
-<ul><li>The <b>Output</b> argument acts as the raw <a href="Modules_brl.stream_Stream.html">output stream</a> for this operation.</li>
-<li>The <b>Type</b> argument represents the user-level type of this message.</li>
-<li>The <b>Input</b> argument is optional, and is used for the data-segment of the packet. NOTE: When using <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_INTERNAL">MSG_TYPE_INTERNAL</a>, this will directly serialize to the packet after the header.</li>
-<li>The <b>ExtendedPacket</b> argument should always be <a href="Programming_Keywords_False.html">False</a>, unless you're writing a chunk of a user-defined message for a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>. (<a href="Programming_Language reference.html#functions">If unsure, leave blank, use default implicit argument</a>)</li>
-<li>Changing the <b>DefaultSize</b> argument from zero is "unsafe", unless you intend to related data to <b>Output</b> after the calling this.</li>
+<p>If your intent is to write or send a normal user-level packet, use <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, and finally <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a></p>
+<p>
+<p>
+<ul><li>The <b>Output</b> argument acts as the raw <a href="Modules_brl.stream_Stream.html">output stream</a> for this operation.</li>
+<li>The <b>Type</b> argument represents the user-level type of this message.</li>
+<li>The <b>Input</b> argument is optional, and is used for the data-segment of the packet. NOTE: When using <a href="Modules_regal.networking.serial_NetworkSerial.html#MSG_TYPE_INTERNAL">MSG_TYPE_INTERNAL</a>, this will directly serialize to the packet after the header.</li>
+<li>The <b>ExtendedPacket</b> argument should always be <a href="Programming_Keywords_False.html">False</a>, unless you're writing a chunk of a user-defined message for a <a href="Modules_regal.networking.megapacket_MegaPacket.html">MegaPacket</a>. (<a href="Programming_Language reference.html#functions">If unsure, leave blank, use default implicit argument</a>)</li>
+<li>Changing the <b>DefaultSize</b> argument from zero is "unsafe", unless you intend to related data to <b>Output</b> after the calling this.</li>
 </ul></p>
-
+<p>
 <p><b>This method is protected.</b></p>
-
+<p>
 See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutputMessage">BuildOutputMessage</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildReliableMessage">BuildReliableMessage</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#AllocatePacket">AllocatePacket</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#Send">Send</a>, <a href="Modules_regal.networking.engine_NetworkEngine.html#ReleasePacket">ReleasePacket</a></p>
 					
 					
@@ -2961,7 +2960,7 @@ See also: <a href="Modules_regal.networking.engine_NetworkEngine.html#BuildOutpu
 				<div class="well well-small name"><b>Function ProtocolToString : String ( Protocol:<a href="Modules_regal.networking.engine_ProtocolType.html">ProtocolType</a> )</b></div>
 				<div class="description">
 					<p>This returns a string representation of <b>Protocol</b>.
-
+<p>
 <table><tr><th><b>Protocol</b> Type</th><th><b>Output</b></th></tr>
 <tr><td>SOCKET_TYPE_UDP</td><td>"UDP"</td></tr>
 <tr><td>SOCKET_TYPE_TCP</td><td>"TCP"</td></tr></table></p>
